@@ -1,10 +1,12 @@
-﻿using KSozluk.Domain;
+﻿using KSozluk.Application.Services.Repositories;
+using KSozluk.Domain;
+using KSozluk.Domain.SharedKernel;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace KSozluk.Persistence.Repositories
 {
-    public sealed class DescriptionRepository
+    public sealed class DescriptionRepository : IDescriptionRepository
     {
         private readonly SozlukContext _context;
 

@@ -13,6 +13,6 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Services\Repositories\" />
+	  <ProjectReference Include="..\KSozluk.Domain\KSozluk.Domain.csproj" />
 	</ItemGroup>
 </Project>

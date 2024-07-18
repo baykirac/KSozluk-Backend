@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KSozluk.Application\KSozluk.Application.csproj" />
     <ProjectReference Include="..\KSozluk.Domain\KSozluk.Domain.csproj" />
   </ItemGroup>
 
