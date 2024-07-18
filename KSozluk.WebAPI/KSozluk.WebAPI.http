@@ -1,0 +1,6 @@
+@KSozluk.WebAPI_HostAddress = http://localhost:5124
+
+GET {{KSozluk.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
