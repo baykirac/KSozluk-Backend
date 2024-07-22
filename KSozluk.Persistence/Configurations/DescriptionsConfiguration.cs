@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KSozluk.Persistence.Configurations
 {
-    internal class DescriptionsConfiguration : IEntityTypeConfiguration<Descriptions>
+    internal class DescriptionsConfiguration : IEntityTypeConfiguration<Description>
     {
-        public void Configure(EntityTypeBuilder<Descriptions> builder)
+        public void Configure(EntityTypeBuilder<Description> builder)
         {
             builder.ToTable("descriptions");
 
@@ -17,7 +17,7 @@ namespace KSozluk.Persistence.Configurations
                 .HasColumnName("id")
                 .IsRequired();
 
-            builder.Property(d => d.Description)
+            builder.Property(d => d.DescriptionContent)
                 .IsRequired()
                 .HasColumnName("description")
                 .HasMaxLength(550);

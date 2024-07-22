@@ -7,9 +7,9 @@ namespace KSozluk.Persistence.Contexts
 {
     public sealed class SozlukContext : DbContext
     {
-        public DbSet<Users> Users { get; set; } 
-        public DbSet<Words> Words { get; set; }
-        public DbSet<Descriptions> Descriptions { get; set; }
+        public DbSet<User> Users { get; set; } 
+        public DbSet<Word> Words { get; set; }
+        public DbSet<Description> Descriptions { get; set; }
 
         public SozlukContext(DbContextOptions options) : base(options) { }
 

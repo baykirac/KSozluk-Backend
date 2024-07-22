@@ -3,6 +3,7 @@ using System;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KSozluk.Persistence.Migrations
 {
     [DbContext(typeof(SozlukContext))]
-    partial class SozlukContextModelSnapshot : ModelSnapshot
+    [Migration("20240719071556_mig_2")]
+    partial class mig_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,13 +25,13 @@ namespace KSozluk.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("KSozluk.Domain.Description", b =>
+            modelBuilder.Entity("KSozluk.Domain.Descriptions", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<string>("DescriptionContent")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(550)
                         .HasColumnType("character varying(550)")
@@ -52,7 +55,7 @@ namespace KSozluk.Persistence.Migrations
                     b.ToTable("descriptions", (string)null);
                 });
 
-            modelBuilder.Entity("KSozluk.Domain.User", b =>
+            modelBuilder.Entity("KSozluk.Domain.Users", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -87,7 +90,7 @@ namespace KSozluk.Persistence.Migrations
                         .HasColumnType("character varying(55)")
                         .HasColumnName("refreshtoken");
 
-                    b.Property<DateTime?>("TokenExpireDate")
+                    b.Property<DateTime>("TokenExpireDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("tokenexpiredate");
 
@@ -96,7 +99,7 @@ namespace KSozluk.Persistence.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("KSozluk.Domain.Word", b =>
+            modelBuilder.Entity("KSozluk.Domain.Words", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -106,7 +109,7 @@ namespace KSozluk.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("status");
 
-                    b.Property<string>("WordContent")
+                    b.Property<string>("Word")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
@@ -117,16 +120,16 @@ namespace KSozluk.Persistence.Migrations
                     b.ToTable("words", (string)null);
                 });
 
-            modelBuilder.Entity("KSozluk.Domain.Description", b =>
+            modelBuilder.Entity("KSozluk.Domain.Descriptions", b =>
                 {
-                    b.HasOne("KSozluk.Domain.Word", "Word")
+                    b.HasOne("KSozluk.Domain.Words", "Word")
                         .WithMany("Descriptions")
                         .HasForeignKey("WordId");
 
                     b.Navigation("Word");
                 });
 
-            modelBuilder.Entity("KSozluk.Domain.Word", b =>
+            modelBuilder.Entity("KSozluk.Domain.Words", b =>
                 {
                     b.Navigation("Descriptions");
                 });

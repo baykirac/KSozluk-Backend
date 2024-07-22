@@ -3,7 +3,7 @@ using KSozluk.Domain.SharedKernel;
 
 namespace KSozluk.Application.Services.Repositories
 {
-    public interface IDescriptionRepository : IDomainRepository<Descriptions>
+    public interface IDescriptionRepository : IDomainRepository<Description>
     {
 
     }

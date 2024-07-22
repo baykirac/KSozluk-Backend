@@ -15,14 +15,26 @@ namespace KSozluk.Persistence.Repositories
         }
 
 
-        public async Task CreateAsync(Users user)
+        public async Task CreateAsync(User user)
         {
             await _context.Users.AddAsync(user);
         }
 
-        public Task<Users> FindAsync(Guid id)
+        public Task<User> FindAsync(Guid id)
         {
             return _context.Users.SingleOrDefaultAsync(u => u.Id == id);    
+        }
+
+        public Task<User> FindByEmailAsync(string email)
+        {
+            return _context.Users.SingleOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> HasPermissionView(Guid id)
+        {
+            var user = await FindAsync(id);            
+
+            return user.Permissions == Permission.NormalUser || user.Permissions == Permission.Admin;
         }
     }
 }

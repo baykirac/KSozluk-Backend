@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KSozluk.Persistence.Configurations
 {
-    internal class UsersConfiguration : IEntityTypeConfiguration<Users>
+    internal class UsersConfiguration : IEntityTypeConfiguration<User>
     {
-        public void Configure (EntityTypeBuilder<Users> builder)
+        public void Configure (EntityTypeBuilder<User> builder)
         {
             builder.ToTable("users");
 
@@ -38,6 +38,13 @@ namespace KSozluk.Persistence.Configurations
             builder.Property(u => u.Permissions)
                 .IsRequired()
                 .HasColumnName("permissions");
+
+            builder.Property(u => u.RefreshToken)
+                .HasMaxLength(55)
+                .HasColumnName("refreshtoken");
+
+            builder.Property(u => u.TokenExpireDate)
+                .HasColumnName("tokenexpiredate");
         }
     }
 }

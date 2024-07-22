@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\KSozluk.Application\KSozluk.Application.csproj" />
     <ProjectReference Include="..\KSozluk.Domain\KSozluk.Domain.csproj" />
+    <ProjectReference Include="..\KSozluk.Infrastructure\KSozluk.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

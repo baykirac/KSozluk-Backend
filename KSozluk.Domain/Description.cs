@@ -2,23 +2,24 @@
 
 namespace KSozluk.Domain
 {
-    public sealed class Descriptions
+    public sealed class Description
     {
         public Guid Id { get; private set; }
-        public string Description { get; private set; }
-        public Words Word { get; private set; }
+        public string DescriptionContent { get; private set; }
+        public Word Word { get; private set; }
         public double Order { get; private set; }
         public bool Status { get; private set; }
 
-        public Descriptions(Guid id, string description, double order, bool status)
+        public Description() { }
+        public Description(Guid id, string description, double order, bool status)
         {
             Id = id;
-            Description = description;
+            DescriptionContent = description;
             Order = order;
             Status = status;
         }
 
-        public static Descriptions Create(Guid id, string description, double order, bool status)
+        public static Description Create(Guid id, string description, double order, bool status)
         {
             if (String.IsNullOrEmpty(description))
             {
@@ -35,7 +36,7 @@ namespace KSozluk.Domain
                 throw new DomainException("DescriptionNotInRange", "Açıklama 550 karakterden fazla olamaz.");
             }
 
-            return new Descriptions(id, description, order, status);
+            return new Description(id, description, order, status);
         }
     }
 }

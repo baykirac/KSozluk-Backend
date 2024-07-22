@@ -1,4 +1,6 @@
-﻿using KSozluk.Domain.SharedKernel;
+﻿using KSozluk.Application.Services.Authentication;
+using KSozluk.Application.Services.Repositories;
+using KSozluk.Domain.SharedKernel;
 using KSozluk.Persistence.Contexts;
 using KSozluk.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,10 @@ namespace KSozluk.Persistence.Extensions
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IWordRepository, WordRepository>();
+            services.AddScoped<IDescriptionRepository, DescriptionRepository>();
+
             return services;
         }
     }

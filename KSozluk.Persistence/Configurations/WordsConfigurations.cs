@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KSozluk.Persistence.Configurations
 {
-    internal class WordsConfigurations : IEntityTypeConfiguration<Words>
+    internal class WordsConfigurations : IEntityTypeConfiguration<Word>
     {
-        public void Configure(EntityTypeBuilder<Words> builder)
+        public void Configure(EntityTypeBuilder<Word> builder)
         {
             builder.ToTable("words");
 
@@ -17,7 +17,7 @@ namespace KSozluk.Persistence.Configurations
                 .HasColumnName("id")
                 .IsRequired();
 
-            builder.Property(w => w.Word)
+            builder.Property(w => w.WordContent)
                 .IsRequired()
                 .HasColumnName("word")
                 .HasMaxLength(255);

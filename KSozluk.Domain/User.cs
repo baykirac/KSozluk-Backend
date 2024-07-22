@@ -3,18 +3,19 @@ using System.Text.RegularExpressions;
 
 namespace KSozluk.Domain
 {
-    public sealed class Users
+    public sealed class User
     {
         public Guid Id { get; set; }
         public string FullName { get; private set; }
         public string Email { get; private set; }
         public string Password { get; private set; }
+        public Permission Permissions { get; private set; }
+        public string? RefreshToken { get; private set; }
+        public DateTime? TokenExpireDate { get; private set; }
 
-        public Permissions Permissions { get; private set; }
+        public User() { }
 
-        public Users() { }
-
-        public Users(Guid id, string fullName, string email, string password, Permissions permissions)
+        public User(Guid id, string fullName, string email, string password, Permission permissions)
         {
             Id = id;
             FullName = fullName;
@@ -23,7 +24,7 @@ namespace KSozluk.Domain
             Permissions = permissions;
         }
 
-        public static Users Creaate(Guid id, string fullName, string email, string password, Permissions permissions)
+        public static User Creaate(Guid id, string fullName, string email, string password, Permission permissions)
         {
             if (String.IsNullOrEmpty(fullName))
             {
@@ -67,7 +68,13 @@ namespace KSozluk.Domain
                     " en az bir özel karakter içermelidir.");
             }
 
-            return new Users(id, fullName, email, password, permissions);
+            return new User(id, fullName, email, password, permissions);
+        }
+
+        public void SignIn(string refreshToken, DateTime tokenExpireDate)
+        {
+            RefreshToken = refreshToken;
+            TokenExpireDate = tokenExpireDate;
         }
     }
 }

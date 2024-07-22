@@ -15,12 +15,12 @@ namespace KSozluk.Persistence.Repositories
             _context = context;
         }
 
-        public async Task CreateAsync(Descriptions descriptions)
+        public async Task CreateAsync(Description descriptions)
         {
             await _context.Descriptions.AddAsync(descriptions);
         }
 
-        public Task<Descriptions> FindAsync(Guid id)
+        public Task<Description> FindAsync(Guid id)
         {
             return _context.Descriptions.SingleOrDefaultAsync(d => d.Id == id);
         }
