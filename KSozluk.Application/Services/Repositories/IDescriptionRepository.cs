@@ -5,6 +5,6 @@ namespace KSozluk.Application.Services.Repositories
 {
     public interface IDescriptionRepository : IDomainRepository<Description>
     {
-
+        public Task<List<Description>> FindByWordAsync(Guid id);
     }
 }

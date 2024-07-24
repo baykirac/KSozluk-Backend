@@ -10,7 +10,7 @@ namespace KSozluk.Domain
         public string Email { get; private set; }
         public string Password { get; private set; }
         public Permission Permissions { get; private set; }
-        public string? RefreshToken { get; private set; }
+        public string RefreshToken { get; private set; }
         public DateTime? TokenExpireDate { get; private set; }
 
         public User() { }

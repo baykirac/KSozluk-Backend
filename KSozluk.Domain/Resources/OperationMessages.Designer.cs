@@ -61,6 +61,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Açıklama başarılı bir şekilde getirildi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string DescriptionsGettedSuccessfully {
+            get {
+                return ResourceManager.GetString("DescriptionsGettedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Email adresi bulunamadı! benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string EmailNotFound {
@@ -88,7 +97,7 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
-        ///   Kelimeler başarıyla getirildi! benzeri yerelleştirilmiş bir dize arar.
+        ///   Kelimeler başarıyla getirildi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string WordsGettedSuccessfully {
             get {

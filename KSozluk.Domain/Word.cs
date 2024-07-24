@@ -6,11 +6,11 @@ namespace KSozluk.Domain
     {
         public Guid Id { get; private set; }
         public string WordContent { get; private set; }
-        public bool Status { get; private set; }
+        public ContentStatus Status { get; private set; }
         public ICollection<Description> Descriptions { get; private set; }
 
         public Word() { }
-        private Word(Guid id, string word, bool status)
+        private Word(Guid id, string word, ContentStatus status)
         {
             Id = id;
             WordContent = word;
@@ -43,7 +43,7 @@ namespace KSozluk.Domain
             return new Word(id, word);
         }
 
-        public static Word Create(Guid id, string word, bool status)
+        public static Word Create(Guid id, string word, ContentStatus status)
         {
             if (String.IsNullOrEmpty(word))
             {

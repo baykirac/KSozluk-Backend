@@ -5,6 +5,6 @@ namespace KSozluk.Application.Services.Repositories
 {
     public interface IWordRepository : IDomainRepository<Word>
     {
-        public Task<List<Word>> GetWordsByLetterAsync(char letter);
+        public Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize);
     }
 }

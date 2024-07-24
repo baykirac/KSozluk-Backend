@@ -30,7 +30,7 @@ namespace KSozluk.Application.Features.Words.Commands
                 return Response.Failure<GetWordsByLetterResponse>(OperationMessages.PermissionFailure);
             }
 
-            var words = await _wordRepository.GetWordsByLetterAsync(request.Letter);
+            var words = await _wordRepository.GetWordsByLetterAsync(request.Letter, request.PageNumber, request.PageSize);
 
             return Response.SuccessWithBody<GetWordsByLetterResponse>(words, OperationMessages.WordsGettedSuccessfully);
         }

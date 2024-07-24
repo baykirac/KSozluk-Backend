@@ -8,10 +8,10 @@ namespace KSozluk.Domain
         public string DescriptionContent { get; private set; }
         public Word Word { get; private set; }
         public double Order { get; private set; }
-        public bool Status { get; private set; }
+        public ContentStatus Status { get; private set; }
 
         public Description() { }
-        public Description(Guid id, string description, double order, bool status)
+        public Description(Guid id, string description, double order, ContentStatus status)
         {
             Id = id;
             DescriptionContent = description;
@@ -19,7 +19,7 @@ namespace KSozluk.Domain
             Status = status;
         }
 
-        public static Description Create(Guid id, string description, double order, bool status)
+        public static Description Create(Guid id, string description, double order, ContentStatus status)
         {
             if (String.IsNullOrEmpty(description))
             {

@@ -24,14 +24,15 @@ namespace KSozluk.Persistence.Repositories
             return _context.Words.SingleOrDefaultAsync(w => w.Id == id);
         }
 
-        public async Task<List<Word>> GetWordsByLetterAsync (char letter)
+        public async Task<List<Word>> GetWordsByLetterAsync (char letter, int pageNumber, int pageSize)
         {
-            string pattern = letter + "%";
-            var a = await _context.Words
-                .Where(w => w.WordContent.ToLower().StartsWith(letter.ToString().ToLower()))
+            return await _context.Words
+                .Where(w => w.Status == ContentStatus.Onaylı && w.WordContent.ToLower().StartsWith(letter.ToString().ToLower()))
+                .OrderBy(w => w.WordContent)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            return a;
         }
     }
 }

@@ -24,5 +24,12 @@ namespace KSozluk.Persistence.Repositories
         {
             return _context.Descriptions.SingleOrDefaultAsync(d => d.Id == id);
         }
+
+        public async Task<List<Description>> FindByWordAsync(Guid id)
+        {
+            return await _context.Descriptions.Where(d => d.Word.Id == id)
+                .OrderBy(d => d.Order)
+                .ToListAsync();
+        }
     }
 }
