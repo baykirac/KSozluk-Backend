@@ -123,6 +123,9 @@
   <data name="EmailNotFound" xml:space="preserve">
     <value>Email adresi bulunamadı!</value>
   </data>
+  <data name="GettedAllWords" xml:space="preserve">
+    <value>Tüm kelimeler başarıyla getirildi.</value>
+  </data>
   <data name="LoginSuccessfull" xml:space="preserve">
     <value>Başarıyla giriş yapıldı.</value>
   </data>

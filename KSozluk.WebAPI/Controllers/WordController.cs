@@ -1,4 +1,6 @@
-﻿using KSozluk.Application.Features.Words.Commands;
+﻿using KSozluk.Application.Features.Words.Commands.GetAllWords;
+using KSozluk.Application.Features.Words.Commands.GetWordsByContains;
+using KSozluk.Application.Features.Words.Commands.GetWordsByLetter;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +19,24 @@ namespace KSozluk.WebAPI.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> GetWordsByLetter(GetWordsByLetterCommand command, CancellationToken cancellationToken = default)
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetAllWords([FromQuery] GetAllWordsCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetWordsByLetter([FromQuery] GetWordsByLetterCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetWordsByContains([FromQuery] GetWordsByContainsCommand command, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(command, cancellationToken);
 

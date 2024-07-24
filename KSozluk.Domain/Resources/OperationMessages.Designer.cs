@@ -79,6 +79,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Tüm kelimeler başarıyla getirildi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string GettedAllWords {
+            get {
+                return ResourceManager.GetString("GettedAllWords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Başarıyla giriş yapıldı. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string LoginSuccessfull {

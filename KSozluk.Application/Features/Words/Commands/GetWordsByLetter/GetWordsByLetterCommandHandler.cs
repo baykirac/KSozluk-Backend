@@ -4,7 +4,7 @@ using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 
-namespace KSozluk.Application.Features.Words.Commands
+namespace KSozluk.Application.Features.Words.Commands.GetWordsByLetter
 {
     public class GetWordsByLetterCommandHandler : RequestHandlerBase<GetWordsByLetterCommand, GetWordsByLetterResponse>
     {

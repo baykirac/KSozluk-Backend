@@ -1,6 +1,6 @@
 ﻿using KSozluk.Application.Common;
 
-namespace KSozluk.Application.Features.Words.Commands
+namespace KSozluk.Application.Features.Words.Commands.GetWordsByLetter
 {
     public class GetWordsByLetterCommand : CommandBase<GetWordsByLetterResponse>
     {
