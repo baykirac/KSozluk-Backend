@@ -1,5 +1,4 @@
 ﻿using KSozluk.Application.Common;
-using MediatR.Wrappers;
 
 namespace KSozluk.Application.Features.Words.Commands.GetWordsByContains
 {

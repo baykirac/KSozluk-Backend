@@ -61,6 +61,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Mevcut kelimeye anlam başarıyla eklendi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string DescriptionAddedtoTheExistingWordSuccessfully {
+            get {
+                return ResourceManager.GetString("DescriptionAddedtoTheExistingWordSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Açıklama başarılı bir şekilde getirildi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string DescriptionsGettedSuccessfully {
@@ -102,6 +111,15 @@ namespace KSozluk.Domain.Resources {
         public static string PermissionFailure {
             get {
                 return ResourceManager.GetString("PermissionFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Kelime başarıyla eklendi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string WordAddedSuccessfully {
+            get {
+                return ResourceManager.GetString("WordAddedSuccessfully", resourceCulture);
             }
         }
         

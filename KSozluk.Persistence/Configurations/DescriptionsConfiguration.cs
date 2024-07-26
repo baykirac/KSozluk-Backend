@@ -29,6 +29,22 @@ namespace KSozluk.Persistence.Configurations
             builder.Property(d => d.Status)
                 .IsRequired()
                 .HasColumnName("status");
+
+            builder.HasOne<Word>()
+                .WithMany(w => w.Descriptions)
+                .HasForeignKey(d => d.WordId)
+                .IsRequired();
+
+            builder.HasOne(d => d.Acceptor)
+                .WithMany()
+                .HasForeignKey(d => d.AcceptorId);
+
+            builder.HasOne(d => d.Recommender)
+                .WithMany()
+                .HasForeignKey(d => d.RecommenderId);
+
+            builder.Property(d => d.LastEditedDate)
+                .HasColumnName("lastediteddate");
         }
     }
 }

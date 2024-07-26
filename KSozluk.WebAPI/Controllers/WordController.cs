@@ -1,4 +1,5 @@
-﻿using KSozluk.Application.Features.Words.Commands.GetAllWords;
+﻿using KSozluk.Application.Features.Words.Commands.AddWord;
+using KSozluk.Application.Features.Words.Commands.GetAllWords;
 using KSozluk.Application.Features.Words.Commands.GetWordsByContains;
 using KSozluk.Application.Features.Words.Commands.GetWordsByLetter;
 using MediatR;
@@ -37,6 +38,14 @@ namespace KSozluk.WebAPI.Controllers
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetWordsByContains([FromQuery] GetWordsByContainsCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AddWord(AddWordCommand command, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(command, cancellationToken);
 

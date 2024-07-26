@@ -1,4 +1,5 @@
 ﻿using KSozluk.Domain.SharedKernel;
+using System.Collections.ObjectModel;
 
 namespace KSozluk.Domain
 {
@@ -7,19 +8,53 @@ namespace KSozluk.Domain
         public Guid Id { get; private set; }
         public string WordContent { get; private set; }
         public ContentStatus Status { get; private set; }
-        public ICollection<Description> Descriptions { get; private set; }
+        public List<Description> Descriptions = new List<Description>();
+        public Guid? AcceptorId { get; private set; }
+        public Guid? RecommenderId { get; private set; }
+        public User Acceptor {  get; private set; }
+        public User Recommender { get; private set; }
+        public DateTime LastEditedDate { get; private set; }
 
-        public Word() { }
-        private Word(Guid id, string word, ContentStatus status)
+        public Word()
+        {
+            Descriptions = new List<Description>();
+        }
+
+        private Word(Guid id, string word, ContentStatus status, Guid acceptorId, DateTime lastEditedDate)
         {
             Id = id;
             WordContent = word;
             Status = status;
+            AcceptorId = acceptorId;
+            LastEditedDate = lastEditedDate;
         }
 
-        public Word(Guid id, string word)
+        private Word(string word, ContentStatus status, Guid acceptorId, Guid recommenderId)
         {
-            Id = id;
+            Id = Guid.NewGuid();
+            WordContent = word;
+            Status = status;
+            AcceptorId = acceptorId;
+            RecommenderId = recommenderId;
+        }
+        private Word(string word, ContentStatus status, Guid acceptorId)
+        {
+            Id = Guid.NewGuid();
+            WordContent = word;
+            Status = status;
+            AcceptorId = acceptorId;
+        }
+
+        private Word(string word, ContentStatus status)
+        {
+            Id = Guid.NewGuid();
+            WordContent = word;
+            Status = status;
+        }
+
+        public Word(string word)
+        {
+            Id = Guid.NewGuid();
             WordContent = word;
         }
 
@@ -40,11 +75,14 @@ namespace KSozluk.Domain
                 throw new DomainException("WordNotInRange", "Kelime 255 karakterden fazla olamaz.");
             }
 
-            return new Word(id, word);
+            return new Word(word);
         }
 
-        public static Word Create(Guid id, string word, ContentStatus status)
+        public static Word Create(string word, Guid acceptorId) // admin için 
         {
+            DateTime lastEditedDate = DateTime.Now;
+            Guid id = Guid.NewGuid();
+
             if (String.IsNullOrEmpty(word))
             {
                 throw new DomainException("WordNullOrEmptyException", "Kelime null veya boşluktan oluşamaz.");
@@ -60,7 +98,12 @@ namespace KSozluk.Domain
                 throw new DomainException("WordNotInRange", "Kelime 255 karakterden fazla olamaz.");
             }
 
-            return new Word(id, word, status);
+            return new Word(id, word, ContentStatus.Onaylı, acceptorId, lastEditedDate);
+        }
+
+        public void  AddDescription(Description description)
+        {
+            Descriptions.Add(description);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KSozluk.Persistence.Migrations
 {
     [DbContext(typeof(SozlukContext))]
-    partial class SozlukContextModelSnapshot : ModelSnapshot
+    [Migration("20240726105258_mig_1113")]
+    partial class mig_1113
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,9 +58,6 @@ namespace KSozluk.Persistence.Migrations
                     b.Property<Guid>("WordId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("WordId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AcceptorId");
@@ -65,8 +65,6 @@ namespace KSozluk.Persistence.Migrations
                     b.HasIndex("RecommenderId");
 
                     b.HasIndex("WordId");
-
-                    b.HasIndex("WordId1");
 
                     b.ToTable("descriptions", (string)null);
                 });
@@ -160,15 +158,11 @@ namespace KSozluk.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("RecommenderId");
 
-                    b.HasOne("KSozluk.Domain.Word", null)
+                    b.HasOne("KSozluk.Domain.Word", "Word")
                         .WithMany("Descriptions")
                         .HasForeignKey("WordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("KSozluk.Domain.Word", "Word")
-                        .WithMany()
-                        .HasForeignKey("WordId1");
 
                     b.Navigation("Acceptor");
 

@@ -24,10 +24,16 @@ namespace KSozluk.Persistence.Repositories
             return _context.Words.SingleOrDefaultAsync(w => w.Id == id);
         }
 
+        public Task<Word> FindByContentAsync(string content)
+        {
+            return _context.Words.Include(d => d.Descriptions).SingleOrDefaultAsync(w => w.WordContent == content);
+        }
+
         public async Task<List<Word>> GetAllWordsAsync()
         {
             return await _context.Words.ToListAsync();
         }
+
         public async Task<List<Word>> GetWordsByLetterAsync (char letter, int pageNumber, int pageSize)
         {
             return await _context.Words
@@ -43,5 +49,6 @@ namespace KSozluk.Persistence.Repositories
         {
             return await _context.Words.Where(w => w.WordContent.Contains(content)).ToListAsync();
         }
+
     }
 }

@@ -27,9 +27,17 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Description>> FindByWordAsync(Guid id)
         {
-            return await _context.Descriptions.Where(d => d.Word.Id == id)
+            return await _context.Descriptions.Where(d => d.WordId == id)
                 .OrderBy(d => d.Order)
                 .ToListAsync();
+        }
+
+        public async Task<double> FindGreatestOrder(Guid wordId)
+        {
+            return await _context.Descriptions.Where(d => d.Word.Id == wordId)
+                .OrderBy(d => d.Order)
+                .Select(d => d.Order)
+                .FirstOrDefaultAsync();
         }
     }
 }
