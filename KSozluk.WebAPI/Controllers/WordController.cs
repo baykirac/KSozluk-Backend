@@ -1,5 +1,7 @@
 ﻿using KSozluk.Application.Features.Words.Commands.AddWord;
 using KSozluk.Application.Features.Words.Commands.GetAllWords;
+using KSozluk.Application.Features.Words.Commands.GetApprovedWordsPaginated;
+using KSozluk.Application.Features.Words.Commands.GetPaginatedWords;
 using KSozluk.Application.Features.Words.Commands.GetWordsByContains;
 using KSozluk.Application.Features.Words.Commands.GetWordsByLetter;
 using MediatR;
@@ -46,6 +48,14 @@ namespace KSozluk.WebAPI.Controllers
 
         [HttpPost("[action]")]
         public async Task<IActionResult> AddWord(AddWordCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetApprovedWordsPaginated([FromQuery] GetApprovedWordsPaginatedCommand command, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(command, cancellationToken);
 

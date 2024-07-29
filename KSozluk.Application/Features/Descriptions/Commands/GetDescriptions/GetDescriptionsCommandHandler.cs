@@ -6,7 +6,7 @@ using KSozluk.Domain.Resources;
 using MediatR.Wrappers;
 using System.Runtime.CompilerServices;
 
-namespace KSozluk.Application.Features.Descriptions
+namespace KSozluk.Application.Features.Descriptions.Commands.GetDescriptions
 {
     public class GetDescriptionsCommandHandler : RequestHandlerBase<GetDescriptionsCommand, GetDescriptionsResponse>
     {

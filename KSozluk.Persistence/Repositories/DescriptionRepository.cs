@@ -34,7 +34,7 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<double> FindGreatestOrder(Guid wordId)
         {
-            return await _context.Descriptions.Where(d => d.Word.Id == wordId)
+            return await _context.Descriptions.Where(d => d.WordId == wordId)
                 .OrderBy(d => d.Order)
                 .Select(d => d.Order)
                 .FirstOrDefaultAsync();

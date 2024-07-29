@@ -1,17 +1,9 @@
 ﻿using KSozluk.Application.Common;
-using KSozluk.Application.Features.Words.Commands.GetWordsByContains;
 using KSozluk.Application.Services.Authentication;
 using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
-using MediatR.Wrappers;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KSozluk.Application.Features.Words.Commands.AddWord
 {
@@ -36,7 +28,7 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
         {
             var userId = _userService.GetUserId();
 
-            if (!await _userRepository.HasPermissionView(userId))
+            if (!await _userRepository.HasPermissionForAdmin(userId))
             {
                 return Response.Failure<AddWordResponse>(OperationMessages.PermissionFailure);
             }
@@ -47,16 +39,16 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
             if (existedWord != null) // kelime mevcutsa mevcut kelimeye sadece anlamı eklenecek
             {
                 var greatestOrder = await _descriptionRepository.FindGreatestOrder(existedWord.Id);
-                var order = greatestOrder + 1000;
+                var order = greatestOrder + 1024;
 
                 var description = Description.Create(request.Description, order, userId);
                 existedWord.AddDescription(description);
-                //existedWord.AddDescription(description);
                 await _unitOfWork.SaveChangesAsync();
                 return Response.SuccessWithBody<AddWordResponse>(existedWord, OperationMessages.DescriptionAddedtoTheExistingWordSuccessfully);
             }
 
             var word = Word.Create(request.WordContent, userId);
+
             double newOrder = 1000;
             var newDescription = Description.Create(request.Description, newOrder, userId);
 
@@ -67,7 +59,7 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
 
 
             await _unitOfWork.SaveChangesAsync();
-
+            Word.ClearResponse(word);
             return Response.SuccessWithBody<AddWordResponse>(word, OperationMessages.WordAddedSuccessfully);
         }
     }

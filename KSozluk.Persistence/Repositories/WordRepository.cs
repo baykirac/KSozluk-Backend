@@ -2,6 +2,7 @@
 using KSozluk.Domain;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Metrics;
 
 namespace KSozluk.Persistence.Repositories
 {
@@ -31,10 +32,10 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Word>> GetAllWordsAsync()
         {
-            return await _context.Words.ToListAsync();
+            return await _context.Words.Include(w => w.Descriptions).ToListAsync();
         }
 
-        public async Task<List<Word>> GetWordsByLetterAsync (char letter, int pageNumber, int pageSize)
+        public async Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize)
         {
             return await _context.Words
                 .Where(w => w.Status == ContentStatus.Onaylı && w.WordContent.ToLower().StartsWith(letter.ToString().ToLower()))
@@ -42,13 +43,21 @@ namespace KSozluk.Persistence.Repositories
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-
         }
 
         public async Task<List<Word>> GetWordsByContainsAsync(string content)
         {
-            return await _context.Words.Where(w => w.WordContent.Contains(content)).ToListAsync();
+            return await _context.Words.Where(w => w.WordContent.Contains(content) && w.Status == ContentStatus.Onaylı).ToListAsync();
         }
 
+        public async Task<List<Word>> GetAllWordsByPaginate(int pageNumber, int pageSize)
+        {
+            return await _context.Words
+                .Include(w => w.Descriptions)
+                .OrderBy(w => w.WordContent)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

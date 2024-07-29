@@ -8,16 +8,16 @@ namespace KSozluk.Domain
         public Guid Id { get; private set; }
         public string WordContent { get; private set; }
         public ContentStatus Status { get; private set; }
-        public List<Description> Descriptions = new List<Description>();
+        public List<Description> Descriptions { get; private set; }
         public Guid? AcceptorId { get; private set; }
         public Guid? RecommenderId { get; private set; }
         public User Acceptor {  get; private set; }
         public User Recommender { get; private set; }
         public DateTime LastEditedDate { get; private set; }
-
+        private List<Description> _descriptions = new List<Description>();
         public Word()
         {
-            Descriptions = new List<Description>();
+            Descriptions = _descriptions;
         }
 
         private Word(Guid id, string word, ContentStatus status, Guid acceptorId, DateTime lastEditedDate)
@@ -103,7 +103,13 @@ namespace KSozluk.Domain
 
         public void  AddDescription(Description description)
         {
-            Descriptions.Add(description);
+            _descriptions.Add(description);
+            Descriptions = _descriptions;
+        }
+
+        public static void ClearResponse(Word word)
+        {
+            word.Acceptor = null;
         }
     }
 }

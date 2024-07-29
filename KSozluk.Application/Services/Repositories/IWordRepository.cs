@@ -10,5 +10,6 @@ namespace KSozluk.Application.Services.Repositories
         public Task<List<Word>> GetAllWordsAsync();
         public Task<List<Word>> GetWordsByContainsAsync(string content);
         public Task<Word> FindByContentAsync(string content);
+        public Task<List<Word>> GetAllWordsByPaginate (int pageNumber, int pageSize);
     }
 }

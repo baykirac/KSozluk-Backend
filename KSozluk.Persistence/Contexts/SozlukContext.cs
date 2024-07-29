@@ -19,6 +19,11 @@ namespace KSozluk.Persistence.Contexts
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DescriptionsConfiguration).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(WordsConfigurations).Assembly);
 
+            modelBuilder.Entity<Word>()
+            .HasMany(w => w.Descriptions)
+            .WithOne(d => d.Word)
+            .HasForeignKey(d => d.WordId);
+
             base.OnModelCreating(modelBuilder);
         }
     }

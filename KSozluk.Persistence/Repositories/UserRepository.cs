@@ -36,5 +36,12 @@ namespace KSozluk.Persistence.Repositories
 
             return user.Permissions == Permission.NormalUser || user.Permissions == Permission.Admin;
         }
+
+        public async Task<bool> HasPermissionForAdmin(Guid id)
+        {
+            var user = await FindAsync(id);
+
+            return user.Permissions == Permission.Admin;
+        }
     }
 }
