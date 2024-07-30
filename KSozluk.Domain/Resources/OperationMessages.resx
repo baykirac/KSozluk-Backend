@@ -120,6 +120,9 @@
   <data name="DescriptionAddedtoTheExistingWordSuccessfully" xml:space="preserve">
     <value>Mevcut kelimeye anlam başarıyla eklendi.</value>
   </data>
+  <data name="DescriptionDeletedSuccessfully" xml:space="preserve">
+    <value>Açıklama başarılı bir şekilde silindi.</value>
+  </data>
   <data name="DescriptionsGettedSuccessfully" xml:space="preserve">
     <value>Açıklama başarılı bir şekilde getirildi.</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="WordsGettedSuccessfully" xml:space="preserve">
     <value>Kelimeler başarıyla getirildi.</value>
+  </data>
+  <data name="WordUpdatedSuccessfully" xml:space="preserve">
+    <value>Kelime başarıyla güncellendi.</value>
   </data>
   <data name="WrongPassword" xml:space="preserve">
     <value>Şifreyi yanlış girdiniz!</value>

@@ -24,6 +24,7 @@ namespace KSozluk.Domain
             Status = status;
             LastEditedDate = lastEditedDate;
             AcceptorId = acceptorId;
+            RecommenderId = acceptorId;
         }
 
         public static Description Create(string description, double order, Guid acceptorId) // admin için
@@ -47,6 +48,16 @@ namespace KSozluk.Domain
             }
 
             return new Description(id, description, order, ContentStatus.Onaylı, lastEditedDate, acceptorId);
+        }
+
+        public void ChangeContent(string content)
+        {
+            DescriptionContent = content;
+        }
+
+        public void ChangeRecommender(Guid id)
+        {
+            RecommenderId = id;
         }
     }
 }

@@ -25,6 +25,15 @@ namespace KSozluk.Persistence.Repositories
             return _context.Descriptions.SingleOrDefaultAsync(d => d.Id == id);
         }
 
+        public async Task<Word> FindByDescription(Guid id)
+        {
+            var description = await _context.Descriptions
+             .Include(d => d.Word) 
+             .FirstOrDefaultAsync(d => d.Id == id);
+
+            return description?.Word;
+        }
+
         public async Task<List<Description>> FindByWordAsync(Guid id)
         {
             return await _context.Descriptions.Where(d => d.WordId == id)
@@ -35,7 +44,7 @@ namespace KSozluk.Persistence.Repositories
         public async Task<double> FindGreatestOrder(Guid wordId)
         {
             return await _context.Descriptions.Where(d => d.WordId == wordId)
-                .OrderBy(d => d.Order)
+                .OrderByDescending(d => d.Order)
                 .Select(d => d.Order)
                 .FirstOrDefaultAsync();
         }

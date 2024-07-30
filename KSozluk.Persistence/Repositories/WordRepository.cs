@@ -22,7 +22,7 @@ namespace KSozluk.Persistence.Repositories
 
         public Task<Word> FindAsync(Guid id)
         {
-            return _context.Words.SingleOrDefaultAsync(w => w.Id == id);
+            return _context.Words.Include(w => w.Descriptions).SingleOrDefaultAsync(w => w.Id == id);
         }
 
         public Task<Word> FindByContentAsync(string content)
@@ -32,7 +32,7 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Word>> GetAllWordsAsync()
         {
-            return await _context.Words.Include(w => w.Descriptions).ToListAsync();
+            return await _context.Words.Include(w => w.Descriptions).Include(w => w.Acceptor).ToListAsync();
         }
 
         public async Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize)
@@ -47,7 +47,7 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Word>> GetWordsByContainsAsync(string content)
         {
-            return await _context.Words.Where(w => w.WordContent.Contains(content) && w.Status == ContentStatus.Onaylı).ToListAsync();
+            return await _context.Words.Where(w => w.WordContent.ToLower().Contains(content.ToLower()) && w.Status == ContentStatus.Onaylı).ToListAsync();
         }
 
         public async Task<List<Word>> GetAllWordsByPaginate(int pageNumber, int pageSize)

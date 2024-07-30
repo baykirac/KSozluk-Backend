@@ -26,6 +26,7 @@ namespace KSozluk.Domain
             WordContent = word;
             Status = status;
             AcceptorId = acceptorId;
+            RecommenderId = acceptorId;
             LastEditedDate = lastEditedDate;
         }
 
@@ -101,7 +102,7 @@ namespace KSozluk.Domain
             return new Word(id, word, ContentStatus.Onaylı, acceptorId, lastEditedDate);
         }
 
-        public void  AddDescription(Description description)
+        public void AddDescription(Description description)
         {
             _descriptions.Add(description);
             Descriptions = _descriptions;
@@ -110,6 +111,17 @@ namespace KSozluk.Domain
         public static void ClearResponse(Word word)
         {
             word.Acceptor = null;
+        }
+
+        public void ChangeContent(string content)
+        {
+            WordContent = content;
+        }
+
+        public void RemoveDescription(Description description)
+        {
+            _descriptions.Remove(description);
+            Descriptions = _descriptions;
         }
     }
 }

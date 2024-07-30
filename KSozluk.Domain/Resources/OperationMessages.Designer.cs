@@ -70,6 +70,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Açıklama başarılı bir şekilde silindi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string DescriptionDeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("DescriptionDeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Açıklama başarılı bir şekilde getirildi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string DescriptionsGettedSuccessfully {
@@ -129,6 +138,15 @@ namespace KSozluk.Domain.Resources {
         public static string WordsGettedSuccessfully {
             get {
                 return ResourceManager.GetString("WordsGettedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Kelime başarıyla güncellendi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string WordUpdatedSuccessfully {
+            get {
+                return ResourceManager.GetString("WordUpdatedSuccessfully", resourceCulture);
             }
         }
         
