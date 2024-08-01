@@ -6,7 +6,7 @@ namespace KSozluk.Application.Services.Repositories
     public interface IDescriptionRepository : IDomainRepository<Description>
     {
         public Task<List<Description>> FindByWordAsync(Guid id);
-        public Task<double> FindGreatestOrder(Guid wordId);
+        public Task<int> FindGreatestOrder(Guid wordId);
         public Task<Word> FindByDescription(Guid id);
     }
 }

@@ -43,5 +43,10 @@ namespace KSozluk.Persistence.Repositories
 
             return user.Permissions == Permission.Admin;
         }
+
+        public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

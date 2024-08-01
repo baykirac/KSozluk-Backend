@@ -32,7 +32,7 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Word>> GetAllWordsAsync()
         {
-            return await _context.Words.Include(w => w.Descriptions).Include(w => w.Acceptor).ToListAsync();
+            return await _context.Words.Include(w => w.Descriptions.OrderBy(d => d.Order)).Include(w => w.Acceptor).ToListAsync();
         }
 
         public async Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize)
@@ -58,6 +58,13 @@ namespace KSozluk.Persistence.Repositories
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var word = await _context.Words.FirstOrDefaultAsync(w => w.Id == id);
+
+            _context.Words.Remove(word);
         }
     }
 }

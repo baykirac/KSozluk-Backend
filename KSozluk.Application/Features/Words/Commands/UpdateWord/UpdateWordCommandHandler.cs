@@ -33,8 +33,8 @@ namespace KSozluk.Application.Features.Words.Commands.UpdateWord
             var word = await _wordRepository.FindAsync(request.WordId);
 
             word.ChangeContent(request.WordContent);
-            word.Descriptions.SingleOrDefault(d => d.Id == request.DescriptionId).ChangeContent(request.DescriptionContent);
-            word.Descriptions.SingleOrDefault(d => d.Id == request.DescriptionId).ChangeRecommender(userId);
+            word.Descriptions.SingleOrDefault(d => d.Id == request.DescriptionId).UpdateContent(request.DescriptionContent);
+            word.Descriptions.SingleOrDefault(d => d.Id == request.DescriptionId).UpdateRecommender(userId);
 
             await _unitOfWork.SaveChangesAsync();
 

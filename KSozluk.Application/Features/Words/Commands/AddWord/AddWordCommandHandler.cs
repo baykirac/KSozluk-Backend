@@ -38,8 +38,8 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
 
             if (existedWord != null) // kelime mevcutsa mevcut kelimeye sadece anlamı eklenecek
             {
-                var greatestOrder = await _descriptionRepository.FindGreatestOrder(existedWord.Id);
-                var order = greatestOrder + 1024;
+                int greatestOrder = await _descriptionRepository.FindGreatestOrder(existedWord.Id);
+                int order = greatestOrder + 1;
 
                 var description = Description.Create(request.Description, order, userId);
                 existedWord.AddDescription(description);
@@ -49,7 +49,7 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
 
             var word = Word.Create(request.WordContent, userId);
 
-            double newOrder = 1000;
+            int newOrder = 0;
             var newDescription = Description.Create(request.Description, newOrder, userId);
 
 

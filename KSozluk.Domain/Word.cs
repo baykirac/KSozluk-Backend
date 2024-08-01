@@ -9,7 +9,7 @@ namespace KSozluk.Domain
         public string WordContent { get; private set; }
         public ContentStatus Status { get; private set; }
         public List<Description> Descriptions { get; private set; }
-        public Guid? AcceptorId { get; private set; }
+        public Guid? AcceptorId { get; private set; } 
         public Guid? RecommenderId { get; private set; }
         public User Acceptor {  get; private set; }
         public User Recommender { get; private set; }

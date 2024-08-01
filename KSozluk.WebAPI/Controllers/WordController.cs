@@ -1,4 +1,5 @@
 ﻿using KSozluk.Application.Features.Words.Commands.AddWord;
+using KSozluk.Application.Features.Words.Commands.DeleteWord;
 using KSozluk.Application.Features.Words.Commands.GetAllWords;
 using KSozluk.Application.Features.Words.Commands.GetApprovedWordsPaginated;
 using KSozluk.Application.Features.Words.Commands.GetPaginatedWords;
@@ -65,6 +66,14 @@ namespace KSozluk.WebAPI.Controllers
 
         [HttpPost("[action]")]
         public async Task<IActionResult> UpdateWord(UpdateWordCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DeleteWord(DeleteWordCommand command, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(command, cancellationToken);
 

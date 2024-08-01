@@ -4,5 +4,6 @@
         {
             Task CreateAsync(T entity);
             Task<T> FindAsync(Guid id);
+            Task DeleteAsync(Guid id);
         }
 }

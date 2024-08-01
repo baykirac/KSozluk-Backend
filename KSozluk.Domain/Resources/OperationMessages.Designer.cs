@@ -61,6 +61,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Kelime başarıyla silindi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string DeletedWordSuccessfully {
+            get {
+                return ResourceManager.GetString("DeletedWordSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Mevcut kelimeye anlam başarıyla eklendi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string DescriptionAddedtoTheExistingWordSuccessfully {
@@ -75,6 +84,15 @@ namespace KSozluk.Domain.Resources {
         public static string DescriptionDeletedSuccessfully {
             get {
                 return ResourceManager.GetString("DescriptionDeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Anlam başarılı bir şekilde önerildi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string DescriptionRecommendedSuccessFully {
+            get {
+                return ResourceManager.GetString("DescriptionRecommendedSuccessFully", resourceCulture);
             }
         }
         
@@ -120,6 +138,24 @@ namespace KSozluk.Domain.Resources {
         public static string PermissionFailure {
             get {
                 return ResourceManager.GetString("PermissionFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Kelime durumu başarıyla güncellendi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string UpdatedDescriptionStatusSuccessfully {
+            get {
+                return ResourceManager.GetString("UpdatedDescriptionStatusSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Açıklama sırası başarıyla güncellendi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string UpdatedOrderSuccessfully {
+            get {
+                return ResourceManager.GetString("UpdatedOrderSuccessfully", resourceCulture);
             }
         }
         

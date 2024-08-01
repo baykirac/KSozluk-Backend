@@ -20,6 +20,11 @@ namespace KSozluk.Persistence.Repositories
             await _context.Descriptions.AddAsync(descriptions);
         }
 
+        public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Description> FindAsync(Guid id)
         {
             return _context.Descriptions.SingleOrDefaultAsync(d => d.Id == id);
@@ -36,12 +41,12 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Description>> FindByWordAsync(Guid id)
         {
-            return await _context.Descriptions.Where(d => d.WordId == id)
+            return await _context.Descriptions.Where(d => d.WordId == id && d.Status == ContentStatus.Onaylı)
                 .OrderBy(d => d.Order)
                 .ToListAsync();
         }
 
-        public async Task<double> FindGreatestOrder(Guid wordId)
+        public async Task<int> FindGreatestOrder(Guid wordId)
         {
             return await _context.Descriptions.Where(d => d.WordId == wordId)
                 .OrderByDescending(d => d.Order)

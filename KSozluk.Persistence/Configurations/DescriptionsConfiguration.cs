@@ -30,6 +30,10 @@ namespace KSozluk.Persistence.Configurations
                 .IsRequired()
                 .HasColumnName("status");
 
+            builder.Property(d => d.PreviousDescId)
+                .IsRequired(false)
+                .HasColumnName("previusdescid");
+
             builder.HasOne<Word>()
                 .WithMany(w => w.Descriptions)
                 .HasForeignKey(d => d.WordId)
