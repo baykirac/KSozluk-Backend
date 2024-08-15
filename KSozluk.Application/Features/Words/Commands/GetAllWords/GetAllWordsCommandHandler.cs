@@ -23,7 +23,7 @@ namespace KSozluk.Application.Features.Words.Commands.GetAllWords
         {
             var userId = _userService.GetUserId();
 
-            if (!await _userRepository.HasPermissionView(userId))
+            if (!await _userRepository.HasPermissionForAdmin(userId))
             {
                 return Response.Failure<GetAllWordsResponse>(OperationMessages.PermissionFailure);
             }
