@@ -30,13 +30,14 @@ namespace KSozluk.Domain
             LastEditedDate = lastEditedDate;
         }
 
-        private Word(string word, ContentStatus status, Guid acceptorId, Guid recommenderId)
+        private Word(Guid id, string word, ContentStatus status, Guid? acceptorId, Guid recommenderId, DateTime lastEditedDate)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             WordContent = word;
             Status = status;
             AcceptorId = acceptorId;
             RecommenderId = recommenderId;
+            LastEditedDate = lastEditedDate;
         }
         private Word(string word, ContentStatus status, Guid acceptorId)
         {
@@ -102,6 +103,28 @@ namespace KSozluk.Domain
             return new Word(id, word, ContentStatus.Onaylı, acceptorId, lastEditedDate);
         }
 
+        public static Word Create(string word, Guid recommenderId, DateTime lastEditedDate) //yeni bir kelime ve anlam önerme işlemi
+        {
+            Guid id = Guid.NewGuid();
+
+            if (String.IsNullOrEmpty(word))
+            {
+                throw new DomainException("WordNullOrEmptyException", "Kelime null veya boşluktan oluşamaz.");
+            }
+
+            if (String.IsNullOrWhiteSpace(word))
+            {
+                throw new DomainException("WordNullOrSpaceException", "Kelime null veya boşluk karakterlerinden oluşamaz.");
+            }
+
+            if (word.Length > 255)
+            {
+                throw new DomainException("WordNotInRange", "Kelime 255 karakterden fazla olamaz.");
+            }
+
+            return new Word(id, word, ContentStatus.Bekliyor, null, recommenderId, lastEditedDate);
+        }
+
         public void AddDescription(Description description)
         {
             _descriptions.Add(description);
@@ -116,6 +139,11 @@ namespace KSozluk.Domain
         public void ChangeContent(string content)
         {
             WordContent = content;
+        }
+
+        public void UpdateStatus(ContentStatus status)
+        {
+            Status = status;
         }
 
         public void RemoveDescription(Description description)

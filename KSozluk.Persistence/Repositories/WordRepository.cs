@@ -20,7 +20,7 @@ namespace KSozluk.Persistence.Repositories
             await _context.Words.AddAsync(word);
         }
 
-        public Task<Word> FindAsync(Guid id)
+        public Task<Word> FindAsync(Guid? id)
         {
             return _context.Words.Include(w => w.Descriptions).SingleOrDefaultAsync(w => w.Id == id);
         }
@@ -32,7 +32,7 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Word>> GetAllWordsAsync()
         {
-            return await _context.Words.Include(w => w.Descriptions.OrderBy(d => d.Order)).Include(w => w.Acceptor).ToListAsync();
+            return await _context.Words.Include(w => w.Descriptions.OrderBy(d => d.Order)).ThenInclude(d => d.PreviousDescription).Include(w => w.Acceptor).ToListAsync();
         }
 
         public async Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize)

@@ -34,8 +34,16 @@ namespace KSozluk.Application.Features.Descriptions.Commands.DeleteDescriptions
             }
 
             var word = await _descriptionRepository.FindByDescription(request.DescriptionId);
+            var id = word.Id;
+            word = await _wordRepository.FindAsync(id);
             var description = await _descriptionRepository.FindAsync(request.DescriptionId);
 
+            if(word.Descriptions.Count == 1)
+            {
+                await _wordRepository.DeleteAsync(word.Id);
+                await _unitOfWork.SaveChangesAsync();
+                return Response.SuccessWithMessage<DeleteDescriptionResponse>(OperationMessages.WordAndDescriptionDeletedSuccessfully);
+            }
             word.RemoveDescription(description);
             await _unitOfWork.SaveChangesAsync();
 

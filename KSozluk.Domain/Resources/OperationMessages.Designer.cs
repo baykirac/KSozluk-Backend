@@ -169,6 +169,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Kelime ve açıklama başarıyla silindi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string WordAndDescriptionDeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("WordAndDescriptionDeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Kelimeler başarıyla getirildi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string WordsGettedSuccessfully {

@@ -40,12 +40,12 @@ namespace KSozluk.Application.Features.Descriptions.Commands.RecommendNewDescrip
             var greatestOrder = await _descriptionRepository.FindGreatestOrder(word.Id);
             var newOrder = greatestOrder + 1;
 
-            var description = Description.Create(request.Content, newOrder, null, userId);
+            var description = Description.Create(request.Content, newOrder, null, userId, request.PreviousDescriptionId);  
 
             word.AddDescription(description);
 
             await _unitOfWork.SaveChangesAsync();
-            return Response.SuccessWithBody<RecommendNewDescriptionResponse>(word, OperationMessages.DescriptionRecommendedSuccessFully);
+            return Response.SuccessWithBody<RecommendNewDescriptionResponse>(description, OperationMessages.DescriptionRecommendedSuccessFully);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace KSozluk.Domain
     public sealed class Description
     {
         public Guid Id { get; private set; }
-        public Guid? PreviousDescId { get; private set; }
+        public Guid? PreviousDescriptionId { get; private set; }
         public string DescriptionContent { get; private set; }
         public Guid WordId { get; private set; }
         public int Order { get; private set; }
@@ -16,7 +16,9 @@ namespace KSozluk.Domain
         public User Acceptor { get; private set; }
         public User Recommender { get; private set; }
         public DateTime LastEditedDate { get; private set; }
-        public Word Word { get; private set; }  
+        public Word Word { get; private set; }
+        public Description PreviousDescription { get; private set; }
+
         public Description() { }
         private Description(Guid id, string description, int order, ContentStatus status, DateTime lastEditedDate, Guid acceptorId)
         {
@@ -37,6 +39,18 @@ namespace KSozluk.Domain
             LastEditedDate = lastEditedDate;
             AcceptorId = acceptorId;
             RecommenderId = RecommenderId;
+        }
+
+        private Description(Guid id, string description, int order, ContentStatus status, DateTime lastEditedDate, Guid? acceptorId, Guid recommenderId, Guid? previousDescId)
+        {
+            Id = id;
+            DescriptionContent = description;
+            Order = order;
+            Status = status;
+            LastEditedDate = lastEditedDate;
+            AcceptorId = acceptorId;
+            RecommenderId = recommenderId;
+            PreviousDescriptionId = previousDescId;
         }
 
         public static Description Create(string description, int order, Guid acceptorId) // admin için
@@ -62,7 +76,7 @@ namespace KSozluk.Domain
             return new Description(id, description, order, ContentStatus.Onaylı, lastEditedDate, acceptorId);
         }
 
-        public static Description Create(string description, int order, Guid? acceptorId, Guid recommenderId) // öneri yapan kullanıcılar için
+        public static Description Create(string description, int order, Guid? acceptorId, Guid recommenderId, Guid? previousDescId) // öneri yapan kullanıcılar için
         {
             var id = Guid.NewGuid();
             var lastEditedDate = DateTime.Now;
@@ -82,7 +96,7 @@ namespace KSozluk.Domain
                 throw new DomainException("DescriptionNotInRange", "Açıklama 550 karakterden fazla olamaz.");
             }
 
-            return new Description(id, description, order, ContentStatus.Bekliyor, lastEditedDate, recommenderId);
+            return new Description(id, description, order, ContentStatus.Bekliyor, lastEditedDate, null, recommenderId, previousDescId);
 
         }
         public void UpdateContent(string content)

@@ -3,6 +3,7 @@ using KSozluk.Application.Features.Descriptions.Commands.GetDescriptions;
 using KSozluk.Application.Features.Descriptions.Commands.RecommendNewDescription;
 using KSozluk.Application.Features.Descriptions.Commands.UpdateOrder;
 using KSozluk.Application.Features.Descriptions.Commands.UpdateStatus;
+using KSozluk.Application.Features.Words.Commands.RecommendNewWord;
 using KSozluk.Application.Features.Words.Commands.UpdateWord;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

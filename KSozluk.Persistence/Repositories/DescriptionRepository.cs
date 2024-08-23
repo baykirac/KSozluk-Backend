@@ -25,16 +25,18 @@ namespace KSozluk.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Description> FindAsync(Guid id)
+        public Task<Description> FindAsync(Guid? id)
         {
             return _context.Descriptions.SingleOrDefaultAsync(d => d.Id == id);
         }
+
+        
 
         public async Task<Word> FindByDescription(Guid id)
         {
             var description = await _context.Descriptions
              .Include(d => d.Word) 
-             .FirstOrDefaultAsync(d => d.Id == id);
+             .SingleOrDefaultAsync(d => d.Id == id);
 
             return description?.Word;
         }
@@ -52,6 +54,11 @@ namespace KSozluk.Persistence.Repositories
                 .OrderByDescending(d => d.Order)
                 .Select(d => d.Order)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<Description> FindParentDescription(Guid id)
+        {
+            return await _context.Descriptions.SingleOrDefaultAsync(d => d.PreviousDescriptionId == id);
         }
     }
 }

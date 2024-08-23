@@ -3,7 +3,7 @@
         public interface IDomainRepository<T>
         {
             Task CreateAsync(T entity);
-            Task<T> FindAsync(Guid id);
+            Task<T> FindAsync(Guid? id);
             Task DeleteAsync(Guid id);
         }
 }

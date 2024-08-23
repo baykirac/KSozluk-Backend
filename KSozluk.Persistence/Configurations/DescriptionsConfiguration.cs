@@ -30,7 +30,7 @@ namespace KSozluk.Persistence.Configurations
                 .IsRequired()
                 .HasColumnName("status");
 
-            builder.Property(d => d.PreviousDescId)
+            builder.Property(d => d.PreviousDescriptionId)
                 .IsRequired(false)
                 .HasColumnName("previusdescid");
 

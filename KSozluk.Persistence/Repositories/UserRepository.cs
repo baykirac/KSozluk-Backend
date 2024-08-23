@@ -20,7 +20,7 @@ namespace KSozluk.Persistence.Repositories
             await _context.Users.AddAsync(user);
         }
 
-        public Task<User> FindAsync(Guid id)
+        public Task<User> FindAsync(Guid? id)
         {
             return _context.Users.SingleOrDefaultAsync(u => u.Id == id);    
         }

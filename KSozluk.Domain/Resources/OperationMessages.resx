@@ -153,6 +153,9 @@
   <data name="WordAddedSuccessfully" xml:space="preserve">
     <value>Kelime başarıyla eklendi.</value>
   </data>
+  <data name="WordAndDescriptionDeletedSuccessfully" xml:space="preserve">
+    <value>Kelime ve açıklama başarıyla silindi.</value>
+  </data>
   <data name="WordsGettedSuccessfully" xml:space="preserve">
     <value>Kelimeler başarıyla getirildi.</value>
   </data>
