@@ -1,5 +1,6 @@
 ﻿using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain;
+using KSozluk.Domain.DTOs;
 using KSozluk.Domain.SharedKernel;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -41,11 +42,29 @@ namespace KSozluk.Persistence.Repositories
             return description?.Word;
         }
 
-        public async Task<List<Description>> FindByWordAsync(Guid id)
+        public async Task<List<DescriptionWithIsLikeDto>> FindByWordAsync(Guid id, Guid userId)
         {
-            return await _context.Descriptions.Where(d => d.WordId == id && d.Status == ContentStatus.Onaylı)
+            var deneme = await _context.Descriptions.Where(d => d.WordId == id && d.Status == ContentStatus.Onaylı)
                 .OrderBy(d => d.Order)
                 .ToListAsync();
+
+            var _responseList = new List<DescriptionWithIsLikeDto>();
+
+            foreach (var d in deneme) {
+             
+              var _isLiked = await _context.DescriptionLikes.AnyAsync(x=>x.UserId == userId && x.DescriptionId == d.Id);
+
+                var newObj = new DescriptionWithIsLikeDto
+                {
+                    Id = d.Id,
+                    DescriptionContent = d.DescriptionContent,
+                    isLike = _isLiked
+                };
+
+                _responseList.Add(newObj);
+            }
+
+            return _responseList;   
         }
 
         public async Task<int> FindGreatestOrder(Guid wordId)

@@ -88,6 +88,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Başarıyla beğenildi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string DescriptionLikedSuccessfully {
+            get {
+                return ResourceManager.GetString("DescriptionLikedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Anlam başarılı bir şekilde önerildi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string DescriptionRecommendedSuccessFully {
@@ -102,6 +111,15 @@ namespace KSozluk.Domain.Resources {
         public static string DescriptionsGettedSuccessfully {
             get {
                 return ResourceManager.GetString("DescriptionsGettedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Beğeni başarıyla geri alındı. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string DescriptionUnlikedSuccessfully {
+            get {
+                return ResourceManager.GetString("DescriptionUnlikedSuccessfully", resourceCulture);
             }
         }
         
@@ -178,11 +196,38 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Bu kelime bulunuyor! benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string WordExist {
+            get {
+                return ResourceManager.GetString("WordExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Kelime favorilere eklendi! benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string WordFavouritedSuccessfully {
+            get {
+                return ResourceManager.GetString("WordFavouritedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Kelimeler başarıyla getirildi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string WordsGettedSuccessfully {
             get {
                 return ResourceManager.GetString("WordsGettedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Kelime favorilerden çıkarıldı! benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string WordUnfavouritedSuccessfully {
+            get {
+                return ResourceManager.GetString("WordUnfavouritedSuccessfully", resourceCulture);
             }
         }
         

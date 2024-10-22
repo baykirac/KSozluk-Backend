@@ -10,6 +10,10 @@ namespace KSozluk.Persistence.Contexts
         public DbSet<User> Users { get; set; } 
         public DbSet<Word> Words { get; set; }
         public DbSet<Description> Descriptions { get; set; }
+        public DbSet<DescriptionLike> DescriptionLikes { get; set; }
+        public DbSet<FavouriteWord> WordLikes { get; set; }
+        public DbSet<FavouriteWord> FavouriteWords { get; set; }
+
 
         public SozlukContext(DbContextOptions options) : base(options) { }
 
@@ -18,6 +22,9 @@ namespace KSozluk.Persistence.Contexts
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersConfiguration).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DescriptionsConfiguration).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(WordsConfigurations).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DescriptionLikeConfiguration).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(FavouriteWordConfiguration).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WordLikeConfiguration).Assembly);
 
             modelBuilder.Entity<Word>()
             .HasMany(w => w.Descriptions)

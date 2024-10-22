@@ -13,4 +13,11 @@
         public DateTime LastEditedDate { get; set; }
         public string PreviousDescriptionContent { get; set; }
     }
+
+    public class DescriptionWithIsLikeDto
+    {
+        public Guid Id { get; set; }
+        public string DescriptionContent { get; set; }       
+        public bool isLike { get; set; }
+    }
 }

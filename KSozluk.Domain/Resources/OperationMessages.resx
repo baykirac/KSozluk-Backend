@@ -126,11 +126,17 @@
   <data name="DescriptionDeletedSuccessfully" xml:space="preserve">
     <value>Açıklama başarılı bir şekilde silindi.</value>
   </data>
+  <data name="DescriptionLikedSuccessfully" xml:space="preserve">
+    <value>Başarıyla beğenildi.</value>
+  </data>
   <data name="DescriptionRecommendedSuccessFully" xml:space="preserve">
     <value>Anlam başarılı bir şekilde önerildi.</value>
   </data>
   <data name="DescriptionsGettedSuccessfully" xml:space="preserve">
     <value>Açıklama başarılı bir şekilde getirildi.</value>
+  </data>
+  <data name="DescriptionUnlikedSuccessfully" xml:space="preserve">
+    <value>Beğeni başarıyla geri alındı.</value>
   </data>
   <data name="EmailNotFound" xml:space="preserve">
     <value>Email adresi bulunamadı!</value>
@@ -156,8 +162,17 @@
   <data name="WordAndDescriptionDeletedSuccessfully" xml:space="preserve">
     <value>Kelime ve açıklama başarıyla silindi.</value>
   </data>
+  <data name="WordExist" xml:space="preserve">
+    <value>Bu kelime bulunuyor!</value>
+  </data>
+  <data name="WordFavouritedSuccessfully" xml:space="preserve">
+    <value>Kelime favorilere eklendi!</value>
+  </data>
   <data name="WordsGettedSuccessfully" xml:space="preserve">
     <value>Kelimeler başarıyla getirildi.</value>
+  </data>
+  <data name="WordUnfavouritedSuccessfully" xml:space="preserve">
+    <value>Kelime favorilerden çıkarıldı!</value>
   </data>
   <data name="WordUpdatedSuccessfully" xml:space="preserve">
     <value>Kelime başarıyla güncellendi.</value>

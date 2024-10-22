@@ -22,6 +22,8 @@ namespace KSozluk.Persistence.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IWordRepository, WordRepository>();
             services.AddScoped<IDescriptionRepository, DescriptionRepository>();
+            services.AddScoped<IWordLikeRepository, DescriptionLikeRepository>();
+            services.AddScoped<IFavouriteWordRepository, FavouriteWordRepository>();
 
             return services;
         }
