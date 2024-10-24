@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace KSozluk.Persistence.Configurations
 {
-    internal class FavouriteWordConfiguration : IEntityTypeConfiguration<FavouriteWord>
+    internal class FavouriteWordConfiguration : IEntityTypeConfiguration<FavoriteWord>
     {
-        public void Configure(EntityTypeBuilder<FavouriteWord> builder)
+        public void Configure(EntityTypeBuilder<FavoriteWord> builder)
         {
             builder.ToTable("favourite_word");
 

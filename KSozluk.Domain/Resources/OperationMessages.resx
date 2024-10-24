@@ -168,6 +168,9 @@
   <data name="WordFavouritedSuccessfully" xml:space="preserve">
     <value>Kelime favorilere eklendi!</value>
   </data>
+  <data name="WordLikedSuccessfully" xml:space="preserve">
+    <value>Başarıyla beğenildi.</value>
+  </data>
   <data name="WordsGettedSuccessfully" xml:space="preserve">
     <value>Kelimeler başarıyla getirildi.</value>
   </data>

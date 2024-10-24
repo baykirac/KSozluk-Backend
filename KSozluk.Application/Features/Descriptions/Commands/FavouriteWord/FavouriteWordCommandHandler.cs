@@ -13,12 +13,12 @@ namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWord
 {
     public class FavouriteWordCommandHandler : RequestHandlerBase<FavouriteWordCommand, FavouriteWordResponse>
     {
-        private readonly IFavouriteWordRepository _favouriteLikeRepository;
+        private readonly IFavoriteWordRepository _favouriteLikeRepository;
         private readonly IUserService _userService;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public FavouriteWordCommandHandler(IFavouriteWordRepository favouriteLikeRepository, IUserService userService, IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public FavouriteWordCommandHandler(IFavoriteWordRepository favouriteLikeRepository, IUserService userService, IUserRepository userRepository, IUnitOfWork unitOfWork)
         {
             _favouriteLikeRepository = favouriteLikeRepository;
             _userService = userService;
@@ -36,7 +36,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWord
                 return Response.Failure<FavouriteWordResponse>(OperationMessages.PermissionFailure);
             }
 
-            var existingLike = await _favouriteLikeRepository.GetByFavouriteWordAndUserAsync(request.WordId, userId);
+            var existingLike = await _favouriteLikeRepository.GetByFavoriteWordAndUserAsync(request.WordId, userId);
 
             if (existingLike != null)
             {
@@ -47,7 +47,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWord
             }
             else
             {
-                var newLike = new KSozluk.Domain.FavouriteWord
+                var newLike = new KSozluk.Domain.FavoriteWord
                 {
                     Id = Guid.NewGuid(),
                     WordId = request.WordId,

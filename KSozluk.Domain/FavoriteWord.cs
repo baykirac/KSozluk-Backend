@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KSozluk.Domain
 {
-    public class FavouriteWord
+    public class FavoriteWord
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

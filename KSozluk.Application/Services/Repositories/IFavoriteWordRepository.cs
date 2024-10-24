@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace KSozluk.Application.Services.Repositories
 {
-    public interface IWordLikeRepository : IDomainRepository<DescriptionLike>
+    public interface IFavoriteWordRepository : IDomainRepository<FavoriteWord>
     {
-        Task<DescriptionLike> GetByDescriptionAndUserAsync(Guid _descriptionId, Guid _userId);
+        Task<FavoriteWord> GetByFavoriteWordAndUserAsync(Guid _wordId, Guid _userId);
 
-        void Delete(DescriptionLike entity);
+        void Delete(FavoriteWord entity);
     }
 }

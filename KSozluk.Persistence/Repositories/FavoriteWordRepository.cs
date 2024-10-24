@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace KSozluk.Persistence.Repositories
 {
-    public class FavouriteWordRepository : IFavouriteWordRepository
+    public class FavoriteWordRepository : IFavoriteWordRepository
     {
         private readonly SozlukContext _context;
-        public FavouriteWordRepository(SozlukContext context) { 
+        public FavoriteWordRepository(SozlukContext context) { 
             _context = context;
         }
-        public async Task CreateAsync(FavouriteWord entity)
+        public async Task CreateAsync(FavoriteWord entity)
         {
             await _context.AddAsync(entity);
         }
 
-        public void Delete(FavouriteWord entity)
+        public void Delete(FavoriteWord entity)
         {
             _context.Remove(entity);
         }
@@ -31,14 +31,14 @@ namespace KSozluk.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<FavouriteWord> FindAsync(Guid? id)
+        public async Task<FavoriteWord> FindAsync(Guid? id)
         {
-            return await _context.FavouriteWords.SingleOrDefaultAsync(d => d.Id == id);
+            return await _context.FavoriteWords.SingleOrDefaultAsync(d => d.Id == id);
         }
 
-        public async Task<FavouriteWord> GetByFavouriteWordAndUserAsync(Guid _wordId, Guid _userId)
+        public async Task<FavoriteWord> GetByFavoriteWordAndUserAsync(Guid _wordId, Guid _userId)
         {
-            var favouriteWord = await _context.FavouriteWords.FirstOrDefaultAsync(x => x.WordId == _wordId && x.UserId == _userId);
+            var favouriteWord = await _context.FavoriteWords.FirstOrDefaultAsync(x => x.WordId == _wordId && x.UserId == _userId);
             if (favouriteWord == null)
             {
                 return null;

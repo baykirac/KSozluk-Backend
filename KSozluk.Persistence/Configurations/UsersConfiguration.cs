@@ -10,7 +10,7 @@ namespace KSozluk.Persistence.Configurations
         {
             builder.ToTable("users");
 
-            builder.HasKey(u => u.Id);
+            builder.HasKey(u => u.Id).HasName("PCK_users");
 
             builder.Property(u => u.Id)
                 .ValueGeneratedNever()

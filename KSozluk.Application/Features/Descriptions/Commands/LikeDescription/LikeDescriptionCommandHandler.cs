@@ -13,12 +13,12 @@ namespace KSozluk.Application.Features.Descriptions.Commands.LikeDescription
 {
     public class LikeDescriptionCommandHandler : RequestHandlerBase<LikeDescriptionCommand, LikeDescriptionResponse>
     {
-        private readonly IWordLikeRepository _descriptionLikeRepository;
+        private readonly ILikeRepository _descriptionLikeRepository;
         private readonly IUserService _userService;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public LikeDescriptionCommandHandler(IWordLikeRepository descriptionLikeRepository, IUserService userService, IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public LikeDescriptionCommandHandler(ILikeRepository descriptionLikeRepository, IUserService userService, IUserRepository userRepository, IUnitOfWork unitOfWork)
         {
             _descriptionLikeRepository = descriptionLikeRepository;
             _userService = userService;
@@ -40,7 +40,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.LikeDescription
 
             if (existingLike != null)
             {
-                _descriptionLikeRepository.Delete(existingLike);
+                _descriptionLikeRepository.DeleteDescriptionLike(existingLike);
                 await _unitOfWork.SaveChangesAsync();
                 
                 return Response.SuccessWithBody<LikeDescriptionResponse>(request.DescriptionId, OperationMessages.DescriptionUnlikedSuccessfully);
@@ -55,7 +55,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.LikeDescription
                     Timestamp = DateTime.UtcNow
                 };
 
-                await _descriptionLikeRepository.CreateAsync(newLike);
+                await _descriptionLikeRepository.CreateDescriptionLike(newLike);
                 await _unitOfWork.SaveChangesAsync();
                 return Response.SuccessWithBody<LikeDescriptionResponse>(request.DescriptionId, OperationMessages.DescriptionLikedSuccessfully);
 

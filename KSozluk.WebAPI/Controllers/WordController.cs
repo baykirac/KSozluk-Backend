@@ -6,6 +6,7 @@ using KSozluk.Application.Features.Words.Commands.GetApprovedWordsPaginated;
 using KSozluk.Application.Features.Words.Commands.GetPaginatedWords;
 using KSozluk.Application.Features.Words.Commands.GetWordsByContains;
 using KSozluk.Application.Features.Words.Commands.GetWordsByLetter;
+using KSozluk.Application.Features.Words.Commands.LikeWord;
 using KSozluk.Application.Features.Words.Commands.RecommendNewWord;
 using KSozluk.Application.Features.Words.Commands.UpdateWord;
 using MediatR;
@@ -93,6 +94,14 @@ namespace KSozluk.WebAPI.Controllers
 
         [HttpPost("[action]")]
         public async Task<IActionResult> RecommendWord(RecommendNewWordCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+        
+        [HttpPost("[action]")]
+        public async Task<IActionResult> LikeWord(LikeWordCommand command, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(command, cancellationToken);
 

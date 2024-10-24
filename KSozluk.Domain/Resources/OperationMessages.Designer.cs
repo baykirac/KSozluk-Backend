@@ -214,6 +214,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Başarıyla beğenildi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string WordLikedSuccessfully {
+            get {
+                return ResourceManager.GetString("WordLikedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Kelimeler başarıyla getirildi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string WordsGettedSuccessfully {

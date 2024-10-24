@@ -1,0 +1,85 @@
+﻿using KSozluk.Application.Services.Repositories;
+using KSozluk.Domain;
+using KSozluk.Domain.SharedKernel;
+using KSozluk.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KSozluk.Persistence.Repositories
+{
+    public class LikeRepository : ILikeRepository
+    {
+
+        private readonly SozlukContext _context;
+
+        public LikeRepository(SozlukContext context)
+        {
+            _context = context;
+        }
+        public async Task CreateAsync(DescriptionLike entity)
+        {
+            await _context.DescriptionLikes.AddAsync(entity);
+        }
+
+        public void DeleteDescriptionLike(DescriptionLike entity)
+        {
+            _context.DescriptionLikes.Remove(entity);
+        }
+
+        public void DeleteWordLike(WordLike entity)
+        {
+            _context.WordLikes.Remove(entity);
+        }  
+
+        public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<DescriptionLike> GetByDescriptionAndUserAsync(Guid _descriptionId, Guid _userId)
+        {
+            var _descriptionLike = await _context.DescriptionLikes.FirstOrDefaultAsync(x => x.UserId == _userId && x.DescriptionId == _descriptionId);
+
+            if (_descriptionLike == null) {
+                return null;
+            }
+
+            return _descriptionLike;
+        
+        }
+
+        public async Task<WordLike> GetByWordAndUserAsync(Guid wordId, Guid userId)
+        {
+            return await _context.WordLikes.FirstOrDefaultAsync(w => w.UserId == userId && w.WordId == wordId);
+        }
+
+        public async Task CreateDescriptionLike(DescriptionLike descriptionLike)
+        {
+            await _context.DescriptionLikes.AddAsync(descriptionLike);
+        }
+        
+        public async Task CreateWordLike(WordLike wordLike)
+        {
+            await _context.WordLikes.AddAsync(wordLike);
+        }
+
+        public async Task<WordLike> FindLikedWordAsync(Guid wordId)
+        {
+            return await _context.WordLikes.FirstOrDefaultAsync(w => w.WordId == wordId);
+        }
+
+        public async Task<DescriptionLike> FindLikedDescriptionAsync(Guid descriptionId)
+        {
+            return await _context.DescriptionLikes.SingleOrDefaultAsync(d => d.DescriptionId == descriptionId);
+        }
+
+        public Task<DescriptionLike> FindAsync(Guid? id)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

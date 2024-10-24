@@ -11,8 +11,8 @@ namespace KSozluk.Persistence.Contexts
         public DbSet<Word> Words { get; set; }
         public DbSet<Description> Descriptions { get; set; }
         public DbSet<DescriptionLike> DescriptionLikes { get; set; }
-        public DbSet<FavouriteWord> WordLikes { get; set; }
-        public DbSet<FavouriteWord> FavouriteWords { get; set; }
+        public DbSet<WordLike> WordLikes { get; set; }
+        public DbSet<FavoriteWord> FavoriteWords { get; set; }
 
 
         public SozlukContext(DbContextOptions options) : base(options) { }
