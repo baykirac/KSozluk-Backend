@@ -1,8 +1,10 @@
 ﻿using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain;
+using KSozluk.Domain.DTOs;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
+using System.Linq.Expressions;
 
 namespace KSozluk.Persistence.Repositories
 {
@@ -32,7 +34,7 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<Word>> GetAllWordsAsync()
         {
-            return await _context.Words.Include(w => w.Descriptions.OrderBy(d => d.Order)).ThenInclude(d => d.PreviousDescription).Include(w => w.Acceptor).ToListAsync();
+            return await _context.Words.Include(w => w.Descriptions.OrderByDescending(d => d.LastEditedDate)).ThenInclude(d => d.PreviousDescription).Include(w => w.Acceptor).OrderByDescending(x => x.OperationDate).ToListAsync();
         }
 
         public async Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize)
@@ -65,6 +67,48 @@ namespace KSozluk.Persistence.Repositories
             var word = await _context.Words.FirstOrDefaultAsync(w => w.Id == id);
 
             _context.Words.Remove(word);
+        }
+
+        public async Task<List<ResponseTopWordListDto>> GetMostLikedWeekly()
+        {
+            var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
+
+            var words = _context.Words.ToList();
+
+            var data = await _context.WordLikes
+                .Where(wl => wl.Timestamp >= oneWeekAgo)
+                .GroupBy(wl => new
+                {
+                    wl.WordId
+                })
+                .Select(group => new ResponseTopWordListDto
+                {
+                    WordId = group.Key.WordId,
+                   
+                    Count = group.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .Take(5)
+                .ToListAsync();
+
+            var test = data.Select(x => new ResponseTopWordListDto
+            {
+                Count = x.Count,
+                WordId = x.WordId,
+                Word = words.FirstOrDefault(y => y.Id == x.WordId).WordContent,
+            }).ToList();
+
+            return test;
+        }
+
+        public Task<List<Word>> GetAll(Expression<Func<Word, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Word> GetById(Expression<Func<Word, bool>> predicate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,9 +1,14 @@
-﻿namespace KSozluk.Domain.SharedKernel
+﻿using System.Linq.Expressions;
+
+namespace KSozluk.Domain.SharedKernel
 {
-        public interface IDomainRepository<T>
-        {
-            Task CreateAsync(T entity);
-            Task<T> FindAsync(Guid? id);
-            Task DeleteAsync(Guid id);
-        }
+    public interface IDomainRepository<T>
+    {
+        Task CreateAsync(T entity);
+        Task<T> FindAsync(Guid? id);
+        Task DeleteAsync(Guid id);
+        Task<List<T>> GetAll(Expression<Func<T, bool>> predicate);
+        Task<T> GetById(Expression<Func<T, bool>> predicate);
+
+    }
 }

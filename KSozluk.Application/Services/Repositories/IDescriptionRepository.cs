@@ -6,6 +6,8 @@ namespace KSozluk.Application.Services.Repositories
 {
     public interface IDescriptionRepository : IDomainRepository<Description>
     {
+
+        public Task<List<DescriptionHeaderNameDto>> FindHeaderByWordAsync(Guid id);
         public Task<List<DescriptionWithIsLikeDto>> FindByWordAsync(Guid id, Guid userId);
         public Task<int> FindGreatestOrder(Guid wordId);
         public Task<Word> FindByDescription(Guid id);

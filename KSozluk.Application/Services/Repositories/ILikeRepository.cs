@@ -17,7 +17,7 @@ namespace KSozluk.Application.Services.Repositories
         void DeleteWordLike(WordLike wordLike);
         Task CreateDescriptionLike(DescriptionLike descriptionLike);
         Task CreateWordLike(WordLike wordLike);
-        Task<WordLike> FindLikedWordAsync(Guid wordId);
+        Task<WordLike> FindLikedWordAsync(Guid wordId, Guid userId);
         Task<DescriptionLike> FindLikedDescriptionAsync(Guid descriptionId);
 
     }

@@ -7,6 +7,10 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
+using KSozluk.Application.Services.Authentication;
+using KSozluk.Infrastructure.Services.Authentication;
+using System.Net.Mail;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,26 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+// Email service registration
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+// Configure SmtpClient
+builder.Services.AddSingleton<SmtpClient>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    return new SmtpClient
+    {
+        Host = configuration["EmailSettings:SmtpServer"],
+        Port = int.Parse(configuration["EmailSettings:Port"]),
+        Credentials = new NetworkCredential(
+            configuration["EmailSettings:SenderEmail"],
+            configuration["EmailSettings:SenderPassword"]),
+        EnableSsl = true
+    };
+});
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddPersistenceServices(builder.Configuration);

@@ -1,6 +1,7 @@
 ﻿using KSozluk.Application.Features.Descriptions.Commands.DeleteDescriptions;
 using KSozluk.Application.Features.Descriptions.Commands.FavouriteWord;
 using KSozluk.Application.Features.Descriptions.Commands.GetDescriptions;
+using KSozluk.Application.Features.Descriptions.Commands.HeadersDescription;
 using KSozluk.Application.Features.Descriptions.Commands.LikeDescription;
 using KSozluk.Application.Features.Descriptions.Commands.RecommendNewDescription;
 using KSozluk.Application.Features.Descriptions.Commands.UpdateOrder;
@@ -79,6 +80,19 @@ namespace KSozluk.WebAPI.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> HeadersDescription(HeadersDescriptionCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+  
+
+
+
 
     }
 }

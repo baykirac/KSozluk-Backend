@@ -41,7 +41,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.GetDescriptions
             var isLikedWord = false;
 
             var favoriteWord = await _favoriteWordRepository.GetByFavoriteWordAndUserAsync(request.WordId,userId);
-            var likedWord = await _likeRepository.FindLikedWordAsync(request.WordId);
+            var likedWord = await _likeRepository.FindLikedWordAsync(request.WordId,userId);
 
             if(favoriteWord != null)
             {
@@ -66,6 +66,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.GetDescriptions
                 IsFavourited = isFavourited,
                 IsLikedWord = isLikedWord
             };
+
 
             return Response.SuccessWithBody<GetDescriptionsResponse>(_response, OperationMessages.DescriptionsGettedSuccessfully);
         }

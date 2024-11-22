@@ -1,4 +1,5 @@
 ﻿using KSozluk.Domain;
+using KSozluk.Domain.DTOs;
 using KSozluk.Domain.SharedKernel;
 using System.Transactions;
 
@@ -11,5 +12,7 @@ namespace KSozluk.Application.Services.Repositories
         public Task<List<Word>> GetWordsByContainsAsync(string content);
         public Task<Word> FindByContentAsync(string content);
         public Task<List<Word>> GetAllWordsByPaginate (int pageNumber, int pageSize);
+        public Task<List<ResponseTopWordListDto>> GetMostLikedWeekly();
+     
     }
 }

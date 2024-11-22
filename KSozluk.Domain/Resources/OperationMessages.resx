@@ -183,4 +183,7 @@
   <data name="WrongPassword" xml:space="preserve">
     <value>Şifreyi yanlış girdiniz!</value>
   </data>
+  <data name="SuggestionRejectedSuccessfully" xml:space="preserve">
+    <value>Öneri başarıyla reddedildi.</value>
+  </data>
 </root>

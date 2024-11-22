@@ -2,6 +2,7 @@
 using KSozluk.Application.Services.Authentication;
 using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain;
+using KSozluk.Domain.DTOs;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 
@@ -38,12 +39,19 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
 
             if (existedWord != null) // kelime mevcutsa mevcut kelimeye sadece anlamı eklenecek
             {
+                
+
                 int greatestOrder = await _descriptionRepository.FindGreatestOrder(existedWord.Id);
                 int order = greatestOrder + 1;
 
-                var description = Description.Create(request.Description, order, userId);
+                var description = Description.Create(request.Description, order, userId); //new description buradan ekleniyor
                 existedWord.AddDescription(description);
+
                 await _unitOfWork.SaveChangesAsync();
+
+
+           
+
                 return Response.SuccessWithBody<AddWordResponse>(existedWord, OperationMessages.DescriptionAddedtoTheExistingWordSuccessfully);
             }
 

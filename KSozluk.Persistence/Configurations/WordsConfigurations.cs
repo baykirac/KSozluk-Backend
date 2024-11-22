@@ -36,6 +36,10 @@ namespace KSozluk.Persistence.Configurations
 
             builder.Property(w => w.LastEditedDate)
                 .HasColumnName("lastediteddate");
+
+            builder.Property(w => w.OperationDate)
+               .HasColumnName("operationdate");
+
         }
     }
 }

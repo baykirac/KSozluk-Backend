@@ -34,6 +34,8 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateOrder
 
             var description = await _descriptionRepository.FindAsync(request.DescriptionId);
 
+         
+
             description.UpdateOrder(request.Order);
 
             await _unitOfWork.SaveChangesAsync();

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,9 +68,9 @@ namespace KSozluk.Persistence.Repositories
             await _context.WordLikes.AddAsync(wordLike);
         }
 
-        public async Task<WordLike> FindLikedWordAsync(Guid wordId)
+        public async Task<WordLike> FindLikedWordAsync(Guid wordId, Guid userId)
         {
-            return await _context.WordLikes.FirstOrDefaultAsync(w => w.WordId == wordId);
+            return await _context.WordLikes.FirstOrDefaultAsync(w => w.WordId == wordId && w.UserId == userId);
         }
 
         public async Task<DescriptionLike> FindLikedDescriptionAsync(Guid descriptionId)
@@ -78,6 +79,16 @@ namespace KSozluk.Persistence.Repositories
         }
 
         public Task<DescriptionLike> FindAsync(Guid? id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<DescriptionLike>> GetAll(Expression<Func<DescriptionLike, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DescriptionLike> GetById(Expression<Func<DescriptionLike, bool>> predicate)
         {
             throw new NotImplementedException();
         }

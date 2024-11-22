@@ -38,12 +38,13 @@ namespace KSozluk.Application.Features.Words.Commands.RecommendNewWord
             var existingWord = await _wordRepository.FindByContentAsync(request.WordContent);
             if (existingWord is null)
             {
-                var word = Word.Create(request.WordContent, userId, now);
+                var word = Word.Create(request.WordContent, userId, now,now);
                 word.AddDescription(description);
                 await _wordRepository.CreateAsync(word);
                 await _unitOfWork.SaveChangesAsync();
                 return Response.SuccessWithBody<RecommendNewWordResponse>(word, OperationMessages.DescriptionRecommendedSuccessFully);
             }
+            var updated = Word.UpdateOperationDate(existingWord, now);
 
             existingWord.AddDescription(description);
             await _unitOfWork.SaveChangesAsync();

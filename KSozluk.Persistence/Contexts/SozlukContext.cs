@@ -14,6 +14,7 @@ namespace KSozluk.Persistence.Contexts
         public DbSet<WordLike> WordLikes { get; set; }
         public DbSet<FavoriteWord> FavoriteWords { get; set; }
 
+       // public DbSet<MostLikedWeekly> MostLikedPerWeek {  get; set; }
 
         public SozlukContext(DbContextOptions options) : base(options) { }
 

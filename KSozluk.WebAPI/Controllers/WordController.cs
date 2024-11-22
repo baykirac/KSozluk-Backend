@@ -1,4 +1,5 @@
-﻿using KSozluk.Application.Features.Words.Commands.AddWord;
+﻿using KSozluk.Application.Features.Descriptions.Commands.WeeklyLiked;
+using KSozluk.Application.Features.Words.Commands.AddWord;
 using KSozluk.Application.Features.Words.Commands.AddWords;
 using KSozluk.Application.Features.Words.Commands.DeleteWord;
 using KSozluk.Application.Features.Words.Commands.GetAllWords;
@@ -25,6 +26,13 @@ namespace KSozluk.WebAPI.Controllers
         public WordController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> WeeklyLiked([FromQuery] WeeklyLikedCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+          return Ok(response);
         }
 
         [HttpGet("[action]")]

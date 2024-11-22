@@ -160,6 +160,15 @@ namespace KSozluk.Domain.Resources {
         }
         
         /// <summary>
+        ///   Öneri başarıyla reddedildi. benzeri yerelleştirilmiş bir dize arar.
+        /// </summary>
+        public static string SuggestionRejectedSuccessfully {
+            get {
+                return ResourceManager.GetString("SuggestionRejectedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Kelime durumu başarıyla güncellendi. benzeri yerelleştirilmiş bir dize arar.
         /// </summary>
         public static string UpdatedDescriptionStatusSuccessfully {

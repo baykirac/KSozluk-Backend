@@ -40,7 +40,7 @@ namespace KSozluk.Application.Features.Words.Commands.LikeWord
             {
                 _wordLikeRepository.DeleteWordLike(existingLike);
                 await _unitOfWork.SaveChangesAsync();
-                return Response.SuccessWithBody<LikeWordResponse>(false, OperationMessages.WordLikedSuccessfully);
+                return Response.SuccessWithBody<LikeWordResponse>(request.WordId, OperationMessages.WordLikedSuccessfully);
             }
 
             var now = DateTime.UtcNow;
@@ -50,7 +50,7 @@ namespace KSozluk.Application.Features.Words.Commands.LikeWord
             await _wordLikeRepository.CreateWordLike(newWordLike);
             await _unitOfWork.SaveChangesAsync();
 
-            return Response.SuccessWithBody<LikeWordResponse>(true, OperationMessages.WordLikedSuccessfully); ;
+            return Response.SuccessWithBody<LikeWordResponse>(request.WordId, OperationMessages.WordLikedSuccessfully); ;
         }
     }
 }

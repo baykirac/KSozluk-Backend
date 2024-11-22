@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,11 @@ namespace KSozluk.Persistence.Repositories
             return await _context.FavoriteWords.SingleOrDefaultAsync(d => d.Id == id);
         }
 
+        public Task<List<FavoriteWord>> GetAll(Expression<Func<FavoriteWord, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<FavoriteWord> GetByFavoriteWordAndUserAsync(Guid _wordId, Guid _userId)
         {
             var favouriteWord = await _context.FavoriteWords.FirstOrDefaultAsync(x => x.WordId == _wordId && x.UserId == _userId);
@@ -44,6 +50,11 @@ namespace KSozluk.Persistence.Repositories
                 return null;
             }
             return favouriteWord;
+        }
+
+        public Task<FavoriteWord> GetById(Expression<Func<FavoriteWord, bool>> predicate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

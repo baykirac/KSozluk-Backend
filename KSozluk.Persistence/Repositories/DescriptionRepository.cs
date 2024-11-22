@@ -4,6 +4,7 @@ using KSozluk.Domain.DTOs;
 using KSozluk.Domain.SharedKernel;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace KSozluk.Persistence.Repositories
 {
@@ -42,6 +43,20 @@ namespace KSozluk.Persistence.Repositories
             return description?.Word;
         }
 
+        public async Task<List<DescriptionHeaderNameDto>> FindHeaderByWordAsync(Guid id)
+        {
+            return await _context.Descriptions
+            .Where(d => d.WordId == id && d.Status == ContentStatus.Onaylı)
+            .OrderBy(d => d.Order)
+            .Select(d => new DescriptionHeaderNameDto
+            {
+                Id = d.Id,
+                DescriptionContent = d.DescriptionContent
+            })
+            .ToListAsync();
+
+        }
+
         public async Task<List<DescriptionWithIsLikeDto>> FindByWordAsync(Guid id, Guid userId)
         {
             var deneme = await _context.Descriptions.Where(d => d.WordId == id && d.Status == ContentStatus.Onaylı)
@@ -78,6 +93,16 @@ namespace KSozluk.Persistence.Repositories
         public async Task<Description> FindParentDescription(Guid id)
         {
             return await _context.Descriptions.SingleOrDefaultAsync(d => d.PreviousDescriptionId == id);
+        }
+
+        public async Task<List<Description>> GetAll(Expression<Func<Description, bool>> predicate)
+        {
+            return await _context.Descriptions.Where(predicate).ToListAsync();
+        }
+
+        public async Task<Description> GetById(Expression<Func<Description, bool>> predicate)
+        {
+            return await _context.Descriptions.FirstOrDefaultAsync(predicate);
         }
     }
 }

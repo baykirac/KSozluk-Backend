@@ -2,6 +2,7 @@
 using KSozluk.Domain;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace KSozluk.Persistence.Repositories
 {
@@ -45,6 +46,16 @@ namespace KSozluk.Persistence.Repositories
         }
 
         public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAll(Expression<Func<User, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetById(Expression<Func<User, bool>> predicate)
         {
             throw new NotImplementedException();
         }

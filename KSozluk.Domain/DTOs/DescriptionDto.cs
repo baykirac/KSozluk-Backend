@@ -20,4 +20,17 @@
         public string DescriptionContent { get; set; }       
         public bool isLike { get; set; }
     }
+
+    public class DescriptionHeaderNameDto
+    {
+        public Guid Id { get; set; }
+        public string DescriptionContent { get; set; }
+
+    }
+
+    public class DescriptionReccomendDto
+    {
+        public string DescriptionContent { get; set; }
+        public DateTime LastEditedDate { get; set; }
+    }
 }
