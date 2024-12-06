@@ -83,8 +83,20 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
             // Only handle rejection reasons when status is Reddedildi
             if (request.Status == ContentStatus.Reddedildi)
             {
+                string rejectionDescription;
+            
+            //when RejectionReasons is 7
+            if (request.RejectionReasons == 7 && !string.IsNullOrEmpty(request.CustomRejectionReason))
+            {
+                rejectionDescription = request.CustomRejectionReason; 
+            }
+            else
+            {
+                //enum reasons (1-6)
                 RejectionReasons enumValue = (RejectionReasons)request.RejectionReasons;
-                var rejectionDescription = GetEnumDescription(enumValue);
+                rejectionDescription = GetEnumDescription(enumValue);
+            }
+
 
                 // Email sending part
                 var user = await _userRepository.FindAsync(description.RecommenderId);
@@ -104,6 +116,30 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
                     }
                 }
             }
+
+            // Only handle rejection reasons when status is Onaylı
+            if (request.Status == ContentStatus.Onaylı)
+            {
+
+                // Email sending part
+                var user = await _userRepository.FindAsync(description.RecommenderId);
+                if (user != null && !string.IsNullOrEmpty(user.Email))
+                {
+                    try
+                    {
+                        await _emailService.SendEmailAsync(
+                            user.Email,
+                            "Öneriniz Onaylandı",
+                            $"Merhaba {user.FullName}, {_responseDescriptionRecommendDto.LastEditedDate} tarihinde \"{word.WordContent}\" kelimesi için yaptığınız \"{_responseDescriptionRecommendDto.DescriptionContent}\" öneriniz onaylandı."
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        return Response.Failure<UpdateStatusResponse>(OperationMessages.SuggestionRejectedSuccessfully);
+                    }
+                }
+            }
+
 
             await _unitOfWork.SaveChangesAsync();
             return Response.SuccessWithMessage<UpdateStatusResponse>(OperationMessages.UpdatedDescriptionStatusSuccessfully);

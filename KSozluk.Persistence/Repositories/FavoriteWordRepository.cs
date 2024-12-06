@@ -1,5 +1,6 @@
 ﻿using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain;
+using KSozluk.Domain.DTOs;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KSozluk.Persistence.Repositories
 {
@@ -50,6 +52,28 @@ namespace KSozluk.Persistence.Repositories
                 return null;
             }
             return favouriteWord;
+        }
+
+        public async Task<List<ResponseFavouriteWordContentDto>> GetFavouriteWordsByUserIdAsync(Guid _userId)
+        {
+         
+
+            var response = await _context.FavoriteWords.Where(x => x.UserId == _userId).Select(y => new ResponseFavouriteWordsDto
+            {
+                UserId = _userId,
+                WordId = y.WordId,
+            }).ToListAsync();   
+
+            var wordIds= response.Select(x => x.WordId).ToList();
+
+            var words = _context.Words.Where(x => wordIds.Contains(x.Id));
+
+            var test = words.Select(x => new ResponseFavouriteWordContentDto
+            {
+                WordContent = x.WordContent
+            }).ToList();
+
+            return test;
         }
 
         public Task<FavoriteWord> GetById(Expression<Func<FavoriteWord, bool>> predicate)

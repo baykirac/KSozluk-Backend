@@ -9,5 +9,6 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
         public Guid DescriptionId { get; set; }
         public ContentStatus Status { get; set; }
         public int RejectionReasons { get; set; }
+        public string CustomRejectionReason { get; set; }
     }
 }

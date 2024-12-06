@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KSozluk.Application.Features.Descriptions.Commands.GetDescriptions;
+using KSozluk.Application.Features.Words.Commands.AddWord;
 
 namespace KSozluk.Application.Features.Descriptions.Commands.WeeklyLiked
 {
@@ -35,7 +36,9 @@ namespace KSozluk.Application.Features.Descriptions.Commands.WeeklyLiked
 
         public async override Task<WeeklyLikedResponse> Handle(WeeklyLikedCommand request, CancellationToken cancellationToken)
         {
-           
+
+            var userId = _userService.GetUserId();
+
             var test = new WeeklyLikedResponse();
 
             var _data = await _wordRepository.GetMostLikedWeekly();
