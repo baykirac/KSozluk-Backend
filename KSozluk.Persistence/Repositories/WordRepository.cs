@@ -91,14 +91,14 @@ namespace KSozluk.Persistence.Repositories
                 .Take(5)
                 .ToListAsync();
 
-            var test = data.Select(x => new ResponseTopWordListDto
+            var response = data.Select(x => new ResponseTopWordListDto
             {
                 Count = x.Count,
                 WordId = x.WordId,
                 Word = words.FirstOrDefault(y => y.Id == x.WordId).WordContent,
             }).ToList();
 
-            return test;
+            return response;
         }
 
         public Task<List<Word>> GetAll(Expression<Func<Word, bool>> predicate)

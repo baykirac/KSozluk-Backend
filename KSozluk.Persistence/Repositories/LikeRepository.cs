@@ -53,6 +53,18 @@ namespace KSozluk.Persistence.Repositories
         
         }
 
+        public async Task DeleteWordLikesByWordIdAsync(Guid wordId)
+        {
+            var wordLikes = await _context.WordLikes
+                .Where(x => x.WordId == wordId)
+                .ToListAsync();
+
+            if (wordLikes.Any())
+            {
+                _context.WordLikes.RemoveRange(wordLikes);
+            }
+        }
+
         public async Task<WordLike> GetByWordAndUserAsync(Guid wordId, Guid userId)
         {
             return await _context.WordLikes.FirstOrDefaultAsync(w => w.UserId == userId && w.WordId == wordId);

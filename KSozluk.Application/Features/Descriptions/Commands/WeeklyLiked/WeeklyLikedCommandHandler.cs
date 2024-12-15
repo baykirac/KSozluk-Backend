@@ -39,14 +39,14 @@ namespace KSozluk.Application.Features.Descriptions.Commands.WeeklyLiked
 
             var userId = _userService.GetUserId();
 
-            var test = new WeeklyLikedResponse();
+            var response = new WeeklyLikedResponse();
 
             var _data = await _wordRepository.GetMostLikedWeekly();
 
-            test.responseTopWordListDtos = _data;
+            response.responseTopWordListDtos = _data;
 
         
-            return Response.SuccessWithBody<WeeklyLikedResponse>(test, OperationMessages.DescriptionsGettedSuccessfully);
+            return Response.SuccessWithBody<WeeklyLikedResponse>(response, OperationMessages.DescriptionsGettedSuccessfully);
 
         }
     }

@@ -68,9 +68,9 @@ namespace KSozluk.Domain
                 throw new DomainException("DescriptionNullOrWhiteException", "Açıklama null veya boşluk karakterinden oluşamaz.");
             }
 
-            if(description.Length > 550)
+            if(description.Length > 2000)
             {
-                throw new DomainException("DescriptionNotInRange", "Açıklama 550 karakterden fazla olamaz.");
+                throw new DomainException("DescriptionNotInRange", "Açıklama 2000 karakterden fazla olamaz.");
             }
 
             return new Description(id, description, order, ContentStatus.Onaylı, lastEditedDate, acceptorId);
@@ -91,9 +91,9 @@ namespace KSozluk.Domain
                 throw new DomainException("DescriptionNullOrWhiteException", "Açıklama null veya boşluk karakterinden oluşamaz.");
             }
 
-            if (description.Length > 550)
+            if (description.Length > 2000)
             {
-                throw new DomainException("DescriptionNotInRange", "Açıklama 550 karakterden fazla olamaz.");
+                throw new DomainException("DescriptionNotInRange", "Açıklama 2000 karakterden fazla olamaz.");
             }
 
             return new Description(id, description, order, ContentStatus.Bekliyor, lastEditedDate, null, recommenderId, previousDescId);

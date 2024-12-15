@@ -104,5 +104,6 @@ namespace KSozluk.Persistence.Repositories
         {
             return await _context.Descriptions.FirstOrDefaultAsync(predicate);
         }
+
     }
 }
