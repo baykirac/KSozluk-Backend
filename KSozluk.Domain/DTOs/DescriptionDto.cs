@@ -33,4 +33,10 @@
         public string DescriptionContent { get; set; }
         public DateTime LastEditedDate { get; set; }
     }
+
+    public class DescriptionTimelineDto 
+    {
+        public ContentStatus Status { get; set; }
+        public string DescriptionContent { get; set; }
+    }
 }

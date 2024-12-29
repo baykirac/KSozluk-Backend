@@ -10,6 +10,7 @@ using KSozluk.Application.Features.Words.Commands.GetWordsByLetter;
 using KSozluk.Application.Features.Words.Commands.LikeWord;
 using KSozluk.Application.Features.Words.Commands.RecommendNewWord;
 using KSozluk.Application.Features.Words.Commands.UpdateWord;
+using KSozluk.Application.Features.Words.Commands.UpdateWordById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -110,6 +111,14 @@ namespace KSozluk.WebAPI.Controllers
         
         [HttpPost("[action]")]
         public async Task<IActionResult> LikeWord(LikeWordCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
+
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> UpdateWordById(UpdateWordByIdCommand command, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(command, cancellationToken);
 

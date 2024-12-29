@@ -32,6 +32,11 @@ namespace KSozluk.Persistence.Repositories
             return _context.Words.Include(d => d.Descriptions).SingleOrDefaultAsync(w => w.WordContent == content);
         }
 
+        public async Task<Word> FindByIdAsync(Guid? wordId)
+        {
+            return await _context.Words.SingleOrDefaultAsync(w => w.Id == wordId);
+        }
+
         public async Task<List<Word>> GetAllWordsAsync()
         {
             return await _context.Words.Include(w => w.Descriptions.OrderByDescending(d => d.LastEditedDate)).ThenInclude(d => d.PreviousDescription).Include(w => w.Acceptor).OrderByDescending(x => x.OperationDate).ToListAsync();

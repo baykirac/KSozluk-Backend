@@ -13,6 +13,7 @@ namespace KSozluk.Application.Services.Repositories
         public Task<Word> FindByContentAsync(string content);
         public Task<List<Word>> GetAllWordsByPaginate (int pageNumber, int pageSize);
         public Task<List<ResponseTopWordListDto>> GetMostLikedWeekly();
-     
+        public Task<Word> FindByIdAsync(Guid? wordId);
+
     }
 }

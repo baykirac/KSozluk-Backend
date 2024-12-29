@@ -12,5 +12,6 @@ namespace KSozluk.Application.Services.Repositories
         public Task<int> FindGreatestOrder(Guid wordId);
         public Task<Word> FindByDescription(Guid id);
         public Task<Description> FindParentDescription(Guid id);
+        public Task<List<DescriptionTimelineDto>> GetDescriptionForTimelineAsync(Guid userId);
     }
 }

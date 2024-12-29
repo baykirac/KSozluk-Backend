@@ -1,4 +1,5 @@
 ﻿using KSozluk.Application.Features.Descriptions.Commands.DeleteDescriptions;
+using KSozluk.Application.Features.Descriptions.Commands.DescriptionTimeline;
 using KSozluk.Application.Features.Descriptions.Commands.FavouriteWord;
 using KSozluk.Application.Features.Descriptions.Commands.FavouriteWordsOnScreen;
 using KSozluk.Application.Features.Descriptions.Commands.GetDescriptions;
@@ -98,7 +99,13 @@ namespace KSozluk.WebAPI.Controllers
             return Ok(response);
         }
 
+        [HttpPost("[action]")]
+        public async Task<IActionResult> DescriptionTimeline(DescriptionTimelineCommand command, CancellationToken cancellationToken = default)
+        {
+            var response = await _mediator.Send(command, cancellationToken);
 
+            return Ok(response);
+        }
 
 
 
