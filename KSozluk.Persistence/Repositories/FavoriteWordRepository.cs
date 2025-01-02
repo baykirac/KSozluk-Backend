@@ -68,12 +68,14 @@ namespace KSozluk.Persistence.Repositories
 
             var words = _context.Words.Where(x => wordIds.Contains(x.Id));
 
-            var test = words.Select(x => new ResponseFavouriteWordContentDto
+            var fav = await words
+            .OrderBy(x => x.WordContent) // Alfabetik sıralama
+            .Select(x => new ResponseFavouriteWordContentDto
             {
                 WordContent = x.WordContent
-            }).ToList();
+            }).ToListAsync();
 
-            return test;
+            return fav;
         }
 
         public Task<FavoriteWord> GetById(Expression<Func<FavoriteWord, bool>> predicate)
