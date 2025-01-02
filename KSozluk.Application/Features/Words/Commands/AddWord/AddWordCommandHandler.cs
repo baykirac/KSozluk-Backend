@@ -50,8 +50,6 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
                 await _unitOfWork.SaveChangesAsync();
 
 
-           
-
                 return Response.SuccessWithBody<AddWordResponse>(existedWord, OperationMessages.DescriptionAddedtoTheExistingWordSuccessfully);
             }
 

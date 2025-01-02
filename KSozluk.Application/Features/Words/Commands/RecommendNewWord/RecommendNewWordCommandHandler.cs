@@ -42,12 +42,17 @@ namespace KSozluk.Application.Features.Words.Commands.RecommendNewWord
                 word.AddDescription(description);
                 await _wordRepository.CreateAsync(word);
                 await _unitOfWork.SaveChangesAsync();
+
+           
+
                 return Response.SuccessWithBody<RecommendNewWordResponse>(word, OperationMessages.DescriptionRecommendedSuccessFully);
             }
             var updated = Word.UpdateOperationDate(existingWord, now);
 
             existingWord.AddDescription(description);
             await _unitOfWork.SaveChangesAsync();
+
+
             return Response.SuccessWithBody<RecommendNewWordResponse>(existingWord, OperationMessages.DescriptionRecommendedSuccessFully);
 
 

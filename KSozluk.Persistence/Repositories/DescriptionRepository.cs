@@ -34,15 +34,17 @@ namespace KSozluk.Persistence.Repositories
 
         public async Task<List<DescriptionTimelineDto>> GetDescriptionForTimelineAsync(Guid userId)
         {
-            return await _context.Descriptions
-            .Where(d => d.RecommenderId == userId)
-            .OrderBy(d => d.LastEditedDate)
-            .Select(d => new DescriptionTimelineDto
-            {
-                Status = d.Status,
-                DescriptionContent= d.DescriptionContent
-            })
-            .ToListAsync();
+            var data = await _context.Descriptions
+                .Where(d => d.RecommenderId == userId)
+                .OrderBy(d => d.LastEditedDate)
+                .Select(d => new DescriptionTimelineDto
+                {
+                    Status = d.Status,
+                    DescriptionContent = d.DescriptionContent
+                })
+                .ToListAsync();
+
+            return data;
         }
 
 

@@ -96,7 +96,8 @@ namespace KSozluk.Domain
                 throw new DomainException("DescriptionNotInRange", "Açıklama 2000 karakterden fazla olamaz.");
             }
 
-            return new Description(id, description, order, ContentStatus.Bekliyor, lastEditedDate, null, recommenderId, previousDescId);
+            return new Description(id, description, order, ContentStatus.Önerildi, lastEditedDate, null, recommenderId, previousDescId);  
+            
 
         }
         public void UpdateContent(string content)
@@ -115,7 +116,7 @@ namespace KSozluk.Domain
         }
 
         public void UpdateOrder(int order)
-        {
+        {   
             Order = order;
         }
 

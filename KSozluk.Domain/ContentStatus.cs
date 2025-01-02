@@ -4,6 +4,7 @@
     {
         Onaylı = 1,
         Bekliyor = 2,
-        Reddedildi = 3
+        Reddedildi = 3,
+        Önerildi = 4
     }
 }
