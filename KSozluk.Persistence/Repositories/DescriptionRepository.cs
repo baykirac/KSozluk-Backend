@@ -36,7 +36,7 @@ namespace KSozluk.Persistence.Repositories
         {
             var data = await _context.Descriptions
                 .Where(d => d.RecommenderId == userId)
-                .OrderBy(d => d.LastEditedDate)
+                .OrderByDescending(d => d.LastEditedDate)
                 .Select(d => new DescriptionTimelineDto
                 {
                     Status = d.Status,

@@ -43,6 +43,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
             }
 
             var description = await _descriptionRepository.FindAsync(request.DescriptionId);
+            var word = await _wordRepository.FindAsync(description.WordId);
             var previousDescriptionId = description.PreviousDescriptionId;
 
             if (previousDescriptionId.HasValue && request.Status == ContentStatus.Onaylı)
@@ -57,10 +58,21 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
                 parentDescription.UpdateStatus(ContentStatus.Reddedildi);
             }
 
-            var word = await _wordRepository.FindAsync(description.WordId);
-            if (word.Descriptions.Count == 1 || word.Descriptions.All(d => d.Status == ContentStatus.Bekliyor))
+            if (request.Status == ContentStatus.Onaylı)
             {
-                word.UpdateStatus(request.Status);
+                word.UpdateStatus(ContentStatus.Onaylı);
+            }
+
+            else if (request.Status == ContentStatus.Reddedildi || request.Status == ContentStatus.Bekliyor)
+            {
+                var hasOtherApprovedDescriptions = word.Descriptions
+                    .Any(d => d.Id != description.Id && d.Status == ContentStatus.Onaylı);
+
+                if (!hasOtherApprovedDescriptions && word.Descriptions.All(d =>
+                    d.Status == ContentStatus.Reddedildi || d.Status == ContentStatus.Bekliyor))
+                {
+                    word.UpdateStatus(ContentStatus.Reddedildi);
+                }
             }
 
             description.UpdateStatus(request.Status);
