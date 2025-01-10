@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.WebAPI", "KSozluk.WebAPI\KSozluk.WebAPI.csproj", "{DF5AFC22-18E5-4580-80E6-088A6137AEAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSozluk.WebAPI", "KSozluk.WebAPI\KSozluk.WebAPI.csproj", "{DF5AFC22-18E5-4580-80E6-088A6137AEAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Application", "KSozluk.Application\KSozluk.Application.csproj", "{BCC83A8F-F420-4823-981C-3D206F3D2ACA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSozluk.Application", "KSozluk.Application\KSozluk.Application.csproj", "{BCC83A8F-F420-4823-981C-3D206F3D2ACA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Domain", "KSozluk.Domain\KSozluk.Domain.csproj", "{303689E8-4887-4EA9-BAED-0CAD082C6873}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSozluk.Domain", "KSozluk.Domain\KSozluk.Domain.csproj", "{303689E8-4887-4EA9-BAED-0CAD082C6873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Infrastructure", "KSozluk.Infrastructure\KSozluk.Infrastructure.csproj", "{FA1C1EB7-088F-4B0D-AB6A-95625C056DF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSozluk.Infrastructure", "KSozluk.Infrastructure\KSozluk.Infrastructure.csproj", "{FA1C1EB7-088F-4B0D-AB6A-95625C056DF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Persistence", "KSozluk.Persistence\KSozluk.Persistence.csproj", "{FA796B58-1360-4553-B132-F54720F00C1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KSozluk.Persistence", "KSozluk.Persistence\KSozluk.Persistence.csproj", "{FA796B58-1360-4553-B132-F54720F00C1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{13849141-86DC-4D73-B0EA-BAF17FE630C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserApi", "..\..\Project\rotabanviewerv2\Backend\UserApi\UserApi.csproj", "{0523DDB9-2433-483C-BE53-493BA14D963E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{FA796B58-1360-4553-B132-F54720F00C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA796B58-1360-4553-B132-F54720F00C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA796B58-1360-4553-B132-F54720F00C1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0523DDB9-2433-483C-BE53-493BA14D963E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0523DDB9-2433-483C-BE53-493BA14D963E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0523DDB9-2433-483C-BE53-493BA14D963E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0523DDB9-2433-483C-BE53-493BA14D963E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{303689E8-4887-4EA9-BAED-0CAD082C6873} = {13849141-86DC-4D73-B0EA-BAF17FE630C8}
 		{FA1C1EB7-088F-4B0D-AB6A-95625C056DF1} = {13849141-86DC-4D73-B0EA-BAF17FE630C8}
 		{FA796B58-1360-4553-B132-F54720F00C1D} = {13849141-86DC-4D73-B0EA-BAF17FE630C8}
+		{0523DDB9-2433-483C-BE53-493BA14D963E} = {13849141-86DC-4D73-B0EA-BAF17FE630C8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A64D3B9D-455B-4E6C-9518-563D16E3AD70}
