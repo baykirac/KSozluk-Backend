@@ -44,8 +44,11 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
                 int greatestOrder = await _descriptionRepository.FindGreatestOrder(existedWord.Id);
                 int order = greatestOrder + 1;
 
-                var description = Description.Create(request.Description, order, userId); //new description buradan ekleniyor
-                existedWord.AddDescription(description);
+                foreach (var descriptionText in request.Description)
+                {
+                    var description = Description.Create(descriptionText, order, userId);
+                    existedWord.AddDescription(description);
+                }
 
                 await _unitOfWork.SaveChangesAsync();
 
@@ -56,13 +59,14 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
             var word = Word.Create(request.WordContent, userId);
 
             int newOrder = 0;
-            var newDescription = Description.Create(request.Description, newOrder, userId);
-
-
-            word.AddDescription(newDescription);
 
             await _wordRepository.CreateAsync(word);
 
+            foreach (var descriptionText in request.Description)
+            {
+                var description = Description.Create(descriptionText, newOrder++, userId);
+                word.AddDescription(description);
+            }
 
             await _unitOfWork.SaveChangesAsync();
             Word.ClearResponse(word);

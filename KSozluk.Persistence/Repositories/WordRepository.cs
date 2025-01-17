@@ -29,7 +29,7 @@ namespace KSozluk.Persistence.Repositories
 
         public Task<Word> FindByContentAsync(string content)
         {
-            return _context.Words.Include(d => d.Descriptions).SingleOrDefaultAsync(w => w.WordContent == content);
+            return _context.Words.Include(d => d.Descriptions).SingleOrDefaultAsync(w => w.WordContent.ToLower() == content.ToLower());
         }
 
         public async Task<Word> FindByIdAsync(Guid? wordId)
