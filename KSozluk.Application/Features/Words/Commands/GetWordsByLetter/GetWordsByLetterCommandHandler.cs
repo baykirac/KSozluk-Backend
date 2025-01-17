@@ -1,6 +1,8 @@
 ﻿using KSozluk.Application.Common;
+using KSozluk.Application.Features.Words.Commands.UpdateWord;
 using KSozluk.Application.Services.Authentication;
 using KSozluk.Application.Services.Repositories;
+using KSozluk.Domain;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 
@@ -31,6 +33,11 @@ namespace KSozluk.Application.Features.Words.Commands.GetWordsByLetter
             }
 
             var words = await _wordRepository.GetWordsByLetterAsync(request.Letter, request.PageNumber, request.PageSize);
+
+            if (!words.Any())
+            {
+                return Response.Failure<GetWordsByLetterResponse>(OperationMessages.PermissionFailure);
+            }
 
             return Response.SuccessWithBody<GetWordsByLetterResponse>(words, OperationMessages.WordsGettedSuccessfully);
         }

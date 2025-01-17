@@ -37,6 +37,11 @@ namespace KSozluk.Application.Features.Descriptions.Commands.RecommendNewDescrip
 
             var word = await _wordRepository.FindAsync(request.WordId);
 
+            if (word == null) 
+            {
+                return Response.Failure<RecommendNewDescriptionResponse>(OperationMessages.PermissionFailure);
+            }
+
             var greatestOrder = await _descriptionRepository.FindGreatestOrder(word.Id);
             var newOrder = greatestOrder + 1;
 

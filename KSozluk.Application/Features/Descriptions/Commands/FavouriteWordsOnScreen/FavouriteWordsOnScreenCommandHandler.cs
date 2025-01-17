@@ -41,13 +41,18 @@ namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWordsOnScr
             }
 
             var favouriteWords = await _favoriteWordRepository.GetFavouriteWordsByUserIdAsync(userId);
-            var test = new FavouriteWordsOnScreenResponse()
+
+            if (!favouriteWords.Any()) 
+            {
+                return Response.Failure<FavouriteWordsOnScreenResponse>(OperationMessages.PermissionFailure);
+            }
+            var response = new FavouriteWordsOnScreenResponse()
             {
                 responseFavouriteWordsDtos = favouriteWords,
             };
 
 
-            return Response.SuccessWithBody<FavouriteWordsOnScreenResponse>(test, OperationMessages.DescriptionsGettedSuccessfully);
+            return Response.SuccessWithBody<FavouriteWordsOnScreenResponse>(response, OperationMessages.DescriptionsGettedSuccessfully);
 
         }
 

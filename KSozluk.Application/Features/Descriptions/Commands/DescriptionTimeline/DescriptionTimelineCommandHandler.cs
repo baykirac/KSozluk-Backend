@@ -36,7 +36,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.DescriptionTimeline
 
             var response = await _descriptionRepository.GetDescriptionForTimelineAsync(userId);
 
-            if (response == null) {
+            if (!response.Any()) {
                 return Response.Failure<DescriptionTimelineResponse>(OperationMessages.PermissionFailure);
             }
 

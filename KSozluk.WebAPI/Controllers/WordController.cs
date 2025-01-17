@@ -14,12 +14,14 @@ using KSozluk.Application.Features.Words.Commands.UpdateWordById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace KSozluk.WebAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     [Authorize]
+    //[EnableRateLimiting("interact-limit")]
     public class WordController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -110,6 +112,7 @@ namespace KSozluk.WebAPI.Controllers
         }
         
         [HttpPost("[action]")]
+        //[EnableRateLimiting("interact-limit")]
         public async Task<IActionResult> LikeWord(LikeWordCommand command, CancellationToken cancellationToken = default)
         {
             var response = await _mediator.Send(command, cancellationToken);
