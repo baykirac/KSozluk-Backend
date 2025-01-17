@@ -29,6 +29,11 @@ namespace KSozluk.Application.Features.Words.Commands.GetApprovedWordsPaginated
 
             var words = await _wordRepository.GetAllWordsByPaginate(request.PageNumber, request.PageSize);
 
+            if (!words.Any())
+            {
+                return Response.Failure<GetApprovedWordsPaginatedResponse>(OperationMessages.PermissionFailure);
+            }
+
             return Response.SuccessWithBody<GetApprovedWordsPaginatedResponse>(words, OperationMessages.WordsGettedSuccessfully);
         }
     }

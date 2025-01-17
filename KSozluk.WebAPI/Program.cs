@@ -11,6 +11,9 @@ using KSozluk.Application.Services.Authentication;
 using KSozluk.Infrastructure.Services.Authentication;
 using System.Net.Mail;
 using System.Net;
+//using KSozluk.WebAPI.Middleware;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,6 +105,32 @@ builder.Services.AddSwaggerGen(setup =>
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+builder.Services.AddRateLimiter(rateLimiterOptions =>
+{
+    rateLimiterOptions.AddPolicy("api", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 30,
+                Window = TimeSpan.FromSeconds(10),
+                QueueLimit = 0
+            })
+    );
+
+    rateLimiterOptions.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            message = "Too many requests. Please try again later.",
+            retryAfter = 10
+        }, token);
+    };
+});
+
+
 var app = builder.Build();
 
 if (bool.TryParse(Environment.GetEnvironmentVariable("DEACTIVATE_CORS") ?? "false", out var deactivateCors) && !deactivateCors)
@@ -119,9 +148,27 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//app.MapGet("/Description", () => Results.Ok("Rate limited!")).RequireRateLimiting("fixed");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseRateLimiter();
+
+app.MapControllers().RequireRateLimiting("api").Add(endpointBuilder =>
+{
+    var pattern = endpointBuilder.DisplayName?.Contains("/api");
+    if (pattern == true)
+    {
+        endpointBuilder.FilterFactories.Add((context, next) =>
+        {
+            return invocationContext =>
+            {
+                // API endpoint'i için rate limiting uygula
+                return next(invocationContext);
+            };
+        });
+    }
+});
 
 app.Run();

@@ -34,7 +34,10 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateOrder
 
             var description = await _descriptionRepository.FindAsync(request.DescriptionId);
 
-         
+            if (description == null)
+            {
+                return Response.Failure<UpdateOrderResponse>(OperationMessages.PermissionFailure);
+            }
 
             description.UpdateOrder(request.Order);
 

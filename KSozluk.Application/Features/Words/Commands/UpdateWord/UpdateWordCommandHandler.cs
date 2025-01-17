@@ -1,5 +1,6 @@
 ﻿using KSozluk.Application.Common;
 using KSozluk.Application.Features.Descriptions.Commands.GetDescriptions;
+using KSozluk.Application.Features.Words.Commands.UpdateWordById;
 using KSozluk.Application.Services.Authentication;
 using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain.Resources;
@@ -31,6 +32,11 @@ namespace KSozluk.Application.Features.Words.Commands.UpdateWord
             }
 
             var word = await _wordRepository.FindAsync(request.WordId);
+
+            if (word == null)
+            {
+                return Response.Failure<UpdateWordResponse>(OperationMessages.PermissionFailure);
+            }
 
             word.ChangeContent(request.WordContent);
             word.Descriptions.SingleOrDefault(d => d.Id == request.DescriptionId).UpdateContent(request.DescriptionContent);

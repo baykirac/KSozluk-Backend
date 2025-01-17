@@ -30,6 +30,11 @@ namespace KSozluk.Application.Features.Words.Commands.GetAllWords
 
             var words = await _wordRepository.GetAllWordsAsync();
 
+            if (!words.Any())
+            {
+                return Response.Failure<GetAllWordsResponse>(OperationMessages.PermissionFailure);
+            }
+
             return Response.SuccessWithBody<GetAllWordsResponse>(words, OperationMessages.GettedAllWords);
         }
     }

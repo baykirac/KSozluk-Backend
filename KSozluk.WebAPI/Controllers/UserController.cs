@@ -2,12 +2,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace KSozluk.WebAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     [Authorize]
+    //[EnableRateLimiting("interact-limit")]
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;

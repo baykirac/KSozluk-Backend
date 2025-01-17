@@ -31,6 +31,11 @@ namespace KSozluk.Application.Features.Words.Commands.GetWordsByContains
 
             var words = await _wordRepository.GetWordsByContainsAsync(request.Content);
 
+            if (!words.Any())
+            {
+                return Response.Failure<GetWordsByContainsResponse>(OperationMessages.PermissionFailure);
+            }
+
             return Response.SuccessWithBody<GetWordsByContainsResponse>(words, OperationMessages.GettedAllWords);
         }
     }
