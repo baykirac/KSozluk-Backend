@@ -164,7 +164,7 @@ app.MapControllers().RequireRateLimiting("api").Add(endpointBuilder =>
         {
             return invocationContext =>
             {
-                // API endpoint'i için rate limiting uygula
+                // API endpoint'i iï¿½in rate limiting uygula
                 return next(invocationContext);
             };
         });

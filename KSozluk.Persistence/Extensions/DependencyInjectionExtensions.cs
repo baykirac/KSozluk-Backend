@@ -6,6 +6,7 @@ using KSozluk.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Client;
 
 namespace KSozluk.Persistence.Extensions
 {
@@ -15,6 +16,7 @@ namespace KSozluk.Persistence.Extensions
         {
             services.AddDbContext<SozlukContext>(options =>
             {
+
                 options.UseNpgsql(configuration.GetConnectionString("PostgreConnectionString"));
             });
 
