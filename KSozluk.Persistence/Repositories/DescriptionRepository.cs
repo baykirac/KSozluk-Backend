@@ -4,6 +4,7 @@ using KSozluk.Domain.DTOs;
 using KSozluk.Domain.SharedKernel;
 using KSozluk.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Linq.Expressions;
 
 namespace KSozluk.Persistence.Repositories
@@ -38,13 +39,27 @@ namespace KSozluk.Persistence.Repositories
                 .Where(d => d.RecommenderId == userId)
                 .OrderByDescending(d => d.LastEditedDate)
                 .Select(d => new DescriptionTimelineDto
-                {
+                {                  
                     Status = d.Status,
+                    WordId = d.WordId,
                     DescriptionContent = d.DescriptionContent
                 })
                 .ToListAsync();
 
-            return data;
+            var response = new List<DescriptionTimelineDto>();
+
+            foreach ( var item in data ){
+                var word = await _context.Words.SingleOrDefaultAsync(w => w.Id == item.WordId);
+                response.Add(new DescriptionTimelineDto
+                {
+                    Status = item.Status,
+                    WordId = item.WordId,
+                    DescriptionContent = item.DescriptionContent,
+                    WordContent = word?.WordContent
+                });
+            }
+
+            return response;
         }
 
 

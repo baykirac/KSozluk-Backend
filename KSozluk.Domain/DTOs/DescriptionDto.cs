@@ -37,6 +37,8 @@
     public class DescriptionTimelineDto 
     {
         public ContentStatus Status { get; set; }
+        public Guid WordId {get; set; }
         public string DescriptionContent { get; set; }
+        public string WordContent { get; set; }
     }
 }

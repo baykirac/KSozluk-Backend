@@ -6,7 +6,7 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
     public class AddWordCommand : CommandBase<AddWordResponse>
     {
         public string WordContent { get; set; }
-        public string Description {  get; set; }
+        public List<string> Description {  get; set; }
     }
 }
 //"b5925d7b-b496-41c4-91b2-0df9fc481b4a"  "bengisu"   "tugrull.bengisu@gmail.com" "123"   2   "nzne4SXTyWCFJ3QRukp9gQ=="  "2024-10-17 14:12:41.752982"

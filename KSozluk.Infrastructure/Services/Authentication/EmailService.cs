@@ -20,7 +20,7 @@ namespace KSozluk.Infrastructure.Services.Authentication
 
             public async Task SendEmailAsync(string to, string subject, string body)
             {
-                var mailMessage = new MailMessage("mytest.for.app.123456@gmail.com", to, subject, body);
+                var mailMessage = new MailMessage("kadirdaniisan@gmail.com", to, subject, body);
                 mailMessage.IsBodyHtml = true;
 
                 await _smtpClient.SendMailAsync(mailMessage);
