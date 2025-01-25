@@ -9,8 +9,7 @@ namespace KSozluk.Domain
     public class FavoriteWord
     {
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
-       
+        public Guid UserId { get; set; }     
         public Guid WordId { get; set; }
 
     }

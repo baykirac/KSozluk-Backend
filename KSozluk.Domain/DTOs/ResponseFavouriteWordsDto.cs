@@ -15,5 +15,6 @@ namespace KSozluk.Domain.DTOs
     public class ResponseFavouriteWordContentDto
     {
         public string WordContent { get; set; }
+        public Guid Id { get; set; }
     }
 }

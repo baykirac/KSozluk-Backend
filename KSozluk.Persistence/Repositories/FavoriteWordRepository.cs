@@ -72,6 +72,7 @@ namespace KSozluk.Persistence.Repositories
             .OrderBy(x => x.WordContent) // Alfabetik sıralama
             .Select(x => new ResponseFavouriteWordContentDto
             {
+                Id = x.Id,
                 WordContent = x.WordContent
             }).ToListAsync();
 
