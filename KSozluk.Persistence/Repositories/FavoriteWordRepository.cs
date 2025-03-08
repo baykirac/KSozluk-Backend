@@ -44,7 +44,7 @@ namespace KSozluk.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<FavoriteWord> GetByFavoriteWordAndUserAsync(Guid _wordId, Guid _userId)
+        public async Task<FavoriteWord> GetByFavoriteWordAndUserAsync(Guid _wordId, long? _userId)
         {
             var favouriteWord = await _context.FavoriteWords.FirstOrDefaultAsync(x => x.WordId == _wordId && x.UserId == _userId);
             if (favouriteWord == null)
@@ -54,7 +54,7 @@ namespace KSozluk.Persistence.Repositories
             return favouriteWord;
         }
 
-        public async Task<List<ResponseFavouriteWordContentDto>> GetFavouriteWordsByUserIdAsync(Guid _userId)
+        public async Task<List<ResponseFavouriteWordContentDto>> GetFavouriteWordsByUserIdAsync(long _userId)
         {
          
 

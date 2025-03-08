@@ -10,5 +10,8 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
         public ContentStatus Status { get; set; }
         public int RejectionReasons { get; set; }
         public string CustomRejectionReason { get; set; }
+        public long UserId { get; set; }
+        public string Email { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

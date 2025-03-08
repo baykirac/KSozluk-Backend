@@ -7,5 +7,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.RecommendNewDescrip
         public Guid WordId { get; set; }
         public Guid? PreviousDescriptionId { get; set; }
         public string Content { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

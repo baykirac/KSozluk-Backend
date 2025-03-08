@@ -6,47 +6,45 @@ using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
-using MediatR.Wrappers;
-using System;
+
 
 namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWord
 {
     public class FavouriteWordCommandHandler : RequestHandlerBase<FavouriteWordCommand, FavouriteWordResponse>
     {
         private readonly IFavoriteWordRepository _favouriteLikeRepository;
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
 
-        public FavouriteWordCommandHandler(IFavoriteWordRepository favouriteLikeRepository, IUserService userService, IUserRepository userRepository, IUnitOfWork unitOfWork)
+       public FavouriteWordCommandHandler(IFavoriteWordRepository favouriteLikeRepository, IUnit unit)
         {
             _favouriteLikeRepository = favouriteLikeRepository;
-            _userService = userService;
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
         }
 
         public async override Task<FavouriteWordResponse> Handle(FavouriteWordCommand request, CancellationToken cancellationToken)
         {
 
-            //Map
-            var userId = _userService.GetUserId();
-            if (!await _userRepository.HasPermissionView(userId))
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
+
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<FavouriteWordResponse>(OperationMessages.PermissionFailure);
             }
+
+ 
 
             var existingLike = await _favouriteLikeRepository.GetByFavoriteWordAndUserAsync(request.WordId, userId);
 
             if (existingLike != null)
             {
                 _favouriteLikeRepository.Delete(existingLike);
-                await _unitOfWork.SaveChangesAsync();
+                await _unit.SaveChangesAsync();
 
                 return Response.SuccessWithBody<FavouriteWordResponse>(request.WordId, OperationMessages.WordUnfavouritedSuccessfully);
             }
             else
-            {
+           {
                 var newLike = new KSozluk.Domain.FavoriteWord
                 {
                     Id = Guid.NewGuid(),
@@ -55,7 +53,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWord
                 };
 
                 await _favouriteLikeRepository.CreateAsync(newLike);
-                await _unitOfWork.SaveChangesAsync();
+                await _unit.SaveChangesAsync();
                 return Response.SuccessWithBody<FavouriteWordResponse>(request.WordId, OperationMessages.WordFavouritedSuccessfully);
 
             }

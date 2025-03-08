@@ -1,117 +1,249 @@
-﻿using KSozluk.Application.Features.Descriptions.Commands.DeleteDescriptions;
-using KSozluk.Application.Features.Descriptions.Commands.DescriptionTimeline;
-using KSozluk.Application.Features.Descriptions.Commands.FavouriteWord;
-using KSozluk.Application.Features.Descriptions.Commands.FavouriteWordsOnScreen;
-using KSozluk.Application.Features.Descriptions.Commands.GetDescriptions;
-using KSozluk.Application.Features.Descriptions.Commands.HeadersDescription;
-using KSozluk.Application.Features.Descriptions.Commands.LikeDescription;
-using KSozluk.Application.Features.Descriptions.Commands.RecommendNewDescription;
-using KSozluk.Application.Features.Descriptions.Commands.UpdateOrder;
-using KSozluk.Application.Features.Descriptions.Commands.UpdateStatus;
-using KSozluk.Application.Features.Words.Commands.RecommendNewWord;
-using KSozluk.Application.Features.Words.Commands.UpdateWord;
-using MediatR;
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
+using Ozcorps.Ozt;
+using Ozcorps.Logger;
+using KSozluk.WebAPI.Repositories;
+using KSozluk.WebAPI.Business;
+using KSozluk.WebAPI.Entities;
+using Azure.Core;
+using KSozluk.WebAPI.DTOs;
+using KSozluk.WebAPI.SharedKernel;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Npgsql.Internal;
+
 
 namespace KSozluk.WebAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
-    //[EnableRateLimiting("interact-limit")]
+    [OztActionFilter]
     public class DescriptionController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly OztTool _OztTool;
+        private readonly IOzLogger _Logger;
+        private readonly IDescriptionService _descriptionService;
 
-        public DescriptionController(IMediator mediator)
+        public DescriptionController( IOzLogger logger, OztTool oztTool, IDescriptionService descriptionService)
         {
-            _mediator = mediator;
+            _Logger = logger;
+            _OztTool = oztTool;
+            _descriptionService = descriptionService;
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetDescriptions([FromQuery] GetDescriptionsCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDescriptions(Guid WordId)
         {
-            var response = await _mediator.Send(command, cancellationToken);
-            return Ok(response);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
+
+               var response = await _descriptionService.GetDescriptionsAsync(WordId, UserId, Roles);
+               return Ok(response);
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return BadRequest(_ex.Message);
+            }
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> DeleteDescription(DeleteDescriptionCommand command, CancellationToken cancellationToken = default)
+        public async Task<BaseResponse<bool>> DeleteDescription(Guid DescriptionId)
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+               await _descriptionService.DeleteDescriptionAsync(DescriptionId, UserId, Roles);
+               return new BaseResponse<bool>(true, "Açıklama silindi.", true);
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return new BaseResponse<bool>(false, _ex.Message, false);
+            }
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> UpdateOrder(UpdateOrderCommand command, CancellationToken cancellationToken = default)
+        public async Task<BaseResponse<bool>> UpdateOrder(RequestUpdateDto _dto)
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+               await _descriptionService.UpdateOrderAsync(_dto.DescriptionId, _dto.Order, UserId, Roles);
+
+                return new BaseResponse<bool>(true, "Sıralama güncellendi.", true);
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return new BaseResponse<bool>(false, _ex.Message, false);
+            }
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> UpdateStatus(UpdateStatusCommand command, CancellationToken cancellationToken = default)
+        public async Task<BaseResponse<bool>> UpdateStatus(RequestUpdateStatusDto _dto)
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Email =   HttpContext.GetOztUser()?.Email;
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+               await _descriptionService.UpdateStatusAsync(_dto.DescriptionId, _dto.Status, _dto.RejectionReasons, _dto.CustomRejectionReason, UserId,Email, Roles);
+
+                return new BaseResponse<bool>(true, "Durum güncellendi.", true);
+
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return new BaseResponse<bool>(false, _ex.Message, false);
+            }
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> RecommendDescription(RecommendNewDescriptionCommand command, CancellationToken cancellationToken = default)
+        public async Task<BaseResponse<bool>> RecommendDescription(RequestRecommendDescriptionDto _dto)
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+              var response= await _descriptionService.RecommendNewDescriptionAsync(_dto.WordId, _dto.PreviousDescriptionId, _dto.Content, UserId, Roles);
+
+             return new BaseResponse<bool>(true, "Açıklama önerildi.", true);
+
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return new BaseResponse<bool>(false, _ex.Message, false);
+            }
         }
 
         [HttpPost("[action]")]
         //[EnableRateLimiting("interact-limit")]
-        public async Task<IActionResult> DescriptionLike(LikeDescriptionCommand command, CancellationToken cancellationToken = default)
+        public async Task<BaseResponse<bool>> DescriptionLike(RequestDescriptionLike _dto)
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+                var response = await _descriptionService.LikeDescriptionAsync(_dto.DescriptionId, UserId, Roles);
+
+                return new BaseResponse<bool>(true, "Açıklama beğenildi.", true);
+
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return new BaseResponse<bool>(false, _ex.Message, false);
+            }
         }
 
         [HttpPost("[action]")]
-        //[EnableRateLimiting("interact-limit")]
-        public async Task<IActionResult> FavouriteWord(FavouriteWordCommand command, CancellationToken cancellationToken = default)
+        public async Task<BaseResponse<bool>> HeadersDescription(RequestHeadersDescriptionDto _dto)
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+                var response = await _descriptionService.HeaderDescriptionAsync(_dto.WordContent, UserId, Roles);
+
+                return new BaseResponse<bool>(true, "Başlık açıklamaları alındı.", true);
+
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return new BaseResponse<bool>(false, _ex.Message, false);
+            }
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> HeadersDescription(HeadersDescriptionCommand command, CancellationToken cancellationToken = default)
+        public async Task<BaseResponse<bool>> FavouriteWord(RequestFavouriteWordDto _dto)
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+                var response = await _descriptionService.FavouriteWordAsync(_dto.WordId, UserId, Roles);
+
+                return new BaseResponse<bool>(true, "Favori kelime eklendi.", true);
+
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return new BaseResponse<bool>(false, _ex.Message, false);
+            }
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> FavouriteWordsOnScreen(FavouriteWordsOnScreenCommand command, CancellationToken cancellationToken = default)
+        [HttpGet("[action]")]
+        public async Task<IActionResult> FavouriteWordsOnScreen()
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+                var response = await _descriptionService.FavouriteWordsOnScreenAsync(UserId, Roles);
+
+                return Ok(response);
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return BadRequest(_ex.Message);
+            }
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> DescriptionTimeline(DescriptionTimelineCommand command, CancellationToken cancellationToken = default)
+        [HttpGet("[action]")]
+        public async Task<IActionResult> DescriptionTimeline()
         {
-            var response = await _mediator.Send(command, cancellationToken);
+            try{
+               var UserId = HttpContext.GetOztUser()?.UserId; 
+               var Roles = HttpContext.GetOztUser()?.Roles;
 
-            return Ok(response);
+                var response = await _descriptionService.DescriptionTimelineAsync(UserId);
+
+                return Ok(response);
+            }
+            catch (Exception _ex)
+            {
+                _Logger.Error(_ex,
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+               _username: HttpContext.GetOztUser()?.Username,
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                return BadRequest(_ex.Message);
+            }
         }
-
-
-
     }
 }

@@ -6,29 +6,29 @@ using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 using MediatR.Wrappers;
 
+
 namespace KSozluk.Application.Features.Descriptions.Commands.DeleteDescriptions
 {
     public class DeleteDescriptionCommandHandler : RequestHandlerBase<DeleteDescriptionCommand, DeleteDescriptionResponse>
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
+
+        private readonly IUnit _unit;
         private readonly IWordRepository _wordRepository;
         private readonly IDescriptionRepository _descriptionRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        public DeleteDescriptionCommandHandler(IUserService userService, IUserRepository userRepository, IWordRepository wordRepository, IUnitOfWork unitOfWork, IDescriptionRepository descriptionRepository)
+
+        public DeleteDescriptionCommandHandler(IWordRepository wordRepository, IUnit unit, IDescriptionRepository descriptionRepository)
         {
-            _userService = userService;
-            _userRepository = userRepository;
             _wordRepository = wordRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
             _descriptionRepository = descriptionRepository;
         }
 
         public async override Task<DeleteDescriptionResponse> Handle(DeleteDescriptionCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionView(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<DeleteDescriptionResponse>(OperationMessages.PermissionFailure);
             }
@@ -38,14 +38,14 @@ namespace KSozluk.Application.Features.Descriptions.Commands.DeleteDescriptions
             word = await _wordRepository.FindAsync(id);
             var description = await _descriptionRepository.FindAsync(request.DescriptionId);
 
-            if(word.Descriptions.Count == 1)
+            if (word.Descriptions.Count == 1)
             {
                 await _wordRepository.DeleteAsync(word.Id);
-                await _unitOfWork.SaveChangesAsync();
+                await _unit.SaveChangesAsync();
                 return Response.SuccessWithMessage<DeleteDescriptionResponse>(OperationMessages.WordAndDescriptionDeletedSuccessfully);
             }
             word.RemoveDescription(description);
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
 
             return Response.SuccessWithMessage<DeleteDescriptionResponse>(OperationMessages.DescriptionDeletedSuccessfully);
         }

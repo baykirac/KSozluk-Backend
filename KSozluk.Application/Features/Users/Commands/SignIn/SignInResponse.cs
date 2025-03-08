@@ -1,6 +1,6 @@
-﻿using KSozluk.Application.Common;
+﻿// using KSozluk.Application.Common;
 
-namespace KSozluk.Application.Features.Users.Commands.SignIn
-{
-    public class SignInResponse : ResponseBase { }
-}
+// namespace KSozluk.Application.Features.Users.Commands.SignIn
+// {
+//     public class SignInResponse : ResponseBase { }
+// }

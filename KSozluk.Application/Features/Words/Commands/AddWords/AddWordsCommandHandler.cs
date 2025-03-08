@@ -5,27 +5,27 @@ using KSozluk.Domain;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 
+
 namespace KSozluk.Application.Features.Words.Commands.AddWords
 {
     public class AddWordsCommandHandler : RequestHandlerBase<AddWordsCommand, AddWordsResponse>
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly IWordRepository _wordRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
 
-        public AddWordsCommandHandler(IUserService userService, IUserRepository userRepository, IWordRepository wordRepository, IUnitOfWork unitOfWork)
+
+        public AddWordsCommandHandler(IWordRepository wordRepository, IUnit unit)
         {
-            _userService = userService;
-            _userRepository = userRepository;
             _wordRepository = wordRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
         }
 
         public async override Task<AddWordsResponse> Handle(AddWordsCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
-            if (!await _userRepository.HasPermissionForAdmin(userId))
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
+
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<AddWordsResponse>(OperationMessages.PermissionFailure);
             }
@@ -42,7 +42,7 @@ namespace KSozluk.Application.Features.Words.Commands.AddWords
 
             var word = Word.Create(request.WordContent, userId);
             await _wordRepository.CreateAsync(word);
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
             Word.ClearResponse(word);
 
             return Response.SuccessWithBody<AddWordsResponse>(new AddWordsResponse

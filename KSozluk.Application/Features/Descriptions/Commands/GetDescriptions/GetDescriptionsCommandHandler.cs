@@ -7,6 +7,7 @@ using MediatR.Wrappers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+
 namespace KSozluk.Application.Features.Descriptions.Commands.GetDescriptions
 {
     public class GetDescriptionsCommandHandler : RequestHandlerBase<GetDescriptionsCommand, GetDescriptionsResponse>
@@ -14,34 +15,31 @@ namespace KSozluk.Application.Features.Descriptions.Commands.GetDescriptions
         private readonly IDescriptionRepository _descriptionRepository;
         private readonly IFavoriteWordRepository _favoriteWordRepository;
         private readonly ILikeRepository _likeRepository;
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
 
-        public GetDescriptionsCommandHandler(IDescriptionRepository descriptionRepository, ILikeRepository likeRepository, IUserService userService, IUserRepository userRepository, IFavoriteWordRepository favouriteWordRepository)
+        public GetDescriptionsCommandHandler(IDescriptionRepository descriptionRepository, ILikeRepository likeRepository,IFavoriteWordRepository favouriteWordRepository)
         {
             _descriptionRepository = descriptionRepository;
-            _userService = userService;
             _likeRepository = likeRepository;
-            _userRepository = userRepository;
             _favoriteWordRepository = favouriteWordRepository;
         }
 
         public async override Task<GetDescriptionsResponse> Handle(GetDescriptionsCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionView(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<GetDescriptionsResponse>(OperationMessages.PermissionFailure);
             }
             
-            var descriptions = await _descriptionRepository.FindByWordAsync(request.WordId,userId);
+            var descriptions = await _descriptionRepository.FindByWordAsync(request.WordId, userId);
 
             var isFavourited = false;
             var isLikedWord = false;
 
-            var favoriteWord = await _favoriteWordRepository.GetByFavoriteWordAndUserAsync(request.WordId,userId);
-            var likedWord = await _likeRepository.FindLikedWordAsync(request.WordId,userId);
+            var favoriteWord = await _favoriteWordRepository.GetByFavoriteWordAndUserAsync(request.WordId, userId);
+            var likedWord = await _likeRepository.FindLikedWordAsync(request.WordId, userId);
 
             if(favoriteWord != null)
             {

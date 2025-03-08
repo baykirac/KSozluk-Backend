@@ -11,5 +11,7 @@ namespace KSozluk.Application.Features.Words.Commands.UpdateWordById
     {
         public Guid WordId { get; set; }
         public string WordContent { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

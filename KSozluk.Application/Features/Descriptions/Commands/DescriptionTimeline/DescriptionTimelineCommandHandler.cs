@@ -18,21 +18,17 @@ namespace KSozluk.Application.Features.Descriptions.Commands.DescriptionTimeline
     public class DescriptionTimelineCommandHandler : RequestHandlerBase<DescriptionTimelineCommand, DescriptionTimelineResponse>
     {
         private readonly IDescriptionRepository _descriptionRepository;
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        public DescriptionTimelineCommandHandler(IDescriptionRepository descriptionRepository, ILikeRepository likeRepository, IUserService userService, IUserRepository userRepository, IFavoriteWordRepository favouriteWordRepository, IUnitOfWork unitOfWork)
+        private readonly IUnit _unit;
+        public DescriptionTimelineCommandHandler(IDescriptionRepository descriptionRepository, ILikeRepository likeRepository, IFavoriteWordRepository favouriteWordRepository, IUnit unit)
         {
-            _descriptionRepository = descriptionRepository;
-            _userService = userService;
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
+            _descriptionRepository = descriptionRepository;     
+            _unit = unit;
         }
 
         public async override Task<DescriptionTimelineResponse> Handle(DescriptionTimelineCommand request, CancellationToken cancellationToken)
         {
 
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
 
             var response = await _descriptionRepository.GetDescriptionForTimelineAsync(userId);
 

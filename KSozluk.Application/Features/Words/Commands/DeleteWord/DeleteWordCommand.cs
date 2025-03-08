@@ -5,5 +5,7 @@ namespace KSozluk.Application.Features.Words.Commands.DeleteWord
     public class DeleteWordCommand : CommandBase<DeleteWordResponse>
     {
         public Guid WordId { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

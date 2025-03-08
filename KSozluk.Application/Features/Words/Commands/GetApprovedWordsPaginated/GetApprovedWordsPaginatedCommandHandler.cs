@@ -7,22 +7,19 @@ namespace KSozluk.Application.Features.Words.Commands.GetApprovedWordsPaginated
 {
     public class GetApprovedWordsPaginatedCommandHandler : RequestHandlerBase<GetApprovedWordsPaginatedCommand, GetApprovedWordsPaginatedResponse>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUserService _userService;
-        private readonly IWordRepository _wordRepository;
+        private readonly IWordRepository _wordRepository;   
 
-        public GetApprovedWordsPaginatedCommandHandler(IUserRepository userRepository, IUserService userService, IWordRepository wordRepository)
+        public GetApprovedWordsPaginatedCommandHandler(IWordRepository wordRepository)
         {
-            _userRepository = userRepository;
-            _userService = userService;
             _wordRepository = wordRepository;
         }
 
         public async override Task<GetApprovedWordsPaginatedResponse> Handle(GetApprovedWordsPaginatedCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionForAdmin(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<GetApprovedWordsPaginatedResponse>(OperationMessages.PermissionFailure);
             }

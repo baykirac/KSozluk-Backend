@@ -28,7 +28,7 @@ namespace KSozluk.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("AcceptorId")
+                    b.Property<long?>("AcceptorId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("DescriptionContent")
@@ -165,7 +165,7 @@ namespace KSozluk.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("AcceptorId")
+                    b.Property<long?>("AcceptorId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("LastEditedDate")

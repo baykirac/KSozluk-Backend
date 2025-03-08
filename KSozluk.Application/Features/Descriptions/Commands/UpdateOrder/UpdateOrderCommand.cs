@@ -6,5 +6,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateOrder
     {
         public Guid DescriptionId { get; set; }
         public int Order {  get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

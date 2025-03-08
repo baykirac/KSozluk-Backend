@@ -41,7 +41,7 @@ namespace KSozluk.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<DescriptionLike> GetByDescriptionAndUserAsync(Guid _descriptionId, Guid _userId)
+        public async Task<DescriptionLike> GetByDescriptionAndUserAsync(Guid _descriptionId, long _userId)
         {
             var _descriptionLike = await _context.DescriptionLikes.FirstOrDefaultAsync(x => x.UserId == _userId && x.DescriptionId == _descriptionId);
 
@@ -65,7 +65,7 @@ namespace KSozluk.Persistence.Repositories
             }
         }
 
-        public async Task<WordLike> GetByWordAndUserAsync(Guid wordId, Guid userId)
+        public async Task<WordLike> GetByWordAndUserAsync(Guid wordId, long userId)
         {
             return await _context.WordLikes.FirstOrDefaultAsync(w => w.UserId == userId && w.WordId == wordId);
         }
@@ -80,7 +80,7 @@ namespace KSozluk.Persistence.Repositories
             await _context.WordLikes.AddAsync(wordLike);
         }
 
-        public async Task<WordLike> FindLikedWordAsync(Guid wordId, Guid userId)
+        public async Task<WordLike> FindLikedWordAsync(Guid wordId, long? userId)
         {
             return await _context.WordLikes.FirstOrDefaultAsync(w => w.WordId == wordId && w.UserId == userId);
         }

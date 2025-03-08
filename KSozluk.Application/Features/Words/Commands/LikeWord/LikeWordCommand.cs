@@ -10,5 +10,7 @@ namespace KSozluk.Application.Features.Words.Commands.LikeWord
     public class LikeWordCommand : CommandBase<LikeWordResponse>
     {
         public Guid WordId { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

@@ -26,13 +26,13 @@ namespace KSozluk.Persistence.Configurations
                 .IsRequired().
                 HasColumnName("status");
 
-            builder.HasOne(w => w.Acceptor)
-                .WithMany()
-                .HasForeignKey(w => w.AcceptorId);
+            builder.Property(w => w.Acceptor)
+         .IsRequired().
+                HasColumnName("acceptor");
 
-            builder.HasOne(w => w.Recommender)
-                .WithMany()
-                .HasForeignKey(w => w.RecommenderId);
+            builder.Property(w => w.Recommender)
+                 .IsRequired().
+                HasColumnName("recommender");
 
             builder.Property(w => w.LastEditedDate)
                 .HasColumnName("lastediteddate");

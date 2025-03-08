@@ -1,7 +1,7 @@
-﻿namespace KSozluk.Application.Services.Authentication
-{
-    public interface IUserService
-    {
-        Guid GetUserId();
-    }
-}
+﻿// namespace KSozluk.Application.Services.Authentication
+// {
+//     public interface IUserService
+//     {
+//         Guid GetUserId();
+//     }
+// }

@@ -6,7 +6,6 @@ using KSozluk.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Client;
 
 namespace KSozluk.Persistence.Extensions
 {
@@ -20,13 +19,11 @@ namespace KSozluk.Persistence.Extensions
                 options.UseNpgsql(configuration.GetConnectionString("PostgreConnectionString"));
             });
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUnit, Unit>();
             services.AddScoped<IWordRepository, WordRepository>();
             services.AddScoped<IDescriptionRepository, DescriptionRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
             services.AddScoped<IFavoriteWordRepository, FavoriteWordRepository>();
-
             return services;
         }
     }

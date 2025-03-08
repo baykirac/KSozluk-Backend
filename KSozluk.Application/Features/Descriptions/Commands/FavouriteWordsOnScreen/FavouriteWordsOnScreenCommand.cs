@@ -10,6 +10,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWordsOnScr
 {
     public class FavouriteWordsOnScreenCommand : CommandBase<FavouriteWordsOnScreenResponse>
     {
-       
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

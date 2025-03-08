@@ -11,5 +11,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.FavouriteWord
     public class FavouriteWordCommand : CommandBase<FavouriteWordResponse>
     {
         public Guid WordId { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: KSozluk.WebAPI [Default Configuration]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/KSozluk.WebAPI/KSozluk.WebAPI.csproj"
+        }
+    ]
+}

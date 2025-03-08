@@ -4,27 +4,26 @@ using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 
+
 namespace KSozluk.Application.Features.Words.Commands.UpdateWordById
 {
     public class UpdateWordByIdCommandHandler : RequestHandlerBase<UpdateWordByIdCommand, UpdateWordByIdResponse>
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly IWordRepository _wordRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
 
-        public UpdateWordByIdCommandHandler(IUserService userService, IUserRepository userRepository,IWordRepository wordRepository, IUnitOfWork unitOfWork)
+        public UpdateWordByIdCommandHandler(IWordRepository wordRepository, IUnit unit)
         {
-            _userService = userService;
-            _userRepository = userRepository;
             _wordRepository = wordRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
         }
 
         public async override Task<UpdateWordByIdResponse> Handle(UpdateWordByIdCommand request,CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
-            if (!await _userRepository.HasPermissionForAdmin(userId))
+            var userId = request.UserId;
+            var userRoles = request.Roles; 
+
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<UpdateWordByIdResponse>(OperationMessages.PermissionFailure);
             }
@@ -40,7 +39,7 @@ namespace KSozluk.Application.Features.Words.Commands.UpdateWordById
 
             word.ChangeContent(request.WordContent);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
             return Response.SuccessWithBody<UpdateWordByIdResponse>(word,OperationMessages.WordUpdatedSuccessfully);
         }
     }

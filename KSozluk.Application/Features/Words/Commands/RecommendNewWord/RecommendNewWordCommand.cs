@@ -6,5 +6,7 @@ namespace KSozluk.Application.Features.Words.Commands.RecommendNewWord
     {
         public string WordContent { get; set; }
         public List<string> DescriptionContent { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

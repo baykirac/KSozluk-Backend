@@ -9,6 +9,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.DescriptionTimeline
 {
     public class DescriptionTimelineCommand : CommandBase<DescriptionTimelineResponse>
     {
-
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

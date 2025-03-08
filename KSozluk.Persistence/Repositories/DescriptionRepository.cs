@@ -33,7 +33,7 @@ namespace KSozluk.Persistence.Repositories
             return _context.Descriptions.SingleOrDefaultAsync(d => d.Id == id);
         }
 
-        public async Task<List<DescriptionTimelineDto>> GetDescriptionForTimelineAsync(Guid userId)
+        public async Task<List<DescriptionTimelineDto>> GetDescriptionForTimelineAsync(long userId)
         {
             var data = await _context.Descriptions
                 .Where(d => d.RecommenderId == userId)
@@ -86,7 +86,7 @@ namespace KSozluk.Persistence.Repositories
 
         }
 
-        public async Task<List<DescriptionWithIsLikeDto>> FindByWordAsync(Guid id, Guid userId)
+        public async Task<List<DescriptionWithIsLikeDto>> FindByWordAsync(Guid id, long? userId)
         {
             var deneme = await _context.Descriptions.Where(d => d.WordId == id && d.Status == ContentStatus.Onaylı)
                 .OrderBy(d => d.Order)

@@ -4,26 +4,25 @@ using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
+
+
 namespace KSozluk.Application.Features.Words.Commands.RecommendNewWord
 {
     public class RecommendNewWordCommandHandler : RequestHandlerBase<RecommendNewWordCommand, RecommendNewWordResponse>
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly IWordRepository _wordRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        public RecommendNewWordCommandHandler(IUserService userService, IUserRepository userRepository, IWordRepository wordRepository, IUnitOfWork unitOfWork)
+        private readonly IUnit _unit;
+        public RecommendNewWordCommandHandler(IWordRepository wordRepository, IUnit unit)
         {
-            _userService = userService;
-            _userRepository = userRepository;
             _wordRepository = wordRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
         }
         public async override Task<RecommendNewWordResponse> Handle(RecommendNewWordCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionView(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<RecommendNewWordResponse>(OperationMessages.PermissionFailure);
             }
@@ -37,11 +36,11 @@ namespace KSozluk.Application.Features.Words.Commands.RecommendNewWord
                 var word = Word.Create(request.WordContent, userId, now, now);
                 foreach (var descriptionText in request.DescriptionContent)
                 {
-                    var description = Description.Create(descriptionText, 0, null, userId, null);
+                    var description = Description.Create(descriptionText, 0, 0, userId, null);
                     word.AddDescription(description);
                 }
                 await _wordRepository.CreateAsync(word);
-                await _unitOfWork.SaveChangesAsync();
+                await _unit.SaveChangesAsync();
 
                 return Response.SuccessWithBody<RecommendNewWordResponse>(word, OperationMessages.DescriptionRecommendedSuccessFully);
             }
@@ -49,10 +48,10 @@ namespace KSozluk.Application.Features.Words.Commands.RecommendNewWord
             var updated = Word.UpdateOperationDate(existingWord, now);
             foreach (var descriptionText in request.DescriptionContent)
             {
-                var description = Description.Create(descriptionText, 0, null, userId, null);
+                var description = Description.Create(descriptionText, 0, 0, userId, null);
                 existingWord.AddDescription(description);
             }
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
             return Response.SuccessWithBody<RecommendNewWordResponse>(existingWord, OperationMessages.DescriptionRecommendedSuccessFully);
         }
     }

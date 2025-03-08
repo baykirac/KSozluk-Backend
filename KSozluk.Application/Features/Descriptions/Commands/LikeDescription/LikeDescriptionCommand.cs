@@ -5,5 +5,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.LikeDescription
     public class LikeDescriptionCommand : CommandBase<LikeDescriptionResponse>
     {
         public Guid DescriptionId { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

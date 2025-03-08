@@ -14,34 +14,32 @@ namespace KSozluk.Application.Features.Descriptions.Commands.LikeDescription
     public class LikeDescriptionCommandHandler : RequestHandlerBase<LikeDescriptionCommand, LikeDescriptionResponse>
     {
         private readonly ILikeRepository _descriptionLikeRepository;
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
 
-        public LikeDescriptionCommandHandler(ILikeRepository descriptionLikeRepository, IUserService userService, IUserRepository userRepository, IUnitOfWork unitOfWork)
+
+        public LikeDescriptionCommandHandler(ILikeRepository descriptionLikeRepository,IUnit unit)
         {
             _descriptionLikeRepository = descriptionLikeRepository;
-            _userService = userService;
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
         }
 
         public async override Task<LikeDescriptionResponse> Handle(LikeDescriptionCommand request, CancellationToken cancellationToken)
         {
 
-            //Map
-            var userId = _userService.GetUserId();
-            if(!await _userRepository.HasPermissionView(userId))
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
+
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<LikeDescriptionResponse>(OperationMessages.PermissionFailure);
             }
-
+           
             var existingLike = await _descriptionLikeRepository.GetByDescriptionAndUserAsync(request.DescriptionId, userId);
 
             if (existingLike != null)
             {
                 _descriptionLikeRepository.DeleteDescriptionLike(existingLike);
-                await _unitOfWork.SaveChangesAsync();
+                await _unit.SaveChangesAsync();
                 
                 return Response.SuccessWithBody<LikeDescriptionResponse>(request.DescriptionId, OperationMessages.DescriptionUnlikedSuccessfully);
             }
@@ -56,7 +54,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.LikeDescription
                 };
 
                 await _descriptionLikeRepository.CreateDescriptionLike(newLike);
-                await _unitOfWork.SaveChangesAsync();
+                await _unit.SaveChangesAsync();
                 return Response.SuccessWithBody<LikeDescriptionResponse>(request.DescriptionId, OperationMessages.DescriptionLikedSuccessfully);
 
             }

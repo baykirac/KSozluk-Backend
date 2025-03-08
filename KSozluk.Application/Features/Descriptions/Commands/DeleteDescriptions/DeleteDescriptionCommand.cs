@@ -5,5 +5,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.DeleteDescriptions
     public class DeleteDescriptionCommand : CommandBase<DeleteDescriptionResponse>
     {
         public Guid DescriptionId { get; set; }
+         public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

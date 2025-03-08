@@ -6,27 +6,26 @@ using KSozluk.Application.Services.Repositories;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 
+
 namespace KSozluk.Application.Features.Words.Commands.UpdateWord
 {
     public class UpdateWordCommandHandler : RequestHandlerBase<UpdateWordCommand, UpdateWordResponse>
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly IWordRepository _wordRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        public UpdateWordCommandHandler(IUserService userService, IUserRepository userRepository, IWordRepository wordRepository, IUnitOfWork unitOfWork)
+        private readonly IUnit _unit;
+
+        public UpdateWordCommandHandler(IWordRepository wordRepository, IUnit unit)
         {
-            _userService = userService;
-            _userRepository = userRepository;
             _wordRepository = wordRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
         }
 
         public async override Task<UpdateWordResponse> Handle(UpdateWordCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+            var userId = request.UserId;
+            var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionForAdmin(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<UpdateWordResponse>(OperationMessages.PermissionFailure);
             }
@@ -42,7 +41,7 @@ namespace KSozluk.Application.Features.Words.Commands.UpdateWord
             word.Descriptions.SingleOrDefault(d => d.Id == request.DescriptionId).UpdateContent(request.DescriptionContent);
             word.Descriptions.SingleOrDefault(d => d.Id == request.DescriptionId).UpdateRecommender(userId);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
 
             return Response.SuccessWithBody<UpdateWordResponse>(word, OperationMessages.WordUpdatedSuccessfully);
         }

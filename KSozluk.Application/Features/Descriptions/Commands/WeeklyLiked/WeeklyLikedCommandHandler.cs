@@ -14,30 +14,26 @@ using System.Threading.Tasks;
 using KSozluk.Application.Features.Descriptions.Commands.GetDescriptions;
 using KSozluk.Application.Features.Words.Commands.AddWord;
 
+
 namespace KSozluk.Application.Features.Descriptions.Commands.WeeklyLiked
 {
     public class WeeklyLikedCommandHandler : RequestHandlerBase<WeeklyLikedCommand, WeeklyLikedResponse>
 
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly ILikeRepository _wordLikeRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
         private readonly IWordRepository _wordRepository;
 
-        public WeeklyLikedCommandHandler(IUserService userService, IUserRepository userRepository, ILikeRepository wordLikeRepository, IUnitOfWork unitOfWork, IWordRepository wordRepository)
+        public WeeklyLikedCommandHandler(ILikeRepository wordLikeRepository, IUnit unit, IWordRepository wordRepository)
         {
-            _userService = userService;
-            _userRepository = userRepository;
             _wordLikeRepository = wordLikeRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
             _wordRepository = wordRepository;
         }
 
         public async override Task<WeeklyLikedResponse> Handle(WeeklyLikedCommand request, CancellationToken cancellationToken)
         {
-
-            var userId = _userService.GetUserId();
+           var userId = request.UserId;
 
             var response = new WeeklyLikedResponse();
 

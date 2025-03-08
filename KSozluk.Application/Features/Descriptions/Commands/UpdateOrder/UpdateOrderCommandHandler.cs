@@ -6,28 +6,26 @@ using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 using System.Runtime.CompilerServices;
 
+
 namespace KSozluk.Application.Features.Descriptions.Commands.UpdateOrder
 {
     public class UpdateOrderCommandHandler : RequestHandlerBase<UpdateOrderCommand, UpdateOrderResponse>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUserService _userService;
         private readonly IDescriptionRepository _descriptionRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
 
-        public UpdateOrderCommandHandler(IUserRepository userRepository, IUserService userService, IDescriptionRepository descriptionRepository, IUnitOfWork unitOfWork)
+        public UpdateOrderCommandHandler( IDescriptionRepository descriptionRepository, IUnit unit)
         {
-            _userRepository = userRepository;
-            _userService = userService;
             _descriptionRepository = descriptionRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
         }
 
         public async override Task<UpdateOrderResponse> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionForAdmin(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<UpdateOrderResponse>(OperationMessages.PermissionFailure);
             }
@@ -41,7 +39,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateOrder
 
             description.UpdateOrder(request.Order);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
 
             return Response.SuccessWithMessage<UpdateOrderResponse>(OperationMessages.UpdatedOrderSuccessfully);
         }

@@ -13,31 +13,30 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
 {
     public class UpdateStatusCommandHandler : RequestHandlerBase<UpdateStatusCommand, UpdateStatusResponse>
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly IDescriptionRepository _descriptionRepository;
         private readonly IWordRepository _wordRepository;
         private readonly IEmailService _emailService;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
 
-        public UpdateStatusCommandHandler(IUserService userService, IUserRepository userRepository, IDescriptionRepository descriptionRepository, IEmailService emailService, IUnitOfWork unitOfWork, IWordRepository wordRepository = null)
+        public UpdateStatusCommandHandler(IDescriptionRepository descriptionRepository, IEmailService emailService, IUnit unit, IWordRepository wordRepository = null)
         {
-            _userService = userService;
-            _userRepository = userRepository;
             _descriptionRepository = descriptionRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
             _wordRepository = wordRepository;
             _emailService = emailService;
         }
 
         public async override Task<UpdateStatusResponse> Handle(UpdateStatusCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
-            if (!await _userRepository.HasPermissionForAdmin(userId))
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
+
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<UpdateStatusResponse>(OperationMessages.PermissionFailure);
             }
@@ -110,16 +109,15 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
             }
 
 
-                // Email sending part
-                var user = await _userRepository.FindAsync(description.RecommenderId);
-                if (user != null && !string.IsNullOrEmpty(user.Email))
+                var userEmail = request.Email;
+                if (userEmail != null && !string.IsNullOrEmpty(userEmail))
                 {
                     try
                     {
                         await _emailService.SendEmailAsync(
-                            user.Email,
+                            userEmail,
                             "Öneriniz Reddedildi",
-                            $"Merhaba {user.FullName}, {_responseDescriptionRecommendDto.LastEditedDate} tarihinde \"{word.WordContent}\" kelimesi için yaptığınız \"{_responseDescriptionRecommendDto.DescriptionContent}\" öneriniz şu sebeple reddedildi: {rejectionDescription}"
+                            $"Merhaba {userEmail}, {_responseDescriptionRecommendDto.LastEditedDate} tarihinde \"{word.WordContent}\" kelimesi için yaptığınız \"{_responseDescriptionRecommendDto.DescriptionContent}\" öneriniz şu sebeple reddedildi: {rejectionDescription}"
                         );
                     }
                     catch (Exception ex)
@@ -132,17 +130,16 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
             // Only handle rejection reasons when status is Onaylı
             if (request.Status == ContentStatus.Onaylı)
             {
+                var userEmail = request.Email;
 
-                // Email sending part
-                var user = await _userRepository.FindAsync(description.RecommenderId);
-                if (user != null && !string.IsNullOrEmpty(user.Email))
+                if (userEmail != null && !string.IsNullOrEmpty(userEmail))
                 {
                     try
                     {
                         await _emailService.SendEmailAsync(
-                            user.Email,
+                            userEmail,
                             "Öneriniz Onaylandı",
-                            $"Merhaba {user.FullName}, {_responseDescriptionRecommendDto.LastEditedDate} tarihinde \"{word.WordContent}\" kelimesi için yaptığınız \"{_responseDescriptionRecommendDto.DescriptionContent}\" öneriniz onaylandı."
+                            $"Merhaba {userEmail}, {_responseDescriptionRecommendDto.LastEditedDate} tarihinde \"{word.WordContent}\" kelimesi için yaptığınız \"{_responseDescriptionRecommendDto.DescriptionContent}\" öneriniz onaylandı."
                         );
                     }
                     catch (Exception ex)
@@ -153,7 +150,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.UpdateStatus
             }
 
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
             return Response.SuccessWithMessage<UpdateStatusResponse>(OperationMessages.UpdatedDescriptionStatusSuccessfully);
         }
 

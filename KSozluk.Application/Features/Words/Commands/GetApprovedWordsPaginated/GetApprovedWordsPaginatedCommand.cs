@@ -8,5 +8,7 @@ namespace KSozluk.Application.Features.Words.Commands.GetApprovedWordsPaginated
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-    }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
+    }   
 }

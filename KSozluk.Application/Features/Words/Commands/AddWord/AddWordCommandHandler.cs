@@ -10,26 +10,25 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
 {
     public class AddWordCommandHandler : RequestHandlerBase<AddWordCommand, AddWordResponse>
     {
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
         private readonly IWordRepository _wordRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
         private readonly IDescriptionRepository _descriptionRepository;
 
-        public AddWordCommandHandler(IUserService userService, IUserRepository userRepository, IWordRepository wordRepository, IUnitOfWork unitOfWork, IDescriptionRepository descriptionRepository)
+
+        public AddWordCommandHandler( IWordRepository wordRepository, IUnit unit, IDescriptionRepository descriptionRepository)
         {
-            _userService = userService;
-            _userRepository = userRepository;
+
             _wordRepository = wordRepository;
-            _unitOfWork = unitOfWork;
+            _unit = unit;
             _descriptionRepository = descriptionRepository;
         }
 
         public async override Task<AddWordResponse> Handle(AddWordCommand request, CancellationToken cancellationToken) //admin eklemesi
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionForAdmin(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<AddWordResponse>(OperationMessages.PermissionFailure);
             }
@@ -50,7 +49,7 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
                     existedWord.AddDescription(description);
                 }
 
-                await _unitOfWork.SaveChangesAsync();
+                await _unit.SaveChangesAsync();
 
 
                 return Response.SuccessWithBody<AddWordResponse>(existedWord, OperationMessages.DescriptionAddedtoTheExistingWordSuccessfully);
@@ -69,7 +68,7 @@ namespace KSozluk.Application.Features.Words.Commands.AddWord
 
 
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unit.SaveChangesAsync();
             Word.ClearResponse(word);
             return Response.SuccessWithBody<AddWordResponse>(word, OperationMessages.WordAddedSuccessfully);
         }

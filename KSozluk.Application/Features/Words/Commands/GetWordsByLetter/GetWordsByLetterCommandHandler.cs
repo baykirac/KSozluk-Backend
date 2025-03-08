@@ -6,28 +6,27 @@ using KSozluk.Domain;
 using KSozluk.Domain.Resources;
 using KSozluk.Domain.SharedKernel;
 
+
 namespace KSozluk.Application.Features.Words.Commands.GetWordsByLetter
 {
     public class GetWordsByLetterCommandHandler : RequestHandlerBase<GetWordsByLetterCommand, GetWordsByLetterResponse>
     {
         private readonly IWordRepository _wordRepository;
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnit _unit;
 
-        public GetWordsByLetterCommandHandler(IWordRepository wordRepository, IUserService userService, IUserRepository userRepository, IUnitOfWork unitOfWork)
+
+        public GetWordsByLetterCommandHandler(IWordRepository wordRepository, IUnit unit)
         {
             _wordRepository = wordRepository;
-            _userService = userService;
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
+            _unit= unit;
         }
 
         public async override Task<GetWordsByLetterResponse> Handle(GetWordsByLetterCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionView(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<GetWordsByLetterResponse>(OperationMessages.PermissionFailure);
             }

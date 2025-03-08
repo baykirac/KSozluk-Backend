@@ -7,7 +7,6 @@ namespace KSozluk.Persistence.Contexts
 {
     public sealed class SozlukContext : DbContext
     {
-        public DbSet<User> Users { get; set; } 
         public DbSet<Word> Words { get; set; }
         public DbSet<Description> Descriptions { get; set; }
         public DbSet<DescriptionLike> DescriptionLikes { get; set; }
@@ -20,7 +19,6 @@ namespace KSozluk.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersConfiguration).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DescriptionsConfiguration).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(WordsConfigurations).Assembly);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DescriptionLikeConfiguration).Assembly);

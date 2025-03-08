@@ -10,6 +10,7 @@ namespace KSozluk.Application.Features.Descriptions.Commands.WeeklyLiked
 {
     public class WeeklyLikedCommand  : CommandBase<WeeklyLikedResponse>
     {
-
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

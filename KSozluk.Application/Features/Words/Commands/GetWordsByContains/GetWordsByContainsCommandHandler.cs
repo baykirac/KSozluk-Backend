@@ -9,22 +9,19 @@ namespace KSozluk.Application.Features.Words.Commands.GetWordsByContains
 {
     public class GetWordsByContainsCommandHandler : RequestHandlerBase<GetWordsByContainsCommand, GetWordsByContainsResponse>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUserService _userService;
         private readonly IWordRepository _wordRepository;
 
-        public GetWordsByContainsCommandHandler(IUserRepository userRepository, IUserService userService, IWordRepository wordRepository)
+        public GetWordsByContainsCommandHandler(IWordRepository wordRepository)
         {
-            _userRepository = userRepository;
-            _userService = userService;
             _wordRepository = wordRepository;
-        }
+        }   
 
         public async override Task<GetWordsByContainsResponse> Handle(GetWordsByContainsCommand request, CancellationToken cancellationToken)
         {
-            var userId = _userService.GetUserId();
+             var userId = request.UserId;
+             var userRoles = request.Roles; 
 
-            if (!await _userRepository.HasPermissionView(userId))
+            if (!userRoles.Contains("admin"))
             {
                 return Response.Failure<GetWordsByContainsResponse>(OperationMessages.PermissionFailure);
             }

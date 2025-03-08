@@ -9,5 +9,7 @@ namespace KSozluk.Application.Features.Words.Commands.UpdateWord
         public Guid DescriptionId { get; set; }
         public string WordContent { get; set; }
         public string DescriptionContent { get; set; }
+        public long UserId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }
