@@ -24,18 +24,24 @@ namespace KSozluk.WebAPI.Business
         private readonly IFavoriteWordRepository _favouriteLikeRepository;
         private readonly IFavoriteWordRepository _favoriteWordRepository;
         private readonly IEmailService _emailService;
-
         private readonly IUnit _unit;
 
         public DescriptionService(IDescriptionRepository descriptionRepository, ILikeRepository likeRepository, IUnit unit, IWordRepository wordRepository, IFavoriteWordRepository favouriteLikeRepository, IFavoriteWordRepository favoriteWordRepository, ILikeRepository descriptionLikeRepository, IEmailService emailService)
         {
             _descriptionRepository = descriptionRepository;
+
             _likeRepository = likeRepository;
+
             _unit = unit;
+
             _wordRepository = wordRepository;
+
             _favouriteLikeRepository = favouriteLikeRepository;
+
             _favoriteWordRepository = favoriteWordRepository;
+
             _descriptionLikeRepository = descriptionLikeRepository;
+
             _emailService = emailService;
         }
         public async Task<ServiceResponse<List<DescriptionWithIsLikeDto>>> GetDescriptionsAsync(Guid WordId, long? UserId, List<string> Roles)
@@ -44,9 +50,11 @@ namespace KSozluk.WebAPI.Business
             var descriptions = await _descriptionRepository.FindByWordAsync(WordId, UserId);
 
             var isFavourited = false;
+
             var isLikedWord = false;
 
             var favoriteWord = await _favoriteWordRepository.GetByFavoriteWordAndUserAsync(WordId, UserId);
+
             var likedWord = await _likeRepository.FindLikedWordAsync(WordId, UserId);
 
             if (favoriteWord != null)
@@ -59,72 +67,81 @@ namespace KSozluk.WebAPI.Business
                 isLikedWord = true;
             }
 
-            //var favouriteWord = await _favouriteWordRepository.GetByFavouriteWordAndUserAsync(request.WordId, userId);
-
-            //if (favouriteWord != null)
-            //{
-            //    isFavourited = true;
-            //}
-
-            var _response = new
+            var response = new
             {
                 Body = descriptions,
+
                 IsFavourited = isFavourited,
+
                 IsLikedWord = isLikedWord
             };
 
-            return new ServiceResponse<List<DescriptionWithIsLikeDto>>(_response.Body);
+            return new ServiceResponse<List<DescriptionWithIsLikeDto>>(response.Body, true, "Begenilme işlemi gerçekleşti");
         }
 
         public async Task<ServiceResponse<Description>> DeleteDescriptionAsync(Guid DescriptionId, long? userId, List<string> Roles)
         {
 
             var word = await _descriptionRepository.FindByDescription(DescriptionId);
+
             var id = word.Id;
+
             word = await _wordRepository.FindAsync(id);
+
             var description = await _descriptionRepository.FindAsync(DescriptionId);
 
             if (word.Descriptions.Count == 1)
             {
+
                 await _wordRepository.DeleteAsync(word.Id);
+
                 await _unit.SaveChangesAsync();
+
             }
+
             word.RemoveDescription(description);
+
             await _unit.SaveChangesAsync();
-            return new ServiceResponse<Description>(description);
+
+            return new ServiceResponse<Description>(description, true, "Silme işlemi gerçekleşti");
         }
 
         public async Task<ServiceResponse<List<DescriptionTimelineDto>>> DescriptionTimelineAsync(long? UserId)
         {
+
             var response = await _descriptionRepository.GetDescriptionForTimelineAsync(UserId);
 
             if (!response.Any())
             {
+
                 return new ServiceResponse<List<DescriptionTimelineDto>>(null, false, "Henüz kelime eklenmemiş.");
+
             }
 
-            return new ServiceResponse<List<DescriptionTimelineDto>>(response);
+            return new ServiceResponse<List<DescriptionTimelineDto>>(response, true, "Kelime eklendi");
         }
 
         public async Task<ServiceResponse<List<DescriptionHeaderNameDto>>> HeaderDescriptionAsync(string WordContent, long? UserId, List<string> Roles)
         {
-            if (!Roles.Contains("admin"))
-            {
-                return new ServiceResponse<List<DescriptionHeaderNameDto>>(null, false, "Yetkisiz işlem. Admin rolü gereklidir.");
-            }
 
             var word = await _wordRepository.FindByContentAsync(WordContent);
+
             if (word == null)
             {
+
                 return new ServiceResponse<List<DescriptionHeaderNameDto>>(null, false, "Kelime bulunamadı.");
+
             }
 
             var descriptions = await _descriptionRepository.FindHeaderByWordAsync(word.Id);
 
             var resultList = descriptions.Select(d => new DescriptionHeaderNameDto
             {
+                
                 Id = d.Id,
+
                 DescriptionContent = d.DescriptionContent
+
             }).ToList();
 
             return new ServiceResponse<List<DescriptionHeaderNameDto>>(resultList, true, "Başarıyla getirildi.");
@@ -139,23 +156,32 @@ namespace KSozluk.WebAPI.Business
             if (existingLike != null)
             {
                 _descriptionLikeRepository.DeleteDescriptionLike(existingLike);
+
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Guid>(DescriptionId);
+                return new ServiceResponse<Guid>(DescriptionId, false, "Begenme işlemi gerçekleşmedi");
             }
             else
             {
+
                 var newLike = new DescriptionLike
                 {
+
                     Id = Guid.NewGuid(),
+
                     DescriptionId = DescriptionId,
+
                     UserId = UserId,
+
                     Timestamp = DateTime.UtcNow
+
                 };
 
                 await _descriptionLikeRepository.CreateDescriptionLike(newLike);
+
                 await _unit.SaveChangesAsync();
-                 return new ServiceResponse<Guid>(DescriptionId);
+
+                return new ServiceResponse<Guid>(DescriptionId, true, "Begenme işlemi gerçekleşti");
             }
         }
 
@@ -166,10 +192,13 @@ namespace KSozluk.WebAPI.Business
 
             if (word == null)
             {
+
                   return new ServiceResponse<Description>(null, false, "Word Yok");
+
             }
 
             var greatestOrder = await _descriptionRepository.FindGreatestOrder(word.Id);
+
             var newOrder = greatestOrder + 1;
 
             var description = Description.Create(Content, newOrder, UserId, PreviousDescriptionId);
@@ -178,7 +207,7 @@ namespace KSozluk.WebAPI.Business
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Description>(description);
+            return new ServiceResponse<Description>(description, true, "Açıklama güncelendi");
         }
 
         public async Task<ServiceResponse<Description>> UpdateOrderAsync(Guid DescriptionId, int Order, long? UserId, List<string> Roles)
@@ -188,13 +217,14 @@ namespace KSozluk.WebAPI.Business
 
             if (description == null)
             {
-                throw new InvalidOperationException("Description not fou");
+              return new ServiceResponse<Description>(null, false, "Açıklama yok");
             }
 
             description.UpdateOrder(Order);
 
             await _unit.SaveChangesAsync();
-            return new ServiceResponse<Description>(description);
+
+            return new ServiceResponse<Description>(description, true, "Açıklama getirildi");
         }
 
         public async Task<ServiceResponse<Guid>> FavouriteWordAsync(Guid WordId, long? UserId, List<string> Roles)
@@ -204,23 +234,30 @@ namespace KSozluk.WebAPI.Business
 
             if (existingLike != null)
             {
+
                 _favouriteLikeRepository.Delete(existingLike);
+
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Guid>(WordId);
+                return new ServiceResponse<Guid>(WordId, true, "Kelime favorilerden kaldırıldı.");
             }
             else
             {
                 var newLike = new KSozluk.WebAPI.Entities.FavoriteWord
                 {
+
                     Id = Guid.NewGuid(),
+
                     WordId = WordId,
+
                     UserId = UserId
                 };
 
                 await _favouriteLikeRepository.CreateAsync(newLike);
+
                 await _unit.SaveChangesAsync();
-                return new ServiceResponse<Guid>(WordId);
+
+                return new ServiceResponse<Guid>(WordId, true, "Kelime favorilere eklendi.");
             }
         }
 
@@ -228,39 +265,53 @@ namespace KSozluk.WebAPI.Business
         {
 
             var description = await _descriptionRepository.FindAsync(DescriptionId);
+
             var word = await _wordRepository.FindAsync(description.WordId);
+
             var previousDescriptionId = description.PreviousDescriptionId;
 
             if (previousDescriptionId.HasValue && Status == ContentStatus.Onaylı)
             {
+
                 var previousDescription = await _descriptionRepository.FindAsync(previousDescriptionId);
+
                 previousDescription.UpdateStatus(ContentStatus.Reddedildi);
+
             }
 
             var parentDescription = await _descriptionRepository.FindParentDescription(DescriptionId);
+
             if (parentDescription is not null && Status == ContentStatus.Onaylı)
             {
+
                 parentDescription.UpdateStatus(ContentStatus.Reddedildi);
+
             }
 
             if (Status == ContentStatus.Onaylı)
             {
+
                 word.UpdateStatus(ContentStatus.Onaylı);
+
             }
 
             else if (Status == ContentStatus.Reddedildi || Status == ContentStatus.Bekliyor)
             {
-                var hasOtherApprovedDescriptions = word.Descriptions
-                    .Any(d => d.Id != description.Id && d.Status == ContentStatus.Onaylı);
 
-                if (!hasOtherApprovedDescriptions && word.Descriptions.All(d =>
-                    d.Status == ContentStatus.Reddedildi || d.Status == ContentStatus.Bekliyor))
+                var hasOtherApprovedDescriptions = word.Descriptions
+
+                .Any(d => d.Id != description.Id && d.Status == ContentStatus.Onaylı);
+
+                if (!hasOtherApprovedDescriptions && word.Descriptions.All(d => d.Status == ContentStatus.Reddedildi || d.Status == ContentStatus.Bekliyor))
                 {
+
                     word.UpdateStatus(ContentStatus.Reddedildi);
+
                 }
             }
 
             description.UpdateStatus(Status);
+
             description.UpdateAcceptor(UserId);
 
 
@@ -268,32 +319,44 @@ namespace KSozluk.WebAPI.Business
 
             if (descriptionDto == null)
             {
-               return new ServiceResponse<Description>(null, false, "descriptionDto not found");
+
+               return new ServiceResponse<Description>(null, false, "description getirilemedi");
+
             }
 
             var _responseDescriptionRecommendDto = new DescriptionReccomendDto()
             {
+
                 DescriptionContent = descriptionDto.DescriptionContent,
+
                 LastEditedDate = descriptionDto.LastEditedDate,
+
             };
 
             // Only handle rejection reasons when status is Reddedildi
             if (Status == ContentStatus.Reddedildi)
             {
                 int? rejectionReasons;
+
                 string customRejectionReason;
 
                 //when RejectionReasons is 7
                 if (RejectionReasons == 7 && !string.IsNullOrEmpty(CustomRejectionReason))
                 {
+
                     rejectionReasons = RejectionReasons;
+
                     customRejectionReason = CustomRejectionReason;
+
                     description.UpdateRejectionReasons(rejectionReasons, customRejectionReason);
                 }
                 else
                 {
+
                     rejectionReasons = RejectionReasons;
+
                     customRejectionReason = CustomRejectionReason;
+
                     description.UpdateRejectionReasons(rejectionReasons, customRejectionReason);
                 }          
             }
@@ -304,18 +367,23 @@ namespace KSozluk.WebAPI.Business
                 Status = ContentStatus.Onaylı;
             }
 
-
             await _unit.SaveChangesAsync();
-            return new ServiceResponse<Description>(description);
+
+            return new ServiceResponse<Description>(description, true, "Güncelleme gerçekleşti");
         }
 
         public static int? GetEnumDescription(Enum value)
         {
+
             FieldInfo field = value.GetType().GetField(value.ToString());
+
             DescriptionAttribute attribute = field.GetCustomAttribute<DescriptionAttribute>();
+
             if (attribute != null && int.TryParse(attribute.Description, out int result))
             {
+
               return result;
+
             }
     
            return null;
@@ -323,25 +391,25 @@ namespace KSozluk.WebAPI.Business
 
         public async Task<ServiceResponse<List<ResponseFavouriteWordContentDto>>> FavouriteWordsOnScreenAsync(long? UserId, List<string> Roles)
         {
-            // if (!Roles.Contains("admin"))
-            // {
-            //     return new ServiceResponse<List<ResponseFavouriteWordContentDto>>(null, false, "Yetkisiz işlem. Admin rolü gereklidir.");
-            // }
 
             var favouriteWords = await _favoriteWordRepository.GetFavouriteWordsByUserIdAsync(UserId);
 
             if (!favouriteWords.Any())
             {
-                throw new InvalidOperationException("Description not fou");
+
+                return new ServiceResponse<List<ResponseFavouriteWordContentDto>>(null, false, "Favori kelime eklenemedi");
+
             }
 
-            return new ServiceResponse<List<ResponseFavouriteWordContentDto>>(favouriteWords);
+            return new ServiceResponse<List<ResponseFavouriteWordContentDto>>(favouriteWords, true, "Favori kelime eklendi");
         }
 
         public async Task<ServiceResponse<List<ResponseTopWordListDto>>> WeeklyLikedAsync(long? UserId, List<string> Roles)
         {
+
             var mostLikedWords = await _wordRepository.GetMostLikedWeekly();
-            return new ServiceResponse<List<ResponseTopWordListDto>>(mostLikedWords);
+
+            return new ServiceResponse<List<ResponseTopWordListDto>>(mostLikedWords, true, "Haftalık begenilenler getirildi");
         }
     }
 }

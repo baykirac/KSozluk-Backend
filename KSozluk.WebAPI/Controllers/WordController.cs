@@ -7,6 +7,7 @@ using KSozluk.WebAPI.Business;
 using KSozluk.WebAPI.DTOs;
 using KSozluk.WebAPI.SharedKernel;
 using Azure.Core;
+using KSozluk.WebAPI.Entities;
 
 namespace KSozluk.WebAPI.Controllers
 {
@@ -33,146 +34,240 @@ namespace KSozluk.WebAPI.Controllers
         }
         
         [HttpGet("[action]")]
-        public async Task<IActionResult> WeeklyLiked()
+        public async  Task<ServiceResponse<List<ResponseTopWordListDto>>> WeeklyLiked()
         {
             try{
-               var UserId = HttpContext.GetOztUser()?.UserId; 
-               var Roles = HttpContext.GetOztUser()?.Roles;
-               var response = await _descriptionService.WeeklyLikedAsync(UserId, Roles);
 
-                return Ok(response);
+               var _userId = HttpContext.GetOztUser()?.UserId; 
+
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _descriptionService.WeeklyLikedAsync(_userId, _roles);
+
+                return _response;
+
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+               
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return BadRequest(_ex.Message);
+
+                return new ServiceResponse<List<ResponseTopWordListDto>>(null, false, _ex.Message);
             }
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetAllWords()
+        public async Task<ServiceResponse<List<Word>>> GetAllWords()
         {  
             try{
-               var UserId = HttpContext.GetOztUser()?.UserId; 
-               var Roles = HttpContext.GetOztUser()?.Roles;
 
-                var response = await _wordService.GetAllWordsAsync(UserId, Roles);
+               var _userId = HttpContext.GetOztUser()?.UserId; 
 
-                return Ok(response);
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.GetAllWordsAsync(_userId, _roles);
+
+               return _response;
+
             }
             catch (Exception _ex)
             {
-                _Logger.Error(_ex,
+
+               _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return BadRequest(_ex.Message);
+
+                return new ServiceResponse<List<Word>>(null, false, _ex.Message);
+
             }
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetWordsByLetter(char Letter, int PageNumber, int PageSize)
-        {
+        public async Task<ServiceResponse<List<ResponseGetLastEditDto>>> GetLastEdit()
+        {  
             try{
-               var UserId = HttpContext.GetOztUser()?.UserId;  
-               var Roles = HttpContext.GetOztUser()?.Roles;
 
-                var response = await _wordService.GetWordsByLetterAsync(Letter, PageNumber, PageSize, UserId, Roles);
+               var _userId = HttpContext.GetOztUser()?.UserId; 
 
-                return Ok(response);
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.GetLastEditDateAsync(_userId, _roles);
+
+               return _response;
+
             }
             catch (Exception _ex)
             {
-                _Logger.Error(_ex,
+
+               _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return BadRequest(_ex.Message);
+
+                return new ServiceResponse<List<ResponseGetLastEditDto>>(null, false, _ex.Message);
+
             }
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetWordsByContains(string Content)
+        public async Task<ServiceResponse<List<Word>>> GetWordsByLetter(char Letter, int PageNumber, int PageSize)
         {
             try{
-               var UserId = HttpContext.GetOztUser()?.UserId; 
-               var Roles = HttpContext.GetOztUser()?.Roles;
 
-                var response = await _wordService.GetWordsByContainsAsync(Content, UserId, Roles);
+               var _userId = HttpContext.GetOztUser()?.UserId; 
 
-                return Ok(response);
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.GetWordsByLetterAsync(Letter, PageNumber, PageSize, _userId, _roles);
+
+                return _response;
+
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return BadRequest(_ex.Message);
+
+                return new ServiceResponse<List<Word>>(null, false, _ex.Message);
+
+            }
+        }
+
+        [HttpGet("[action]")]
+        public async Task<ServiceResponse<List<Word>>> GetWordsByContains(string Content)
+        {
+            try{
+               var _userId = HttpContext.GetOztUser()?.UserId; 
+
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.GetWordsByContainsAsync(Content, _userId, _roles);
+
+                return _response;
+                
+            }
+            catch (Exception _ex)
+            {
+
+                _Logger.Error(_ex,
+
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
+               _username: HttpContext.GetOztUser()?.Username,
+
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+
+                return new ServiceResponse<List<Word>>(null, false, _ex.Message);
+
             }
         }
 
         [HttpPost("[action]")]
-        public async Task<ServiceResponse<bool>> AddWord(RequestAddWords _dto)
+        public async Task<ServiceResponse<Word>> AddWord(RequestAddWords _dto)
         {       
             try{
-                var UserId = HttpContext.GetOztUser()?.UserId;
-                var Roles = HttpContext.GetOztUser()?.Roles;
-                var response = await _wordService.AddWordAsync(_dto.WordContent, _dto.Description, UserId, Roles);
-                return new ServiceResponse<bool>(true, true, "Kelime başarıyla eklendi.");
+
+               var _userId = HttpContext.GetOztUser()?.UserId; 
+
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.AddWordAsync(_dto.WordContent, _dto.Description, _userId, _roles);
+
+                return _response;
+
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return new ServiceResponse<bool>(false, false, _ex.Message);
+
+                return new ServiceResponse<Word>(null, false, _ex.Message);
+
             }
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetApprovedWordsPaginated(int PageNumber, int PageSize)
+        public async Task<ServiceResponse<List<Word>>> GetApprovedWordsPaginated(int PageNumber, int PageSize)
         {
             try{
-               var UserId = HttpContext.GetOztUser()?.UserId; 
-               var Roles = HttpContext.GetOztUser()?.Roles;
 
-                var response = await _wordService.GetApprovedWordsPaginatedAsync(PageNumber, PageSize, UserId, Roles);
+               var _userId = HttpContext.GetOztUser()?.UserId; 
 
-                return Ok(response);
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.GetApprovedWordsPaginatedAsync(PageNumber, PageSize, _userId, _roles);
+
+                return _response;
+
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return BadRequest(_ex.Message);
+
+                return new ServiceResponse<List<Word>>(null, false, _ex.Message);
+
             }
         }
 
 
         [HttpPost("[action]")]
-        public async Task<ServiceResponse<bool>> UpdateWord(RequestUpdateWordDto _dto)
+        public async Task<ServiceResponse<Word>> UpdateWord(RequestUpdateWordDto _dto)
         {   
             try{
-                var UserId = HttpContext.GetOztUser()?.UserId ?? 0; 
 
-                var Roles = HttpContext.GetOztUser()?.Roles;
-                await _wordService.UpdateWordAsync(_dto.WordId, _dto.DescriptionId, _dto.WordContent, _dto.DescriptionContent, UserId, Roles);  
-                return new ServiceResponse<bool>(true, true, "Kelime başarıyla güncellendi."); 
+               var _userId = HttpContext.GetOztUser()?.UserId; 
+
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.UpdateWordAsync(_dto.WordId, _dto.DescriptionId, _dto.WordContent, _dto.DescriptionContent, _userId, _roles);  
+
+                return _response; 
+
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return new ServiceResponse<bool>(false, false, _ex.Message);
+
+                return new ServiceResponse<Word>(null, false, _ex.Message);
             }
         }
 
@@ -181,76 +276,120 @@ namespace KSozluk.WebAPI.Controllers
         public async Task<ServiceResponse<bool>> DeleteWord(Guid WordId)
         {
             try{
-                var UserId = HttpContext.GetOztUser()?.UserId;  
-                var Roles = HttpContext.GetOztUser()?.Roles;
-                await _wordService.DeleteWordAsync(WordId, UserId, Roles);
-                return new ServiceResponse<bool>(true, true, "Kelime başarıyla silindi.");
+
+               var _userId = HttpContext.GetOztUser()?.UserId; 
+
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _wordService.DeleteWordAsync(WordId, _userId, _roles);
+
+               return _response;
+
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
+
                 return new ServiceResponse<bool>(false, false, _ex.Message);
+
             }
         }
 
         [HttpPost("[action]")]
-        public async Task<ServiceResponse<bool>> RecommendWord(RequestRecommendWordDto _dto)
+        public async Task<ServiceResponse<Word>> RecommendWord(RequestRecommendWordDto _dto)
         {
             try{
-                var UserId = HttpContext.GetOztUser()?.UserId; 
-                var Roles = HttpContext.GetOztUser()?.Roles;
-                var response = await _wordService.RecommendNewWordAsync(_dto.WordContent, _dto.DescriptionContent, UserId, Roles);
-                return new ServiceResponse<bool>(true, true, "Kelime önerisi başarıyla yapıldı.");
+
+                var _userId = HttpContext.GetOztUser()?.UserId; 
+
+                var _roles = HttpContext.GetOztUser()?.Roles;
+
+                var _response = await _wordService.RecommendNewWordAsync(_dto.WordContent, _dto.DescriptionContent, _userId, _roles);
+
+                return _response ;
+
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return new ServiceResponse<bool>(false, false, _ex.Message);
+
+                return new ServiceResponse<Word>(null, false, _ex.Message);
+
             }
         }
         
         [HttpPost("[action]")]
         //[EnableRateLimiting("interact-limit")]
-        public async Task<ServiceResponse<bool>> LikeWord(RequestLikeWord _dto)
+        public async Task<ServiceResponse<Guid>> LikeWord(RequestLikeWord _dto)
         {
             try{
-                var UserId = HttpContext.GetOztUser()?.UserId;  
-                var Roles = HttpContext.GetOztUser()?.Roles;
-                var Response = await _wordService.LikeWordAsync(_dto.WordId, UserId, Roles);
-                return new ServiceResponse<bool>(true, true, "Kelime beğenildi.");       
+
+                var _userId = HttpContext.GetOztUser()?.UserId;  
+
+                var _roles = HttpContext.GetOztUser()?.Roles;
+
+                var _response = await _wordService.LikeWordAsync(_dto.WordId, _userId, _roles);
+
+                return _response;     
+                 
             }
             catch (Exception _ex)
             {
+
                 _Logger.Error(_ex,
+
                 _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                 _username: HttpContext.GetOztUser()?.Username,
+
                 _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return new ServiceResponse<bool>(false, false, _ex.Message);
+
+                return new ServiceResponse<Guid>(Guid.Empty, false, _ex.Message);
+
             }
         }
 
         [HttpPost("[action]")]
-        public async Task<ServiceResponse<bool>> UpdateWordById(RequestUpdateWordById _dto)
+        public async Task<ServiceResponse<Word>> UpdateWordById(RequestUpdateWordById _dto)
         {
             try{
-                var UserId = HttpContext.GetOztUser()?.UserId;  
-                var Roles = HttpContext.GetOztUser()?.Roles;
-                await _wordService.UpdateWordByIdAsync(_dto.WordId, _dto.WordContent, UserId, Roles);
-                return new ServiceResponse<bool>(true, true, "Kelime başarıyla güncellendi.");
+
+                var _userId = HttpContext.GetOztUser()?.UserId;  
+
+                var _roles = HttpContext.GetOztUser()?.Roles;
+
+                var _response =  await _wordService.UpdateWordByIdAsync(_dto.WordId, _dto.WordContent, _userId, _roles);
+
+                return _response;
+
             }
             catch (Exception _ex)
             {
-                _Logger.Error(_ex,
+
+               _Logger.Error(_ex,
+
                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
                _username: HttpContext.GetOztUser()?.Username,
+
                _userId: (long)(HttpContext.GetOztUser()?.UserId));
-                return new ServiceResponse<bool>(false, false, _ex.Message);
+               
+                return new ServiceResponse<Word>(null, false, _ex.Message);
+
             }
         }
     }

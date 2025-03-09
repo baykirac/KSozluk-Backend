@@ -10,6 +10,7 @@ namespace KSozluk.WebAPI.Repositories
     {
         public Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize);
         public Task<List<Word>> GetAllWordsAsync();
+        public Task<List<ResponseGetLastEditDto>> GetOperationDateAsync();
         public Task<List<Word>> GetWordsByContainsAsync(string Content);
         public Task<Word> FindByContentAsync(string Content);
         public Task<List<Word>> GetAllWordsByPaginate (int pageNumber, int pageSize);

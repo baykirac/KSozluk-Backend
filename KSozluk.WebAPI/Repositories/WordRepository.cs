@@ -39,10 +39,6 @@ namespace KSozluk.WebAPI.Repositories
 
         public async Task<List<Word>> GetAllWordsAsync()
         {
-            // return await _context.Words
-            // .Include(w => w.Descriptions)
-            // .OrderByDescending(w => w.OperationDate)         
-            // .ToListAsync();
             return await _context.Words
             .Include(w => w.Descriptions
             .OrderByDescending(d => d.LastEditedDate))
@@ -51,6 +47,7 @@ namespace KSozluk.WebAPI.Repositories
             .OrderByDescending(x => x.OperationDate)
             .ToListAsync();
         }
+
 
         public async Task<List<Word>> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize)
         {
@@ -77,6 +74,21 @@ namespace KSozluk.WebAPI.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<ResponseGetLastEditDto>> GetOperationDateAsync()
+        {
+            return await _context.Words
+                .Where(w => w.Status == ContentStatus.Onaylı)
+                .OrderByDescending(w => w.LastEditedDate) // LastEditedDate'ye göre azalan sıralama
+                .Take(10) // Sadece ilk 10 kaydı al
+                .Select(w => new ResponseGetLastEditDto
+                {
+                    WordContent = w.WordContent,
+                    LastEditedDate = w.LastEditedDate,
+                    Status = w.Status,
+                })
+                .ToListAsync();
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             var word = await _context.Words.FirstOrDefaultAsync(w => w.Id == id);
@@ -99,7 +111,7 @@ namespace KSozluk.WebAPI.Repositories
                 .Select(group => new ResponseTopWordListDto
                 {
                     WordId = group.Key.WordId,
-                   
+
                     Count = group.Count()
                 })
                 .OrderByDescending(x => x.Count)

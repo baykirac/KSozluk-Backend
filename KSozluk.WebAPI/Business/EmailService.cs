@@ -20,9 +20,13 @@ namespace KSozluk.WebAPI.Business
 
             public async Task SendEmailAsync(string to, string subject, string body)
             {
+
                 var mailMessage = new MailMessage("kadirdaniisan@gmail.com", to, subject, body);
+
                 mailMessage.IsBodyHtml = true;
+
                 await _smtpClient.SendMailAsync(mailMessage);
+                
             }
         }
     
