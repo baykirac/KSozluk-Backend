@@ -38,6 +38,11 @@ namespace KSozluk.WebAPI.Configurations
                 .IsRequired()
                 .HasColumnName("user_id");
 
+            builder.Property(d => d.AcceptorId)
+                .IsRequired()
+                .HasColumnName("acceptor_id")
+                .IsRequired(false);
+
             builder.Property(d => d.PreviousDescriptionId)
                 .IsRequired(false)
                 .HasColumnName("previusdescid");
@@ -45,9 +50,13 @@ namespace KSozluk.WebAPI.Configurations
             builder.Property(d => d.RejectionReasons)
                 .IsRequired(false)
                 .HasColumnName("rejectionreasons");
+
             builder.Property(d => d.CustomRejectionReason)
                 .IsRequired(false)
-                .HasColumnName("customrejectionreason");
+                .HasColumnName("customrejectionreason");   
+
+            builder.Property(d => d.IsActive)
+            .HasColumnName("isactive"); 
           
             builder.Property(d => d.LastEditedDate)
                 .HasColumnName("lastediteddate");

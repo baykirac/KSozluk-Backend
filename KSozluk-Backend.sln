@@ -2,17 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Infrastructure", "KSozluk.Infrastructure\KSozluk.Infrastructure.csproj", "{11C933FF-E51D-1783-7FA4-227BB9C97DF9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Domain", "KSozluk.Domain\KSozluk.Domain.csproj", "{3BF41D32-3052-603E-32B6-3C1212C3B83A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Persistence", "KSozluk.Persistence\KSozluk.Persistence.csproj", "{236FC4AC-3F52-115F-F6BA-ADA26D197189}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.WebAPI", "KSozluk.WebAPI\KSozluk.WebAPI.csproj", "{BFD081B2-AF77-906E-9B66-99F9BF6E9B9C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserApi", "UserApi\UserApi.csproj", "{7D7B0805-1930-5D23-6E51-7234845C5BE2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSozluk.Application", "KSozluk.Application\KSozluk.Application.csproj", "{65D76A19-F55A-863A-B223-FBFB933B274E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,18 +12,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{11C933FF-E51D-1783-7FA4-227BB9C97DF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{11C933FF-E51D-1783-7FA4-227BB9C97DF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{11C933FF-E51D-1783-7FA4-227BB9C97DF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{11C933FF-E51D-1783-7FA4-227BB9C97DF9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3BF41D32-3052-603E-32B6-3C1212C3B83A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3BF41D32-3052-603E-32B6-3C1212C3B83A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3BF41D32-3052-603E-32B6-3C1212C3B83A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3BF41D32-3052-603E-32B6-3C1212C3B83A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{236FC4AC-3F52-115F-F6BA-ADA26D197189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{236FC4AC-3F52-115F-F6BA-ADA26D197189}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{236FC4AC-3F52-115F-F6BA-ADA26D197189}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{236FC4AC-3F52-115F-F6BA-ADA26D197189}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BFD081B2-AF77-906E-9B66-99F9BF6E9B9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BFD081B2-AF77-906E-9B66-99F9BF6E9B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFD081B2-AF77-906E-9B66-99F9BF6E9B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,10 +20,6 @@ Global
 		{7D7B0805-1930-5D23-6E51-7234845C5BE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D7B0805-1930-5D23-6E51-7234845C5BE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D7B0805-1930-5D23-6E51-7234845C5BE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65D76A19-F55A-863A-B223-FBFB933B274E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65D76A19-F55A-863A-B223-FBFB933B274E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65D76A19-F55A-863A-B223-FBFB933B274E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65D76A19-F55A-863A-B223-FBFB933B274E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

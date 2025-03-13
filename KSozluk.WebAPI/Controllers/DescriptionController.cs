@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ozcorps.Ozt;
 using Ozcorps.Logger;
@@ -9,15 +8,15 @@ using KSozluk.WebAPI.Entities;
 using Azure.Core;
 using KSozluk.WebAPI.DTOs;
 using KSozluk.WebAPI.SharedKernel;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Npgsql.Internal;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 namespace KSozluk.WebAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [OztActionFilter]
+    [OzLoggerActionFilter]
+    [EnableRateLimiting("interact-limit")]
     public class DescriptionController : ControllerBase
     {
         private readonly OztTool _OztTool;
@@ -34,6 +33,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpGet("[action]")]
+        [OztActionFilter]
         public async Task<ServiceResponse<List<DescriptionWithIsLikeDto>>> GetDescriptions(Guid WordId)
         {
             try{
@@ -64,6 +64,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
+        [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse<Description>> DeleteDescription(Guid DescriptionId)
         {
             try{
@@ -94,6 +95,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
+        [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse<Description>> UpdateOrder(RequestUpdateDto _dto)
         {
             try{
@@ -123,7 +125,9 @@ namespace KSozluk.WebAPI.Controllers
             }
         }
 
+
         [HttpPost("[action]")]
+        [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse<Description>> UpdateStatus(RequestUpdateStatusDto _dto)
         {
             try{
@@ -134,7 +138,7 @@ namespace KSozluk.WebAPI.Controllers
 
                var _roles = HttpContext.GetOztUser()?.Roles;
 
-               var _response = await _descriptionService.UpdateStatusAsync(_dto.DescriptionId, _dto.Status, _dto.RejectionReasons, _dto.CustomRejectionReason, _userId, _email, _roles);
+               var _response = await _descriptionService.UpdateStatusAsync(_dto.DescriptionId, _dto.Status, _dto.RejectionReasons, _dto.CustomRejectionReason, _dto.IsActive, _userId, _email, _roles);
 
                 return _response;
 
@@ -156,6 +160,38 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
+        [OztActionFilter]
+        public async Task<ServiceResponse<Description>> UpdateIsActive(RequestIsActiveDto _dto)
+        {
+            try{
+
+               var _userId = HttpContext.GetOztUser()?.UserId; 
+
+               var _roles = HttpContext.GetOztUser()?.Roles;
+
+               var _response = await _descriptionService.UpdateIsActiveAsync(_dto.DescriptionId, _dto.IsActive, _userId, _roles);
+
+                return _response;
+
+            }
+            catch (Exception _ex)
+            {
+
+                _Logger.Error(_ex,
+
+               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
+               _username: HttpContext.GetOztUser()?.Username,
+
+               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+
+                return new ServiceResponse<Description>(null, false, _ex.Message);
+                
+            }
+        }
+
+        [HttpPost("[action]")]
+        [OztActionFilter]
         public async Task<ServiceResponse<Description>> RecommendDescription(RequestRecommendDescriptionDto _dto)
         {
             try{
@@ -186,7 +222,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        //[EnableRateLimiting("interact-limit")]
+        [OztActionFilter]   
         public async Task<ServiceResponse<Guid>> DescriptionLike(RequestDescriptionLike _dto)
         {
             try{
@@ -217,6 +253,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
+        [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse<List<DescriptionHeaderNameDto>>> HeadersDescription(RequestHeadersDescriptionDto _dto)
         {
             try{
@@ -247,6 +284,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
+        [OztActionFilter]
         public async Task<ServiceResponse<Guid>> FavouriteWord(RequestFavouriteWordDto _dto)
         {
             try{
@@ -277,6 +315,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpGet("[action]")]
+        [OztActionFilter]
         public async Task<ServiceResponse<List<ResponseFavouriteWordContentDto>>> FavouriteWordsOnScreen()
         {
             try{
@@ -307,6 +346,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpGet("[action]")]
+        [OztActionFilter]
         public async Task<ServiceResponse<List<DescriptionTimelineDto>>> DescriptionTimeline()
         {
             try{
@@ -335,5 +375,7 @@ namespace KSozluk.WebAPI.Controllers
 
             }
         }
+
+        
     }
 }

@@ -9,5 +9,6 @@ public class RequestUpdateStatusDto
     public ContentStatus Status { get; set; }
     public int RejectionReasons { get; set; }
     public string CustomRejectionReason { get; set; }
+    public bool IsActive { get; set; }
 
 }

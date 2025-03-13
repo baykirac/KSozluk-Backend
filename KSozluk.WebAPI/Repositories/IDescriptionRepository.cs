@@ -14,5 +14,6 @@ namespace KSozluk.WebAPI.Repositories
         public Task<Description> FindParentDescription(Guid id);
         public Task<List<DescriptionTimelineDto>> GetDescriptionForTimelineAsync(long? userId);
         public Task<Description> FindByContentAsync(string descriptionContent);
+        Task UpdateAcceptorAsync(Guid descriptionId, long? acceptorId);
     }
 }

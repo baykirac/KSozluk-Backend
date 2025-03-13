@@ -38,11 +38,13 @@ namespace KSozluk.WebAPI.Repositories
                 .OrderByDescending(d => d.LastEditedDate)
                 .Select(d => new DescriptionTimelineDto
                 {
+                    Id = d.Id,
                     Status = d.Status,
                     WordId = d.WordId,
                     DescriptionContent = d.DescriptionContent,
                     RejectionReasons = d.RejectionReasons,
-                    CustomRejectionReason = d.CustomRejectionReason
+                    CustomRejectionReason = d.CustomRejectionReason,
+                    IsActive = d.IsActive
                 })
                 .ToListAsync();
 
@@ -53,18 +55,32 @@ namespace KSozluk.WebAPI.Repositories
                 var word = await _context.Words.SingleOrDefaultAsync(w => w.Id == item.WordId);
                 response.Add(new DescriptionTimelineDto
                 {
+                    Id = item.Id,
                     Status = item.Status,
                     WordId = item.WordId,
                     DescriptionContent = item.DescriptionContent,
                     WordContent = word?.WordContent,
                     RejectionReasons = item.RejectionReasons,
-                    CustomRejectionReason = item.CustomRejectionReason
+                    CustomRejectionReason = item.CustomRejectionReason,
+                    IsActive = item.IsActive
                 });
             }
 
             return response;
         }
 
+        public async Task UpdateAcceptorAsync(Guid descriptionId, long? acceptorId)
+        {
+            var description = await _context.Descriptions.FindAsync(descriptionId);
+
+            if (description != null)
+            {
+                description.AcceptorId = acceptorId;
+                
+                _context.Descriptions.Update(description);
+                await _context.SaveChangesAsync();
+            }
+        }
 
         public async Task<Word> FindByDescription(Guid id)
         {

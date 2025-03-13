@@ -42,6 +42,7 @@ namespace KSozluk.Persistence.Configurations
             builder.HasOne(d => d.Acceptor)
                 .WithMany()
                 .HasForeignKey(d => d.AcceptorId);
+                .IsRequired(false); 
 
             builder.HasOne(d => d.Recommender)
                 .WithMany()

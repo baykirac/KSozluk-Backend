@@ -179,7 +179,7 @@ public class UserApiService : DbServiceBase, IUserApiService
         if (string.IsNullOrWhiteSpace(username))
         {
             throw new ArgumentException("Username must be non-empty.", nameof(username));
-        } 
+        }
 
         if (!username.Contains('/'))
         {
@@ -188,7 +188,7 @@ public class UserApiService : DbServiceBase, IUserApiService
                 .Select(x => new SettingsDto
                 {
                     Key = x.Key,
-                    Value = x.Value,                   
+                    Value = x.Value,
                 })
                 .OrderBy(x => x.Key)
                 .ToList();
@@ -224,7 +224,7 @@ public class UserApiService : DbServiceBase, IUserApiService
             .Select(x => new SettingsDto
             {
                 Key = x.Key,
-                Value = x.Value,              
+                Value = x.Value,
             })
             .OrderBy(x => x.Key)
             .ToList();
@@ -247,6 +247,7 @@ public class UserApiService : DbServiceBase, IUserApiService
         var _isPasswordCorrect = false;
         var _ldapIpValue = "";
         var _ldapDomain = "";
+
 
         #region ldap kontrolü
         if (_ldap)
@@ -322,9 +323,6 @@ public class UserApiService : DbServiceBase, IUserApiService
 
                     _user.SetModifiedEntity(1, _isInsert: true);
 
-                //   var _userRole = new UserRole { UserId = _user.Id, RoleId = 2 };
-
-                //     _UserRoleRepository.Add(_userRole);
 
                     Save();
                     _result.Message = "Uygulamaya giriş yetkiniz bulunmamaktadır.Lütfen yöneticiniz ile irtbata geçiniz.";
@@ -684,6 +682,44 @@ public class UserApiService : DbServiceBase, IUserApiService
 
         }
 
+        if (_user == null)
+        {
+            var existingUserRole = _UserRoleRepository.Get(x => x.UserId == _user.Id && x.RoleId == 2);
+
+            if (existingUserRole == null)
+            {
+                var _userRole = new UserRole
+                {
+                    UserId = _user.Id,
+                    RoleId = 2,
+                    InsertedUserId = 1,
+                    IsActive = true,
+                    IsDeleted = false
+                };
+
+                _UserRoleRepository.Add(_userRole);
+                Save();
+            }
+
+            var existingUserPermission = _UserPermissionRepository.Get(x => x.UserId == _user.Id && x.PermissionId == 2);
+
+            if (existingUserPermission == null)
+            {
+                var _userPermission = new UserPermission
+                {
+                    UserId = _user.Id,
+                    PermissionId = 2,
+                    InsertedUserId = 1,
+                    IsActive = true,
+                    IsDeleted = false
+                };
+
+                _UserPermissionRepository.Add(_userPermission);
+                Save();
+            }
+
+        }
+        
         var _roles = _UserRoleRepository.GetAll(x =>
                 x.UserId == _user.Id && !x.IsDeleted && x.IsActive).
             ToList().
@@ -693,30 +729,30 @@ public class UserApiService : DbServiceBase, IUserApiService
                 (x, y) => new
                 {
                     Role = y,
-                    permission = (string) null
+                    permission = (string)null
                 });
-       var _permission = _roles.
-            Join(_RolePermissionRepository.GetAll(x => !x.IsDeleted && x.IsActive),
-                ur => ur.Role.Id,
-                rp => rp.RoleId,
-                (ur, rp) => new
-                {
-                    ur.Role,
-                    RolePermission = rp
-                }).
-            Join(_PermissionRepository.GetAll(x => !x.IsDeleted && x.IsActive),
-                rpu => rpu.RolePermission.PermissionId,
-                p => p.Id,
-                (rpu, p) => new
-                {
-                    rpu.Role,
-                    Permission = p
-                }).
-            Select(x => new
-            {
-                x.Permission,
-                x.Role
-            });
+        var _permission = _roles.
+             Join(_RolePermissionRepository.GetAll(x => !x.IsDeleted && x.IsActive),
+                 ur => ur.Role.Id,
+                 rp => rp.RoleId,
+                 (ur, rp) => new
+                 {
+                     ur.Role,
+                     RolePermission = rp
+                 }).
+             Join(_PermissionRepository.GetAll(x => !x.IsDeleted && x.IsActive),
+                 rpu => rpu.RolePermission.PermissionId,
+                 p => p.Id,
+                 (rpu, p) => new
+                 {
+                     rpu.Role,
+                     Permission = p
+                 }).
+             Select(x => new
+             {
+                 x.Permission,
+                 x.Role
+             });
 
         var _userPermissions = _UserPermissionRepository.GetAll(x =>
                 x.UserId == _user.Id && !x.IsDeleted && x.IsActive).

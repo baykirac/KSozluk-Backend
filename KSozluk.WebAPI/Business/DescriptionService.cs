@@ -44,6 +44,7 @@ namespace KSozluk.WebAPI.Business
 
             _emailService = emailService;
         }
+       
         public async Task<ServiceResponse<List<DescriptionWithIsLikeDto>>> GetDescriptionsAsync(Guid WordId, long? UserId, List<string> Roles)
         {
 
@@ -103,7 +104,7 @@ namespace KSozluk.WebAPI.Business
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Description>(description, true, "Silme işlemi gerçekleşti");
+            return new ServiceResponse<Description>(null, true, "Silme işlemi gerçekleşti");
         }
 
         public async Task<ServiceResponse<List<DescriptionTimelineDto>>> DescriptionTimelineAsync(long? UserId)
@@ -120,7 +121,7 @@ namespace KSozluk.WebAPI.Business
 
             return new ServiceResponse<List<DescriptionTimelineDto>>(response, true, "Kelime eklendi");
         }
-
+        
         public async Task<ServiceResponse<List<DescriptionHeaderNameDto>>> HeaderDescriptionAsync(string WordContent, long? UserId, List<string> Roles)
         {
 
@@ -144,9 +145,8 @@ namespace KSozluk.WebAPI.Business
 
             }).ToList();
 
-            return new ServiceResponse<List<DescriptionHeaderNameDto>>(resultList, true, "Başarıyla getirildi.");
+            return new ServiceResponse<List<DescriptionHeaderNameDto>>(null, true, "Başarıyla getirildi.");
         }
-
 
         public async Task<ServiceResponse<Guid>> LikeDescriptionAsync(Guid DescriptionId, long? UserId, List<string> Roles)
         {
@@ -155,11 +155,13 @@ namespace KSozluk.WebAPI.Business
 
             if (existingLike != null)
             {
+
                 _descriptionLikeRepository.DeleteDescriptionLike(existingLike);
 
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Guid>(DescriptionId, false, "Begenme işlemi gerçekleşmedi");
+                return new ServiceResponse<Guid>(Guid.Empty, false, "Begenme işlemi gerçekleşmedi");
+
             }
             else
             {
@@ -181,7 +183,7 @@ namespace KSozluk.WebAPI.Business
 
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Guid>(DescriptionId, true, "Begenme işlemi gerçekleşti");
+                return new ServiceResponse<Guid>(Guid.Empty, true, "Begenme işlemi gerçekleşti");
             }
         }
 
@@ -207,7 +209,7 @@ namespace KSozluk.WebAPI.Business
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Description>(description, true, "Açıklama güncelendi");
+            return new ServiceResponse<Description>(null, true, "Açıklama güncelendi");
         }
 
         public async Task<ServiceResponse<Description>> UpdateOrderAsync(Guid DescriptionId, int Order, long? UserId, List<string> Roles)
@@ -224,7 +226,25 @@ namespace KSozluk.WebAPI.Business
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Description>(description, true, "Açıklama getirildi");
+            return new ServiceResponse<Description>(null, true, "Açıklama getirildi");
+        }
+
+        public async Task<ServiceResponse<Description>> UpdateIsActiveAsync(Guid DescriptionId, bool IsActive, long? UserId, List<string> Roles)
+        {
+            var description = await _descriptionRepository.FindAsync(DescriptionId);
+
+            var Id = description.WordId;
+
+            if (description == null)
+            {
+              return new ServiceResponse<Description>(null, false, "Kelime Yok");
+            }
+
+            description.UpdateIsActive(IsActive);
+
+            await _unit.SaveChangesAsync();
+
+            return new ServiceResponse<Description>(null, true, "Açıklama getirildi");
         }
 
         public async Task<ServiceResponse<Guid>> FavouriteWordAsync(Guid WordId, long? UserId, List<string> Roles)
@@ -239,7 +259,7 @@ namespace KSozluk.WebAPI.Business
 
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Guid>(WordId, true, "Kelime favorilerden kaldırıldı.");
+                return new ServiceResponse<Guid>(Guid.Empty, true, "Kelime favorilerden kaldırıldı.");
             }
             else
             {
@@ -257,16 +277,17 @@ namespace KSozluk.WebAPI.Business
 
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Guid>(WordId, true, "Kelime favorilere eklendi.");
+                return new ServiceResponse<Guid>(Guid.Empty, true, "Kelime favorilere eklendi.");
             }
         }
 
-        public async Task<ServiceResponse<Description>> UpdateStatusAsync(Guid DescriptionId, ContentStatus Status, int RejectionReasons, string CustomRejectionReason, long? UserId, string Email, List<string> Roles)
+        public async Task<ServiceResponse<Description>> UpdateStatusAsync(Guid DescriptionId, ContentStatus Status, int RejectionReasons, string CustomRejectionReason, bool IsActive, long? UserId, string Email, List<string> Roles)
         {
 
             var description = await _descriptionRepository.FindAsync(DescriptionId);
 
             var word = await _wordRepository.FindAsync(description.WordId);
+            
 
             var previousDescriptionId = description.PreviousDescriptionId;
 
@@ -314,8 +335,16 @@ namespace KSozluk.WebAPI.Business
 
             description.UpdateAcceptor(UserId);
 
+            await _descriptionRepository.UpdateAcceptorAsync(DescriptionId, UserId);
 
-            var descriptionDto = await _descriptionRepository.GetById(x => x.Id == description.Id && x.UserId == description.UserId);
+            var _responseAcceptorIdDto = new AcceptorIdDto()
+            {
+
+                AcceptorId = description.AcceptorId,
+
+            };
+          
+            var descriptionDto = await _descriptionRepository.GetById(x => x.Id == description.Id && x.AcceptorId == description.AcceptorId);
 
             if (descriptionDto == null)
             {
@@ -339,6 +368,8 @@ namespace KSozluk.WebAPI.Business
                 int? rejectionReasons;
 
                 string customRejectionReason;
+
+                IsActive = true;
 
                 //when RejectionReasons is 7
                 if (RejectionReasons == 7 && !string.IsNullOrEmpty(CustomRejectionReason))
@@ -365,11 +396,12 @@ namespace KSozluk.WebAPI.Business
             if (Status == ContentStatus.Onaylı)
             {
                 Status = ContentStatus.Onaylı;
+                IsActive = false;
             }
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Description>(description, true, "Güncelleme gerçekleşti");
+            return new ServiceResponse<Description>(null, true, "Güncelleme gerçekleşti");
         }
 
         public static int? GetEnumDescription(Enum value)

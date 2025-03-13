@@ -62,26 +62,31 @@ namespace KSozluk.WebAPI.Business
 
                 foreach (var descriptionText in DescriptionContent)
                 {
+
                     var existingDescription = await _descriptionRepository.FindByContentAsync(descriptionText);
 
                     if (existingDescription == null)
                     {
+
                         var description = Description.Create(descriptionText, order, UserId);
 
                         existedWord.AddDescription(description);
 
                         order++;
+                        
                     }
 
                     else
                     {
+
                         return new ServiceResponse<Word>(null, false, "Bu açıklama daha önce eklenmiş.");
+
                     }
                 }
 
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Word>(existedWord, true, "Kelimeye yeni anlamlar eklendi.");
+                return new ServiceResponse<Word>(null, true, "Kelimeye yeni anlamlar eklendi.");
             }
 
             var word = Word.Create(WordContent, UserId);
@@ -183,7 +188,7 @@ namespace KSozluk.WebAPI.Business
 
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Guid>(WordId, true, "Kelime beğenisi kaldırıldı.");
+                return new ServiceResponse<Guid>(Guid.Empty, true, "Kelime beğenisi kaldırıldı.");
 
             }
 
@@ -195,7 +200,7 @@ namespace KSozluk.WebAPI.Business
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Guid>(WordId, true, "Kelime beğenildi.");
+            return new ServiceResponse<Guid>(Guid.Empty, true, "Kelime beğenildi.");
 
         }
 
@@ -223,7 +228,7 @@ namespace KSozluk.WebAPI.Business
 
                 await _unit.SaveChangesAsync();
 
-                return new ServiceResponse<Word>(word, true, "Kelime başarıyla eklendi.");
+                return new ServiceResponse<Word>(null, true, "Kelime başarıyla eklendi.");
             }
 
             var updated = Word.UpdateOperationDate(existingWord, now);
@@ -239,7 +244,7 @@ namespace KSozluk.WebAPI.Business
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Word>(existingWord, true, "Kelime başarıyla eklendi.");
+            return new ServiceResponse<Word>(null, true, "Kelime başarıyla eklendi.");
         }
 
         public async Task<ServiceResponse<Word>> UpdateWordAsync(Guid WordId, Guid DescriptionId, string WordContent, string DescriptionContent, long? UserId, List<string> Roles)
@@ -261,7 +266,7 @@ namespace KSozluk.WebAPI.Business
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Word>(word, true, "Kelime ve açıklama başarıyla güncellendi.");
+            return new ServiceResponse<Word>(null, true, "Kelime ve açıklama başarıyla güncellendi.");
 
         }
 
@@ -272,14 +277,16 @@ namespace KSozluk.WebAPI.Business
 
             if (word == null)
             {
+
                 return new ServiceResponse<Word>(null, false, "Hiç kelime bulunamadı.");
+
             }
 
             word.ChangeContent(WordContent);
 
             await _unit.SaveChangesAsync();
 
-            return new ServiceResponse<Word>(word, true, "Kelime başarıyla güncellendi.");
+            return new ServiceResponse<Word>(null, true, "Kelime başarıyla güncellendi.");
         }
 
         public async Task<ServiceResponse<List<ResponseGetLastEditDto>>> GetLastEditDateAsync(long? UserId, List<string> Roles)
@@ -288,7 +295,9 @@ namespace KSozluk.WebAPI.Business
 
             if (wordLast == null || !wordLast.Any())
             {
+
                 return new ServiceResponse<List<ResponseGetLastEditDto>>(null, false, "Hiç kelime bulunamadı.");
+
             }
 
             return new ServiceResponse<List<ResponseGetLastEditDto>>(wordLast, true, "Kelime listesi başarıyla getirildi.");

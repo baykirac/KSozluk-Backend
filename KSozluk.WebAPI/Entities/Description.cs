@@ -13,11 +13,13 @@ namespace KSozluk.WebAPI.Entities
         public ContentStatus Status { get; private set; }
         public User User { get; private set; }
         public long? UserId { get; set; }
+        public long? AcceptorId { get; set; }
         public DateTime LastEditedDate { get; private set; }
         public Word Word { get; private set; }
         public Description PreviousDescription { get; private set; }
         public int? RejectionReasons { get; private set; }
         public string CustomRejectionReason { get; private set; }
+        public bool IsActive { get; private set; }
 
         public Description() { }
         private Description(Guid id, string description, int order, ContentStatus status, DateTime lastEditedDate, long? userId)
@@ -27,16 +29,7 @@ namespace KSozluk.WebAPI.Entities
             Order = order;
             Status = status;
             LastEditedDate = lastEditedDate;
-            UserId = userId;
-        }
-        private Description(Guid id, string description, int order, ContentStatus status, DateTime lastEditedDate, long userId)
-        {
-            Id = id;
-            DescriptionContent = description;
-            Order = order;
-            Status = status;
-            LastEditedDate = lastEditedDate;
-            UserId = userId;
+            AcceptorId = userId;
         }
 
         private Description(Guid id, string description, int order, ContentStatus status, DateTime lastEditedDate,long? userId, Guid? previousDescId)
@@ -106,9 +99,9 @@ namespace KSozluk.WebAPI.Entities
             UserId = id;
         }
 
-        public void UpdateAcceptor(long? id)
+        public void UpdateAcceptor(long? userId)
         {
-            UserId = id;
+            AcceptorId = userId;
         }
 
         public void UpdateOrder(int order)
@@ -125,6 +118,11 @@ namespace KSozluk.WebAPI.Entities
         {
             RejectionReasons = rejectionReasons;
             CustomRejectionReason = customRejectionReason;
+        }
+
+        public void UpdateIsActive( bool isActive)
+        {
+            IsActive = isActive;
         }
     }
 }

@@ -18,7 +18,8 @@ namespace KSozluk.WebAPI.Business
         Task<ServiceResponse<Description>> UpdateOrderAsync(Guid DescriptionId, int Order, long? UserId, List<string> Roles); // Sıralamayı güncelle
         Task<ServiceResponse<Guid>> FavouriteWordAsync(Guid WordId, long? UserId, List<string> Roles); // Favori kelime ekle
         Task<ServiceResponse<List<ResponseFavouriteWordContentDto>>> FavouriteWordsOnScreenAsync(long? UserId, List<string> Roles); // Favori kelime sil
-        Task<ServiceResponse<Description>> UpdateStatusAsync(Guid DescriptionId, ContentStatus Status, int RejectionReasons, string CustomRejectionReason, long? UserId, string Email, List<string> Roles); // Durumu güncelle    
+        Task<ServiceResponse<Description>> UpdateStatusAsync(Guid DescriptionId, ContentStatus Status, int RejectionReasons, string CustomRejectionReason, bool IsActive, long? UserId, string Email, List<string> Roles); // Durumu güncelle    
         Task<ServiceResponse<List<ResponseTopWordListDto>>> WeeklyLikedAsync(long? UserId, List<string> Roles); // Haftalık beğenilenleri al
+        Task<ServiceResponse<Description>> UpdateIsActiveAsync(Guid DescriptionId, bool IsActive, long? UserId, List<string> Roles);
     }
 }
