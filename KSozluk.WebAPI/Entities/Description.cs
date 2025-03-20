@@ -1,9 +1,10 @@
 ﻿using KSozluk.WebAPI.Enums;
+using Ozcorps.Generic.Entity;
 using KSozluk.WebAPI.SharedKernel;
 
 namespace KSozluk.WebAPI.Entities
 {
-    public sealed class Description
+    public sealed class Description : EntityBase
     {
         public Guid Id { get; private set; }
         public Guid? PreviousDescriptionId { get; private set; }

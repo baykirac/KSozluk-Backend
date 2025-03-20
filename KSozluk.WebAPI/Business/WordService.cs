@@ -1,215 +1,255 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using KSozluk.WebAPI.Configurations;
 using KSozluk.WebAPI.DTOs;
 using KSozluk.WebAPI.Entities;
-using KSozluk.WebAPI.Repositories;
-using KSozluk.WebAPI.SharedKernel;
+using Ozcorps.Generic.Bll;
+using Ozcorps.Generic.Dal;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace KSozluk.WebAPI.Business
 {
-    public class WordService : IWordService
+    public class WordService : DbServiceBase, IWordService
     {
-        private readonly IWordRepository _wordRepository;
-        private readonly IDescriptionRepository _descriptionRepository;
-        private readonly ILikeRepository _likeRepository;
-        private readonly ILikeRepository _wordLikeRepository;
-        private readonly IFavoriteWordRepository _favoriteWordRepository;
-        private readonly IUnit _unit;
+        private readonly IRepository<Description> _DescriptionRepository;
+        private readonly IRepository<Word> _WordRepository;
+        private readonly IRepository<WordLike> _WordLikeRepository;
+        private readonly IRepository<DescriptionLike> _DescriptionLikeRepository;
+        private readonly IRepository<FavoriteWord> _FavoriteWordRepository;
 
-        public WordService(
-
-            IWordRepository wordRepository,
-
-            IDescriptionRepository descriptionRepository,
-
-            ILikeRepository likeRepository,
-
-            IFavoriteWordRepository favoriteWordRepository,
-
-            IUnit unit,
-
-            ILikeRepository wordLikeRepository
-
-        )
+        public WordService(IUnitOfWork _unitOfWork) : base(_unitOfWork)
         {
-            _wordRepository = wordRepository;
 
-            _descriptionRepository = descriptionRepository;
+            _DescriptionRepository = _unitOfWork.GetRepository<Description>();
 
-            _likeRepository = likeRepository;
+            _WordRepository = _unitOfWork.GetRepository<Word>();
 
-            _favoriteWordRepository = favoriteWordRepository;
+            _WordLikeRepository = _unitOfWork.GetRepository<WordLike>();
 
-            _unit = unit;
+            _DescriptionLikeRepository = _unitOfWork.GetRepository<DescriptionLike>();
 
-            _wordLikeRepository = wordLikeRepository;
+            _FavoriteWordRepository = _unitOfWork.GetRepository<FavoriteWord>();
         }
 
-        public async Task<ServiceResponse<Word>> AddWordAsync(string WordContent, List<string> DescriptionContent, long? UserId, List<string> Roles)
+        public async Task<AddWordResultDto> AddWordAsync(string wordContent, List<string> descriptionContent, long? userId, List<string> roles)
         {
+            var existedWord = await _WordRepository.GetQueryable()
+                .FirstOrDefaultAsync(w => w.WordContent == wordContent);
 
-            var existedWord = await _wordRepository.FindByContentAsync(WordContent);
-
-
-            if (existedWord != null) // kelime mevcutsa mevcut kelimeye sadece anlamı eklenecek
+            if (existedWord != null)
             {
-
-                int greatestOrder = await _descriptionRepository.FindGreatestOrder(existedWord.Id);
+                int greatestOrder = await _DescriptionRepository.GetQueryable()
+                    .Where(d => d.WordId == existedWord.Id)
+                    .Select(d => d.Order)
+                    .DefaultIfEmpty(0)
+                    .MaxAsync();
 
                 int order = greatestOrder + 1;
 
-                foreach (var descriptionText in DescriptionContent)
+                foreach (var descriptionText in descriptionContent)
                 {
-
-                    var existingDescription = await _descriptionRepository.FindByContentAsync(descriptionText);
-
+                    var existingDescription = await _DescriptionRepository.GetQueryable()
+                        .FirstOrDefaultAsync(d => d.DescriptionContent == descriptionText);
                     if (existingDescription == null)
                     {
-
-                        var description = Description.Create(descriptionText, order, UserId);
-
+                        var description = Description.Create(descriptionText, order, userId);
                         existedWord.AddDescription(description);
-
                         order++;
-                        
-                    }
-
-                    else
-                    {
-
-                        return new ServiceResponse<Word>(null, false, "Bu açıklama daha önce eklenmiş.");
-
                     }
                 }
 
-                await _unit.SaveChangesAsync();
-
-                return new ServiceResponse<Word>(null, true, "Kelimeye yeni anlamlar eklendi.");
+                return new AddWordResultDto
+                {
+                    Id = existedWord.Id,
+                    WordContent = existedWord.WordContent,
+                    CreatedDate = DateTime.Now,
+                    DescriptionCount = existedWord.Descriptions.Count
+                };
             }
 
-            var word = Word.Create(WordContent, UserId);
-
+            var word = Word.Create(wordContent, userId);
             int newOrder = 0;
 
-            await _wordRepository.CreateAsync(word);
+            _WordRepository.Add(word);
 
-            foreach (var descriptionText in DescriptionContent)
+            foreach (var descriptionText in descriptionContent)
             {
-                var description = Description.Create(descriptionText, newOrder++, UserId);
-
+                var description = Description.Create(descriptionText, newOrder++, userId);
                 word.AddDescription(description);
             }
 
-            await _unit.SaveChangesAsync();
+            _UnitOfWork.Save();
 
-            Word.ClearResponse(word);
-
-            return new ServiceResponse<Word>(word, false, "Kelime ve anlam başarıyla eklendi.");
-        }
-
-        public async Task<ServiceResponse<bool>> DeleteWordAsync(Guid WordId, long? UserId, List<string> Roles)
-        {
-
-            await _likeRepository.DeleteWordLikesByWordIdAsync(WordId);
-
-            await _wordRepository.DeleteAsync(WordId);
-
-            await _unit.SaveChangesAsync();
-
-            return new ServiceResponse<bool>(true, true, "Kelime başarıyla silindi.");
-        }
-
-        public async Task<ServiceResponse<List<Word>>> GetAllWordsAsync(long? UserId, List<string> Roles)
-        {
-
-            var words = await _wordRepository.GetAllWordsAsync();
-
-            if (!words.Any())
+            return new AddWordResultDto
             {
-
-                return new ServiceResponse<List<Word>>(null, false, "Henüz kelime eklenmemiş.");
-
-            }
-
-            return new ServiceResponse<List<Word>>(words, true, "Kelime listesi başarıyla getirildi.");
+                Id = word.Id,
+                WordContent = word.WordContent,
+                CreatedDate = DateTime.Now,
+                DescriptionCount = word.Descriptions.Count
+            };
         }
 
-        public async Task<ServiceResponse<List<Word>>> GetApprovedWordsPaginatedAsync(int PageNumber, int PageSize, long? UserId, List<string> Roles)
+        public async Task DeleteWordAsync(Guid wordId, long? userId, List<string> roles)
         {
-
-            var words = await _wordRepository.GetAllWordsByPaginate(PageNumber, PageSize);
-
-            if (!words.Any())
+            var word = await _WordRepository.GetQueryable()
+                .FirstOrDefaultAsync(w => w.Id == wordId);
+            if (word != null)
             {
-
-                return new ServiceResponse<List<Word>>(null, false, "Hiç kelime bulunamadı.");
-
+                _WordRepository.Remove(word);
             }
-
-            return new ServiceResponse<List<Word>>(words, true, "Kelime listesi başarıyla getirildi.");
+            _UnitOfWork.Save();
+            return;
         }
 
-        public async Task<ServiceResponse<List<Word>>> GetWordsByContainsAsync(string Content, long? UserId, List<string> Roles)
+        public async Task<List<WordDto>> GetAllWordsAsync(long? UserId, List<string> Roles, int pageNumber, int pageSize)
         {
+            var query = _WordRepository.GetQueryable()
+                        .Include(w => w.Descriptions.OrderByDescending(d => d.LastEditedDate))
+                            .ThenInclude(d => d.PreviousDescription)
+                        .Include(w => w.User)
+                        .OrderByDescending(x => x.OperationDate);
 
-            var words = await _wordRepository.GetWordsByContainsAsync(Content);
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
-            return new ServiceResponse<List<Word>>(words, true, "Kelime listesi başarıyla getirildi.");
+            var words = await query.Skip((pageNumber - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync();
+
+            var wordDtos = words
+                .Where(word => word.UserId.HasValue)
+                .Select(word => new WordDto
+                {
+                    Id = word.Id,
+                    WordContent = word.WordContent,
+                    Status = word.Status,
+                    UserId = word.UserId.Value,
+                    LastEditedDate = word.LastEditedDate,
+                    Descriptions = word.Descriptions?
+                        .Where(d => d.UserId.HasValue)
+                        .Select(d => new DescriptionDto
+                        {
+                            Id = d.Id,
+                            DescriptionContent = d.DescriptionContent,
+                            Order = d.Order,
+                            WordId = d.WordId,
+                            UserId = d.UserId.Value,
+                            LastEditedDate = d.LastEditedDate,
+                        }).ToList(),
+                    TotalRecords = totalRecords,
+                    TotalPages = totalPages,
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize
+                }).ToList();
+
+            return wordDtos;
         }
 
-        public async Task<ServiceResponse<List<Word>>> GetWordsByLetterAsync(char Letter, int PageNumber, int PageSize, long? UserId, List<string> Roles)
+
+        public async Task<WordPagedResultDto> GetApprovedWordsPaginatedAsync(int pageNumber, int pageSize, long? userId, List<string> roles)
         {
+            var words = await _WordRepository.GetQueryable()
+                .Include(w => w.Descriptions)
+                .OrderBy(w => w.WordContent)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-            var words = await _wordRepository.GetWordsByLetterAsync(Letter, PageNumber, PageSize);
-
-            if (!words.Any())
+            return new WordPagedResultDto
             {
-
-                return new ServiceResponse<List<Word>>(null, false, "Hiç kelime bulunamadı.");
-
-            }
-
-            await _unit.SaveChangesAsync();
-
-            return new ServiceResponse<List<Word>>(words, true, "Kelime listesi başarıyla getirildi.");
+                Items = words.Select(w => new WordListDto
+                {
+                    Id = w.Id,
+                    WordContent = w.WordContent,
+                    Status = w.Status
+                }).ToList(),
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
-        public async Task<ServiceResponse<Guid>> LikeWordAsync(Guid WordId, long? UserId, List<string> Roles)
+        public async Task<List<WordSearchResultDto>> GetWordsByContainsAsync(string Content, long? UserId, List<string> Roles)
+        {
+            var words = await _WordRepository.GetQueryable()
+                .Where(w =>
+                    w.WordContent.ToLower().Contains(Content.ToLower()) &&
+                    w.Status == ContentStatus.Onaylı)
+                .ToListAsync();
+
+            return words.Select(w => new WordSearchResultDto
+            {
+                Id = w.Id,
+                WordContent = w.WordContent
+            }).ToList();
+        }
+
+        public async Task<PagedWordDto> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize, long? userId, List<string> roles)
+        {
+            var words = await _WordRepository.GetQueryable()
+                .Where(w => w.Status == ContentStatus.Onaylı &&
+                           w.WordContent.ToLower().StartsWith(letter.ToString().ToLower()))
+                .OrderBy(w => w.WordContent)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(w => new WordSearchResultDto
+                {
+                    Id = w.Id,
+                    WordContent = w.WordContent
+                })
+                .ToListAsync();
+
+            _UnitOfWork.Save();
+
+            return new PagedWordDto
+            {
+                Letter = letter,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                WordResults = words
+            };
+        }
+
+        public async Task<LikeResultDto> LikeWordAsync(Guid wordId, long? userId, List<string> roles)
         {
 
-            var existingLike = await _wordLikeRepository.GetByWordAndUserAsync(WordId, UserId);
+            var existingLike = _WordLikeRepository.GetFirst(x => x.WordId == wordId && x.UserId == userId);
 
             if (existingLike != null)
             {
+                _WordLikeRepository.Remove(existingLike);
+                _UnitOfWork.Save();
 
-                _wordLikeRepository.DeleteWordLike(existingLike);
+                var totalLikes = _WordLikeRepository.GetQueryable().Count(x => x.WordId == wordId);
 
-                await _unit.SaveChangesAsync();
-
-                return new ServiceResponse<Guid>(Guid.Empty, true, "Kelime beğenisi kaldırıldı.");
-
+                return new LikeResultDto
+                {
+                    IsLiked = false,
+                    TotalLikes = totalLikes
+                };
             }
+            else
+            {
+                var now = DateTime.UtcNow;
+                var newWordLike = WordLike.Create(Guid.NewGuid(), wordId, userId, now);
+                await _WordLikeRepository.AddAsync(newWordLike);
+                _UnitOfWork.Save();
 
-            var now = DateTime.UtcNow;
+                var totalLikes = _WordLikeRepository.GetQueryable().Count(x => x.WordId == wordId);
 
-            var newWordLike = WordLike.Create(Guid.NewGuid(), WordId, UserId, now);
-
-            await _wordLikeRepository.CreateWordLike(newWordLike);
-
-            await _unit.SaveChangesAsync();
-
-            return new ServiceResponse<Guid>(Guid.Empty, true, "Kelime beğenildi.");
-
+                return new LikeResultDto
+                {
+                    IsLiked = true,
+                    TotalLikes = totalLikes
+                };
+            }
         }
 
-        public async Task<ServiceResponse<Word>> RecommendNewWordAsync(string WordContent, List<string> DescriptionContent, long? UserId, List<string> Roles)
+        public async Task<RecommendWordResultDto> RecommendNewWordAsync(string WordContent, List<string> DescriptionContent, long? UserId, List<string> Roles)
         {
-
             var now = DateTime.Now;
 
-            var existingWord = await _wordRepository.FindByContentAsync(WordContent);
+            var existingWord = await _WordRepository.GetQueryable()
+                .Include(w => w.Descriptions)
+                .FirstOrDefaultAsync(w => w.WordContent == WordContent);
 
             if (existingWord is null)
             {
@@ -217,90 +257,97 @@ namespace KSozluk.WebAPI.Business
 
                 foreach (var descriptionText in DescriptionContent)
                 {
-
                     var description = Description.Create(descriptionText, 0, UserId, null);
-
                     word.AddDescription(description);
-
                 }
 
-                await _wordRepository.CreateAsync(word);
+                await _WordRepository.AddAsync(word);
+                _UnitOfWork.Save();
 
-                await _unit.SaveChangesAsync();
-
-                return new ServiceResponse<Word>(null, true, "Kelime başarıyla eklendi.");
+                return new RecommendWordResultDto
+                {
+                    Id = word.Id,
+                    WordContent = WordContent,
+                    SubmitDate = now
+                };
             }
 
             var updated = Word.UpdateOperationDate(existingWord, now);
 
             foreach (var descriptionText in DescriptionContent)
             {
-
                 var description = Description.Create(descriptionText, 0, UserId, null);
-
                 existingWord.AddDescription(description);
-
             }
 
-            await _unit.SaveChangesAsync();
+            _UnitOfWork.Save();
 
-            return new ServiceResponse<Word>(null, true, "Kelime başarıyla eklendi.");
+            return new RecommendWordResultDto
+            {
+                Id = existingWord.Id,
+                WordContent = existingWord.WordContent,
+                SubmitDate = now
+            };
         }
 
-        public async Task<ServiceResponse<Word>> UpdateWordAsync(Guid WordId, Guid DescriptionId, string WordContent, string DescriptionContent, long? UserId, List<string> Roles)
+        public async Task<UpdateWordResultDto> UpdateWordAsync(Guid WordId, Guid DescriptionId, string WordContent, string DescriptionContent, long? UserId, List<string> Roles)
         {
-
-
-            var word = await _wordRepository.FindAsync(WordId);
-
-            if (word == null)
-            {
-                return new ServiceResponse<Word>(null, false, "Hiç kelime bulunamadı.");
-            }
+            var word = await _WordRepository.GetQueryable()
+                .Include(w => w.Descriptions)
+                .FirstOrDefaultAsync(w => w.Id == WordId);
 
             word.ChangeContent(WordContent);
 
-            word.Descriptions.SingleOrDefault(d => d.Id == DescriptionId).UpdateContent(DescriptionContent);
-
-            word.Descriptions.SingleOrDefault(d => d.Id == DescriptionId).UpdateRecommender(UserId);
-
-            await _unit.SaveChangesAsync();
-
-            return new ServiceResponse<Word>(null, true, "Kelime ve açıklama başarıyla güncellendi.");
-
-        }
-
-        public async Task<ServiceResponse<Word>> UpdateWordByIdAsync(Guid WordId, string WordContent, long? UserId, List<string> Roles)
-        {
-
-            var word = await _wordRepository.FindByIdAsync(WordId);
-
-            if (word == null)
+            var description = word.Descriptions.SingleOrDefault(d => d.Id == DescriptionId);
+            if (description != null)
             {
-
-                return new ServiceResponse<Word>(null, false, "Hiç kelime bulunamadı.");
-
+                description.UpdateContent(DescriptionContent);
+                description.UpdateRecommender(UserId);
             }
 
-            word.ChangeContent(WordContent);
+            _UnitOfWork.Save();
 
-            await _unit.SaveChangesAsync();
-
-            return new ServiceResponse<Word>(null, true, "Kelime başarıyla güncellendi.");
+            return new UpdateWordResultDto
+            {
+                Id = word.Id,
+                WordContent = word.WordContent,
+                UpdatedDate = DateTime.Now,
+                DescriptionId = description?.Id ?? Guid.Empty,
+                DescriptionContent = description?.DescriptionContent
+            };
         }
 
-        public async Task<ServiceResponse<List<ResponseGetLastEditDto>>> GetLastEditDateAsync(long? UserId, List<string> Roles)
+        public async Task<UpdateWordByIdResultDto> UpdateWordByIdAsync(Guid wordId, string wordContent, long? userId, List<string> roles)
         {
-            var wordLast = await _wordRepository.GetOperationDateAsync();
 
-            if (wordLast == null || !wordLast.Any())
+            var word = await _WordRepository.GetQueryable()
+                .FirstOrDefaultAsync(w => w.Id == wordId);
+
+
+            word.ChangeContent(wordContent);
+
+            _UnitOfWork.Save();
+
+            return new UpdateWordByIdResultDto
             {
+                Id = word.Id,
+                WordContent = word.WordContent
+            };
+        }
 
-                return new ServiceResponse<List<ResponseGetLastEditDto>>(null, false, "Hiç kelime bulunamadı.");
-
-            }
-
-            return new ServiceResponse<List<ResponseGetLastEditDto>>(wordLast, true, "Kelime listesi başarıyla getirildi.");
+        public async Task<List<GetLastEditDto>> GetLastEditDateAsync(long? UserId, List<string> Roles)
+        {
+            return await _WordRepository.GetQueryable()
+                .Where(w => w.Status == ContentStatus.Onaylı)
+                .OrderByDescending(w => w.LastEditedDate)
+                .Take(10)
+                .Select(w => new GetLastEditDto
+                {
+                    WordContent = w.WordContent,
+                    LastEditedDate = w.LastEditedDate,
+                    Status = w.Status,
+                })
+                .ToListAsync();
         }
 
     }

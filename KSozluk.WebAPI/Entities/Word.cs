@@ -1,8 +1,9 @@
 ﻿using KSozluk.WebAPI.SharedKernel;
+using Ozcorps.Generic.Entity;
 
 namespace KSozluk.WebAPI.Entities
 {
-    public sealed class Word
+    public sealed class Word : EntityBase
     {
         public Guid Id { get; private set; }
         public string WordContent { get; private set; }
@@ -18,7 +19,7 @@ namespace KSozluk.WebAPI.Entities
             Descriptions = _descriptions;
  
         }
-
+        
         private Word(Guid id, string word, ContentStatus status, long? userId, DateTime lastEditedDate, DateTime operationDate)
         {
             Id = id;
@@ -149,7 +150,7 @@ namespace KSozluk.WebAPI.Entities
         public void ChangeContent(string Content)
         {
             WordContent = Content;
-        
+
         }
 
         public void UpdateStatus(ContentStatus status)
@@ -162,7 +163,7 @@ namespace KSozluk.WebAPI.Entities
         {
             _descriptions.Remove(description);
             Descriptions = _descriptions;
-           
-        }      
+        
+        }  
     }
 }

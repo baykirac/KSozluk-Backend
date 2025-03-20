@@ -18,7 +18,7 @@ namespace KSozluk.WebAPI.DataAccess.Contexts
 
        // public DbSet<MostLikedWeekly> MostLikedPerWeek {  get; set; }
        public SozlukContext(DbContextOptions<SozlukContext> options) : base(options) { }
-       // public SozlukContext(DbContextOptions options) : base(options) { }
+       // public DbContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

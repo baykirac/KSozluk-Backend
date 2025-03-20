@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Ozcorps.Generic.Entity;
 
-namespace KSozluk.WebAPI.Entities
+namespace KSozluk.WebAPI.Entities 
 {
-    public class FavoriteWord
+    public class FavoriteWord: EntityBase
     {
         public Guid Id { get; set; }
         public long? UserId { get; set; }     

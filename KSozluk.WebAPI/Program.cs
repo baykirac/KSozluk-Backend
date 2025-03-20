@@ -1,18 +1,17 @@
-
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
-using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using System.Net.Mail;
 using System.Net;
-using System.Reflection;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Ozcorps.Ozt;
 using KSozluk.WebAPI.Extensions;
 using Ozcorps.Logger;
 using KSozluk.WebAPI.Business;
+using Microsoft.EntityFrameworkCore;
+using Ozcorps.Generic.Dal;
+using KSozluk.WebAPI.DataAccess.Contexts;
+
+
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,21 +23,32 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOzt();
+builder.Services.AddGeneric();
 builder.Services.AddSingleton<OztTool>();
 builder.Services.AddOzPostgreLogger(builder.Configuration.GetConnectionString("PostgreLogger"));
 
 byte[] path = new byte[] { 66, 110, 74, 84, 81, 85, 116, 108, 101, 86, 53, 104, 98, 72, 83, 108, 80, 106, 120, 78, 98, 50, 82, 49, 103, 72, 86, 122, 80, 106, 100, 75 };
- 
+
 byte[] vector = new byte[] { 71, 51, 82, 71, 77, 72, 66, 75, 115, 85, 66, 116, 69, 82, 78, 74 };
- 
- 
+
+
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath).AddJsonFile(configFile).AddEnvironmentVariables().
     Build().Decrypt(path, vector, cipherPrefix: "CipherText:");
-
-
+    
+builder.Services.AddScoped<DbContext, SozlukContext>();
+builder.Services.AddDbContext<SozlukContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreConnectionString"));
+});
 builder.Services.AddScoped<IWordService, WordService>();
 builder.Services.AddScoped<IDescriptionService, DescriptionService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+
+
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
 
 
 // Configure SmtpClient
@@ -59,7 +69,7 @@ builder.Services.AddSingleton<SmtpClient>(provider =>
 });
 
 
-builder.Services.AddPersistenceServices(builder.Configuration);  
+//builder.Services.AddPersistenceServices(builder.Configuration);  
 //builder.Services.AddScoped<OzLoggerActionFilter>();
 
 

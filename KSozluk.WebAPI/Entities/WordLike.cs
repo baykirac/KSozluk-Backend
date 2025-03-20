@@ -1,13 +1,13 @@
-﻿namespace KSozluk.WebAPI.Entities
+﻿using Ozcorps.Generic.Entity;
+
+namespace KSozluk.WebAPI.Entities
 {
-    public sealed class WordLike
-    {
+    public sealed class WordLike : EntityBase
+    { //NEW LİKE ENTİTY
         public Guid Id { get; set; }
         public Guid WordId { get; set; }
         public long? UserId { get; set; }
         public DateTime Timestamp { get; set; }
-
-        public WordLike() { }
 
         private WordLike(Guid id, Guid wordId, long? userId, DateTime timestamp)
         {
