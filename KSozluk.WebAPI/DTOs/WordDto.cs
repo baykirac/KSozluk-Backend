@@ -2,18 +2,20 @@
 
 namespace KSozluk.WebAPI.DTOs
 {
-    public class WordDto
+    public class WordAllDto
+    {
+        public List<WordDto> Items { get; set; }
+    }
+
+     public class WordDto
     {
         public Guid Id { get; set; }
         public string WordContent { get; set; }
         public ContentStatus Status { get; set; }
         public long UserId { get; set; }
         public DateTime LastEditedDate { get; set; }
+        public UserDto Users { get; set; }
         public List<DescriptionDto> Descriptions { get; set; }
-        public int TotalRecords { get; set; }
-        public int TotalPages { get; set; }
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; }
     }
 
     public class AddWordResultDto

@@ -77,7 +77,7 @@ namespace KSozluk.WebAPI.Controllers
 
         [HttpGet("[action]")]
         [OztActionFilter(Permissions = "admin")]
-        public async Task<ServiceResponse> GetAllWords(int pageNumber = 1 , int pageSize = 10)
+        public async Task<ServiceResponse> GetAllWords()
         {
             try
             {
@@ -86,7 +86,7 @@ namespace KSozluk.WebAPI.Controllers
 
                 var _roles = HttpContext.GetOztUser()?.Roles;
 
-                var _response = await _wordService.GetAllWordsAsync(_userId, _roles, pageNumber, pageSize);
+                var _response = await _wordService.GetAllWordsAsync(_userId, _roles);
 
                 return new ServiceResponse
                 {

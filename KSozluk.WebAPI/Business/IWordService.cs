@@ -11,7 +11,7 @@ namespace KSozluk.WebAPI.Business
     {
         Task<AddWordResultDto> AddWordAsync(string WordContent, List<string> DescriptionsContent, long? UserId, List<string> Roles);
         Task DeleteWordAsync(Guid wordId, long? userId, List<string> roles);
-        Task<List<WordDto>> GetAllWordsAsync(long? UserId, List<string> Roles, int pageNumber, int pageSize);
+        Task<WordAllDto> GetAllWordsAsync(long? UserId, List<string> Roles);
         Task<WordPagedResultDto> GetApprovedWordsPaginatedAsync(int pageNumber, int pageSize, long? userId, List<string> roles);
         Task<List<WordSearchResultDto>> GetWordsByContainsAsync(string Content, long? UserId, List<string> Roles);
         Task<PagedWordDto> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize, long? userId, List<string> roles);

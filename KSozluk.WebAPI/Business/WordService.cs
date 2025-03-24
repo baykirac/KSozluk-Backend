@@ -100,20 +100,14 @@ namespace KSozluk.WebAPI.Business
             return;
         }
 
-        public async Task<List<WordDto>> GetAllWordsAsync(long? UserId, List<string> Roles, int pageNumber, int pageSize)
+        public async Task<WordAllDto> GetAllWordsAsync(long? UserId, List<string> Roles)
         {
-            var query = _WordRepository.GetQueryable()
-                        .Include(w => w.Descriptions.OrderByDescending(d => d.LastEditedDate))
-                            .ThenInclude(d => d.PreviousDescription)
-                        .Include(w => w.User)
-                        .OrderByDescending(x => x.OperationDate);
-
-            var totalRecords = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-
-            var words = await query.Skip((pageNumber - 1) * pageSize)
-                                   .Take(pageSize)
-                                   .ToListAsync();
+            var words = await _WordRepository.GetQueryable()
+                .Include(w => w.Descriptions)
+                .ThenInclude(d => d.PreviousDescription)
+                .Include(w => w.User)
+                .OrderByDescending(x => x.OperationDate)
+                .ToListAsync();
 
             var wordDtos = words
                 .Where(word => word.UserId.HasValue)
@@ -123,8 +117,19 @@ namespace KSozluk.WebAPI.Business
                     WordContent = word.WordContent,
                     Status = word.Status,
                     UserId = word.UserId.Value,
+                    Users = word.User != null
+                        ? new UserDto
+                        {
+                            Id = word.User.Id,
+                            Username = word.User.Username,
+                            Name = word.User.Name,
+                            Surname = word.User.Surname,
+                            Email = word.User.Email
+                        }
+                        : new UserDto(),
                     LastEditedDate = word.LastEditedDate,
                     Descriptions = word.Descriptions?
+                        .OrderByDescending(d => d.LastEditedDate) // Buraya sıralama eklendi
                         .Where(d => d.UserId.HasValue)
                         .Select(d => new DescriptionDto
                         {
@@ -132,21 +137,30 @@ namespace KSozluk.WebAPI.Business
                             DescriptionContent = d.DescriptionContent,
                             Order = d.Order,
                             WordId = d.WordId,
-                            UserId = d.UserId.Value,
+                            Status = d.Status,
+                            User = d.User != null
+                                ? new UserDto
+                                {
+                                    Id = d.User.Id, // word.User yerine d.User
+                                    Username = d.User.Username,
+                                    Name = d.User.Name,
+                                    Surname = d.User.Surname,
+                                    Email = d.User.Email
+                                }
+                                : new UserDto(),
+                            UserId = d.UserId ?? 0, // null kontrolü eklendi
                             LastEditedDate = d.LastEditedDate,
                         }).ToList(),
-                    TotalRecords = totalRecords,
-                    TotalPages = totalPages,
-                    CurrentPage = pageNumber,
-                    PageSize = pageSize
                 }).ToList();
 
-            return wordDtos;
+            return new WordAllDto
+            {
+                Items = wordDtos
+            };
         }
-
-
         public async Task<WordPagedResultDto> GetApprovedWordsPaginatedAsync(int pageNumber, int pageSize, long? userId, List<string> roles)
         {
+
             var words = await _WordRepository.GetQueryable()
                 .Include(w => w.Descriptions)
                 .OrderBy(w => w.WordContent)
@@ -184,6 +198,7 @@ namespace KSozluk.WebAPI.Business
 
         public async Task<PagedWordDto> GetWordsByLetterAsync(char letter, int pageNumber, int pageSize, long? userId, List<string> roles)
         {
+            pageSize = 5;
             var words = await _WordRepository.GetQueryable()
                 .Where(w => w.Status == ContentStatus.Onaylı &&
                            w.WordContent.ToLower().StartsWith(letter.ToString().ToLower()))

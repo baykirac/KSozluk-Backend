@@ -10,6 +10,7 @@ namespace KSozluk.WebAPI.DTOs
         public Guid WordId { get; set; }
         public int Order { get; set; }
         public ContentStatus Status { get; set; }
+        public UserDto User { get; set; }
         public long UserId { get; set; }
         public DateTime LastEditedDate { get; set; }
         public string PreviousDescriptionContent { get; set; }
