@@ -100,7 +100,7 @@ namespace KSozluk.WebAPI.Business
             return;
         }
 
-        public async Task<WordAllDto> GetAllWordsAsync(long? UserId, List<string> Roles)
+        public async Task<List<WordDto>> GetAllWordsAsync(long? UserId, List<string> Roles)
         {
             var words = await _WordRepository.GetQueryable()
                 .Include(w => w.Descriptions)
@@ -129,7 +129,7 @@ namespace KSozluk.WebAPI.Business
                         : new UserDto(),
                     LastEditedDate = word.LastEditedDate,
                     Descriptions = word.Descriptions?
-                        .OrderByDescending(d => d.LastEditedDate) // Buraya sıralama eklendi
+                        .OrderByDescending(d => d.LastEditedDate)
                         .Where(d => d.UserId.HasValue)
                         .Select(d => new DescriptionDto
                         {
@@ -141,23 +141,21 @@ namespace KSozluk.WebAPI.Business
                             User = d.User != null
                                 ? new UserDto
                                 {
-                                    Id = d.User.Id, // word.User yerine d.User
+                                    Id = d.User.Id,
                                     Username = d.User.Username,
                                     Name = d.User.Name,
                                     Surname = d.User.Surname,
                                     Email = d.User.Email
                                 }
                                 : new UserDto(),
-                            UserId = d.UserId ?? 0, // null kontrolü eklendi
+                            UserId = d.UserId ?? 0,
                             LastEditedDate = d.LastEditedDate,
                         }).ToList(),
                 }).ToList();
 
-            return new WordAllDto
-            {
-                Items = wordDtos
-            };
+            return wordDtos;
         }
+
         public async Task<WordPagedResultDto> GetApprovedWordsPaginatedAsync(int pageNumber, int pageSize, long? userId, List<string> roles)
         {
 

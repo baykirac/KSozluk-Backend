@@ -350,6 +350,8 @@ namespace KSozluk.WebAPI.Business
 
             description.UpdateAcceptor(UserId);
 
+            _UnitOfWork.Save();
+
             var acceptorIdResponse = new AcceptorIdDto
             {
                 AcceptorId = description.AcceptorId
