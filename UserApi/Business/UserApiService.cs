@@ -322,9 +322,13 @@ public class UserApiService : DbServiceBase, IUserApiService
 
                     _user.SetModifiedEntity(1, _isInsert: true);
 
-                    //   var _userRole = new UserRole { UserId = _user.Id, RoleId = 2 };
+                    var _userRole = new UserRole { UserId = _user.Id, RoleId = 2 , IsActive = true, IsDeleted = false };
 
-                    //     _UserRoleRepository.Add(_userRole);
+                     _UserRoleRepository.Add(_userRole);
+
+                    var _userPermission = new UserPermission { UserId = _user.Id, PermissionId = 2, IsActive = true, IsDeleted = false };
+
+                     _UserPermissionRepository.Add(_userPermission);
 
                     Save();
                     _result.Message = "Uygulamaya giriş yetkiniz bulunmamaktadır.Lütfen yöneticiniz ile irtbata geçiniz.";
