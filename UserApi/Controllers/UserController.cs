@@ -49,7 +49,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [OztActionFilter(Permissions = "web_application_access,map_proxy_access")]
+    //[OztActionFilter(Permissions = "web_application_access,map_proxy_access")]
     public Response GetUserByToken()
     {
         var _result = new Response();

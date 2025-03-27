@@ -233,8 +233,8 @@ public class UserApiService : DbServiceBase, IUserApiService
     }
 
     public ResponseValidateUserDto Validate(RequestGetTokenDto _dto,
-        bool _ldap = false,
-        string _language = "tr")
+         bool _ldap = false,
+         string _language = "tr")
     {
         var _trimmedUsername = _dto.Username?.Split('/')?.LastOrDefault()?.Trim() ?? string.Empty;
         bool RetriesControl = _dto.RetriesControl;
@@ -247,7 +247,6 @@ public class UserApiService : DbServiceBase, IUserApiService
         var _isPasswordCorrect = false;
         var _ldapIpValue = "";
         var _ldapDomain = "";
-
 
         #region ldap kontrolü
         if (_ldap)
@@ -323,6 +322,9 @@ public class UserApiService : DbServiceBase, IUserApiService
 
                     _user.SetModifiedEntity(1, _isInsert: true);
 
+                    //   var _userRole = new UserRole { UserId = _user.Id, RoleId = 2 };
+
+                    //     _UserRoleRepository.Add(_userRole);
 
                     Save();
                     _result.Message = "Uygulamaya giriş yetkiniz bulunmamaktadır.Lütfen yöneticiniz ile irtbata geçiniz.";
@@ -719,7 +721,7 @@ public class UserApiService : DbServiceBase, IUserApiService
             }
 
         }
-        
+
         var _roles = _UserRoleRepository.GetAll(x =>
                 x.UserId == _user.Id && !x.IsDeleted && x.IsActive).
             ToList().
