@@ -8,7 +8,9 @@ namespace KSozluk.WebAPI.DataAccess.SqlConnection
 
         public PostgreSqlServerConnectionFactory(IConfiguration configuration)
         {
+
             _configuration = configuration;
+            
         }
     }
 }

@@ -16,16 +16,19 @@ namespace KSozluk.WebAPI.DataAccess.Contexts
         public DbSet<FavoriteWord> FavoriteWords { get; set; }
         public DbSet<User> User { get; set; }
 
-       // public DbSet<MostLikedWeekly> MostLikedPerWeek {  get; set; }
-       public SozlukContext(DbContextOptions<SozlukContext> options) : base(options) { }
-       // public DbContext(DbContextOptions options) : base(options) { }
+        public SozlukContext(DbContextOptions<SozlukContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DescriptionsConfiguration).Assembly);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(WordsConfigurations).Assembly);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DescriptionLikeConfiguration).Assembly);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(FavouriteWordConfiguration).Assembly);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersConfiguration).Assembly);
 
             modelBuilder.Entity<Word>()

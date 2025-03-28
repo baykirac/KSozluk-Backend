@@ -104,7 +104,6 @@ namespace KSozluk.WebAPI.Business
         {
             var words = await _WordRepository.GetQueryable()
                 .Include(w => w.Descriptions)
-                .ThenInclude(d => d.PreviousDescription)
                 .Include(w => w.User)
                 .OrderByDescending(x => x.OperationDate)
                 .ToListAsync();
@@ -131,31 +130,40 @@ namespace KSozluk.WebAPI.Business
                     Descriptions = word.Descriptions?
                         .OrderByDescending(d => d.LastEditedDate)
                         .Where(d => d.UserId.HasValue)
-                        .Select(d => new DescriptionDto
+                        .Select(d =>
                         {
-                            Id = d.Id,
-                            DescriptionContent = d.DescriptionContent,
-                            Order = d.Order,
-                            WordId = d.WordId,
-                            Status = d.Status,
-                            User = d.User != null
-                                ? new UserDto
-                                {
-                                    Id = d.User.Id,
-                                    Username = d.User.Username,
-                                    Name = d.User.Name,
-                                    Surname = d.User.Surname,
-                                    Email = d.User.Email
-                                }
-                                : new UserDto(),
-                            UserId = d.UserId ?? 0,
-                            LastEditedDate = d.LastEditedDate,
+                            // Önceki açıklamanın içeriğini alabilmek için tüm açıklamaları tarıyoruz.
+                            var previousDescription = word.Descriptions
+                                .FirstOrDefault(desc => desc.Id == d.PreviousDescriptionId);
+
+                            return new DescriptionDto
+                            {
+                                Id = d.Id,
+                                DescriptionContent = d.DescriptionContent,
+                                Order = d.Order,
+                                WordId = d.WordId,
+                                Status = d.Status,
+                                User = d.User != null
+                                    ? new UserDto
+                                    {
+                                        Id = d.User.Id,
+                                        Username = d.User.Username,
+                                        Name = d.User.Name,
+                                        Surname = d.User.Surname,
+                                        Email = d.User.Email
+                                    }
+                                    : new UserDto(),
+                                UserId = d.UserId.Value,
+                                LastEditedDate = d.LastEditedDate,
+                                PreviousDescId = d.PreviousDescriptionId,
+                                // PreviousDescriptionContent'i tüm açıklamaları tarayarak alıyoruz.
+                                PreviousDescriptionContent = previousDescription?.DescriptionContent,
+                            };
                         }).ToList(),
                 }).ToList();
 
             return wordDtos;
         }
-
         public async Task<WordPagedResultDto> GetApprovedWordsPaginatedAsync(int pageNumber, int pageSize, long? userId, List<string> roles)
         {
 

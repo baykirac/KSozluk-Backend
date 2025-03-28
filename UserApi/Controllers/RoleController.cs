@@ -17,8 +17,11 @@ public class RoleController : ControllerBase
 
     public RoleController(IOzLogger _logger, IRoleService _roleService)
     {
+
         _RoleService = _roleService;
+
         _Logger = _logger;
+        
     }
 
     [HttpPost]
@@ -28,16 +31,23 @@ public class RoleController : ControllerBase
 
         try
         {
+
             _result.Data = _RoleService.Paginate(_dto, HttpContext.GetCompanyIds());
 
             _result.Success = true;
+
         }
         catch (System.Exception _ex)
         {
+
             _Logger.Error(_ex,
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
-               _username: HttpContext.GetOztUser()?.Username,
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+
+            _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+
+            _username: HttpContext.GetOztUser()?.Username,
+
+            _userId: (long)(HttpContext.GetOztUser()?.UserId));
+
         }
 
         return _result;

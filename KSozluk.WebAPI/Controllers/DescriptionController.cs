@@ -21,7 +21,7 @@ namespace KSozluk.WebAPI.Controllers
         private readonly IOzLogger _Logger;
         private readonly IDescriptionService _descriptionService;
 
-        public DescriptionController( IOzLogger logger, OztTool oztTool, IDescriptionService descriptionService)
+        public DescriptionController(IOzLogger logger, OztTool oztTool, IDescriptionService descriptionService)
         {
             _Logger = logger;
 
@@ -34,23 +34,24 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter]
         public async Task<ServiceResponse> GetDescriptions(Guid WordId)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
-               var _response = await _descriptionService.GetDescriptionsAsync(WordId, _userId, _roles);
+                var _response = await _descriptionService.GetDescriptionsAsync(WordId, _userId, _roles);
 
-               return new ServiceResponse
+                return new ServiceResponse
                 {
 
                     Data = _response,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Açıklamalar Getirildi"
-                    
+
                 };
 
             }
@@ -59,11 +60,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -73,9 +74,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -83,23 +84,24 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter]
         public async Task<ServiceResponse> FavouriteWordsOnScreen()
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
-               var _response = await _descriptionService.FavouriteWordsOnScreenAsync(_userId, _roles);
+                var _response = await _descriptionService.FavouriteWordsOnScreenAsync(_userId, _roles);
 
                 return new ServiceResponse
                 {
 
                     Data = _response,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Favori Kelimeler Getirildi"
-                    
+
                 };
 
             }
@@ -108,11 +110,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -122,9 +124,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -132,23 +134,24 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter]
         public async Task<ServiceResponse> DescriptionTimeline()
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
-               var _response = await _descriptionService.DescriptionTimelineAsync(_userId);
+                var _response = await _descriptionService.DescriptionTimelineAsync(_userId);
 
                 return new ServiceResponse
                 {
 
                     Data = _response,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Açıklama Zaman Çizelgesi Getirildi."
-                    
+
                 };
 
             }
@@ -157,11 +160,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
-
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _username: HttpContext.GetOztUser()?.Username,
+ 
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -171,7 +174,7 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
 
             }
@@ -181,23 +184,24 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse> DeleteDescription(RequestDeleteDescriptionDto _dto)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
                 await _descriptionService.DeleteDescriptionAsync(_dto.DescriptionId, _userId, _roles);
-               
+
                 return new ServiceResponse
                 {
 
                     Data = null,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Silme İşlemi Gerçekleşti."
-                    
+
                 };
 
             }
@@ -206,11 +210,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -220,9 +224,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -230,23 +234,24 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse> UpdateOrder(RequestUpdateDto _dto)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
-               await _descriptionService.UpdateOrderAsync(_dto.DescriptionId, _dto.Order, _userId, _roles);
+                await _descriptionService.UpdateOrderAsync(_dto.DescriptionId, _dto.Order, _userId, _roles);
 
                 return new ServiceResponse
                 {
 
                     Data = null,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Order Bilgisi Güncellendi"
-                    
+
                 };
 
             }
@@ -255,11 +260,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -269,9 +274,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -280,13 +285,14 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse> UpdateStatus(RequestUpdateStatusDto _dto)
         {
-            try{
+            try
+            {
 
-               var _email =   HttpContext.GetOztUser()?.Email;
+                var _email = HttpContext.GetOztUser()?.Email;
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
                 await _descriptionService.UpdateStatusAsync(_dto.DescriptionId, _dto.Status, _dto.RejectionReasons, _dto.CustomRejectionReason, _dto.IsActive, _userId, _email, _roles);
 
@@ -295,10 +301,10 @@ namespace KSozluk.WebAPI.Controllers
 
                     Data = null,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Durum Güncellendi."
-                    
+
                 };
 
             }
@@ -307,11 +313,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -321,9 +327,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -331,11 +337,12 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter]
         public async Task<ServiceResponse> UpdateIsActive(RequestIsActiveDto _dto)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
                 await _descriptionService.UpdateIsActiveAsync(_dto.DescriptionId, _dto.IsActive, _userId, _roles);
 
@@ -344,10 +351,10 @@ namespace KSozluk.WebAPI.Controllers
 
                     Data = null,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Durum Buttonuna Tıklandı."
-                    
+
                 };
 
             }
@@ -356,11 +363,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -370,9 +377,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -380,23 +387,24 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter]
         public async Task<ServiceResponse> RecommendDescription(RequestRecommendDescriptionDto _dto)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
-               var _response = await _descriptionService.RecommendNewDescriptionAsync(_dto.WordId, _dto.PreviousDescriptionId, _dto.Content, _userId, _roles);
+                var _response = await _descriptionService.RecommendNewDescriptionAsync(_dto.WordId, _dto.PreviousDescriptionId, _dto.Content, _userId, _roles);
 
                 return new ServiceResponse
                 {
 
                     Data = _response,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Tavsiye Açıklama Eklendi"
-                    
+
                 };
 
             }
@@ -405,11 +413,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -419,33 +427,34 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
         [HttpPost("[action]")]
-        [OztActionFilter]   
+        [OztActionFilter]
         public async Task<ServiceResponse> DescriptionLike(RequestDescriptionLike _dto)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
-               await _descriptionService.LikeDescriptionAsync(_dto.DescriptionId, _userId, _roles);
+                await _descriptionService.LikeDescriptionAsync(_dto.DescriptionId, _userId, _roles);
 
                 return new ServiceResponse
                 {
 
                     Data = null,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Açıklama Begenildi."
-                    
+
                 };
 
             }
@@ -468,9 +477,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -478,11 +487,12 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter(Permissions = "admin")]
         public async Task<ServiceResponse> HeadersDescription(RequestHeadersDescriptionDto _dto)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
                 await _descriptionService.HeaderDescriptionAsync(_dto.WordContent, _userId, _roles);
 
@@ -491,10 +501,10 @@ namespace KSozluk.WebAPI.Controllers
 
                     Data = null,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Kelime Eklendi."
-                    
+
                 };
 
             }
@@ -503,11 +513,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -517,9 +527,9 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
         }
 
@@ -527,11 +537,12 @@ namespace KSozluk.WebAPI.Controllers
         [OztActionFilter]
         public async Task<ServiceResponse> FavouriteWord(RequestFavouriteWordDto _dto)
         {
-            try{
+            try
+            {
 
-               var _userId = HttpContext.GetOztUser()?.UserId; 
+                var _userId = HttpContext.GetOztUser()?.UserId;
 
-               var _roles = HttpContext.GetOztUser()?.Roles;
+                var _roles = HttpContext.GetOztUser()?.Roles;
 
                 await _descriptionService.FavouriteWordAsync(_dto.WordId, _userId, _roles);
 
@@ -540,10 +551,10 @@ namespace KSozluk.WebAPI.Controllers
 
                     Data = null,
 
-                    Success = true, 
+                    Success = true,
 
                     Message = "Kelime Favorilere Eklendi."
-                    
+
                 };
 
             }
@@ -552,11 +563,11 @@ namespace KSozluk.WebAPI.Controllers
 
                 _Logger.Error(_ex,
 
-               _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
+                _ip: HttpContext.Connection.RemoteIpAddress?.ToString(),
 
-               _username: HttpContext.GetOztUser()?.Username,
+                _username: HttpContext.GetOztUser()?.Username,
 
-               _userId: (long)(HttpContext.GetOztUser()?.UserId));
+                _userId: (long)(HttpContext.GetOztUser()?.UserId));
 
                 return new ServiceResponse
                 {
@@ -566,10 +577,10 @@ namespace KSozluk.WebAPI.Controllers
                     Success = false,
 
                     Message = _ex.Message
-                    
+
                 };
-                
+
             }
-        }       
+        }
     }
 }

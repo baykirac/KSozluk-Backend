@@ -17,9 +17,13 @@ public class EmailMessage
     public bool IsBodyHtml { get; init; }
 
     public EmailMessage(string _fromAddress,
+
         IEnumerable<string> _toAddresses,
+
         string _subject,
+
         string _body, bool
+        
         _isBodyHtml = false)
     {
         _MailMessage = new MailMessage
@@ -50,9 +54,13 @@ public class EmailMessage
     }
 
     public EmailMessage(string _fromAddress,
+
         string _toAddress,
+
         string _subject,
+
         string _body,
+
         bool _isBodyHtml = false)
     {
         _MailMessage = new MailMessage(_fromAddress, _toAddress, _subject, _body)
@@ -72,13 +80,18 @@ public class EmailMessage
     }
 
     public EmailMessage(string _fromAddress,
+
         string _toAddress,
+
         string _subject,
+
         AlternateView _alternateView)
     {
         _MailMessage = new MailMessage(_fromAddress, _toAddress, _subject, "")
         {
+
             IsBodyHtml = true,
+
         };
 
         _MailMessage.AlternateViews.Add(_alternateView);

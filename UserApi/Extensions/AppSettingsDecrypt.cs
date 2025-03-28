@@ -31,10 +31,13 @@ namespace UserApi.Extensions
          void DecryptInChildren(IConfiguration _parent)
          {  using (Aes myAes = Aes.Create())
              {
+
                  foreach (var _child in _parent.GetChildren())
                  {
+
                      if (_child.Value?.StartsWith(cipherPrefix) == true)
                      {
+
                          var cipherText = _child.Value.Substring(cipherPrefix.Length);
  
                          byte[] CipherTextBytes = Convert.FromBase64String(cipherText);
@@ -47,6 +50,7 @@ namespace UserApi.Extensions
  
                          //String.Join(",", IV)
                          _parent[_child.Key] = roundtrip;
+
                      }
  
                      DecryptInChildren(_child);
@@ -72,13 +76,17 @@ namespace UserApi.Extensions
      /// </returns>
      static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
      {
+
          // Check arguments.
          if (plainText == null || plainText.Length <= 0)
              throw new ArgumentNullException("plainText");
+
          if (Key == null || Key.Length <= 0)
              throw new ArgumentNullException("Key");
+
          if (IV == null || IV.Length <= 0)
              throw new ArgumentNullException("IV");
+
          byte[] encrypted;
  
          // Create an Aes object
@@ -86,6 +94,7 @@ namespace UserApi.Extensions
          using (Aes aesAlg = Aes.Create())
          {
              aesAlg.Key = Key;
+
              aesAlg.IV = IV;
  
              // Create an encryptor to perform the stream transform.
@@ -98,10 +107,14 @@ namespace UserApi.Extensions
                  {
                      using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                      {
+
                          //Write all data to the stream.
                          swEncrypt.Write(plainText);
+
                      }
+
                      encrypted = msEncrypt.ToArray();
+
                  }
              }
          }
@@ -130,8 +143,10 @@ namespace UserApi.Extensions
          // Check arguments.
          if (cipherText == null || cipherText.Length <= 0)
              throw new ArgumentNullException("cipherText");
+
          if (Key == null || Key.Length <= 0)
              throw new ArgumentNullException("Key");
+
          if (IV == null || IV.Length <= 0)
              throw new ArgumentNullException("IV");
  
@@ -144,6 +159,7 @@ namespace UserApi.Extensions
          using (Aes aesAlg = Aes.Create())
          {
              aesAlg.Key = Key;
+
              aesAlg.IV = IV;
  
              // Create a decryptor to perform the stream transform.
@@ -160,6 +176,7 @@ namespace UserApi.Extensions
                          // Read the decrypted bytes from the decrypting stream
                          // and place them in a string.
                          plaintext = srDecrypt.ReadToEnd();
+                         
                      }
                  }
              }

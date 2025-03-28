@@ -34,7 +34,6 @@ namespace KSozluk.WebAPI.Configurations
                 .HasColumnName("timestamp")
                 .IsRequired();
 
-
         }
     }
 }

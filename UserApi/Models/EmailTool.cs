@@ -11,7 +11,9 @@ public class EmailTool
 
     public EmailTool(IOptions<EmailConfiguration> _config)
     {
+
         Configuration = _config.Value;
+
     }
 
 
@@ -19,8 +21,11 @@ public class EmailTool
     {
         using var _smtpClient = new SmtpClient
         {
+
             Host = Configuration.SmtpServer,
+
             Port = Configuration.Port,
+
         };
 
         _smtpClient.UseDefaultCredentials = false;
@@ -40,8 +45,11 @@ public class EmailTool
     {
         using var _smtpClient = new SmtpClient
         {
+
             Host = Configuration.SmtpServer,
+
             Port = Configuration.Port,
+            
         };
 
         _smtpClient.UseDefaultCredentials = false;

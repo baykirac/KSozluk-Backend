@@ -115,4 +115,11 @@ namespace KSozluk.WebAPI.DTOs
         public Guid DescriptionId { get; set; }
         public bool IsActive { get; set; }
     }
+
+    public class PreviousDescriptionDto
+    {
+        public Guid Id { get; set; }
+        public Guid? PreviousDescId { get; set; }
+        public string DescriptionContent { get; set; }
+    }
 }

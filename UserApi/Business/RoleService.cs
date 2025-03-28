@@ -17,6 +17,7 @@ public class RoleService : IRoleService
 
     public PaginatorResponseDto<RoleDto> Paginate(PaginatorDto _dto, List<long> _companyIds)
     {
+
         var _rows = _RoleRepository.GetQueryable()
             .Where(x => (_companyIds != null ? _companyIds.Contains((long)x.CompanyId) : true) && x.IsDeleted == false)
             .OrderByDescending(x => x.Id)
@@ -24,15 +25,20 @@ public class RoleService : IRoleService
             .ToListDynamic<Role>()
             .Select(x => new RoleDto
             {
+
                 Id = x.Id,
+
                 Name = x.Name
-            })
-            .ToList();
+
+            }).ToList();
 
         return new PaginatorResponseDto<RoleDto>
         {
+
             Count = _count,
+
             Rows = _rows
+            
         };
     }
 }

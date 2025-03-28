@@ -14,8 +14,9 @@ public interface IUserApiService
     bool Any(Expression<Func<User, bool>> _predicate);
 
     User GetFirst(Expression<Func<User, bool>> _predicate);
-    IEnumerable<UserRoleDescription> GetUserRoles(long _userId);
 
+    IEnumerable<UserRoleDescription> GetUserRoles(long _userId);
+    
     User Get(string _username);
 
     void ResetPassword(string _email, long _userId);

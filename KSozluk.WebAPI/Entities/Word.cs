@@ -16,53 +16,81 @@ namespace KSozluk.WebAPI.Entities
         public List<Description> _descriptions = new List<Description>();
         public Word()
         {
+
             Descriptions = _descriptions;
  
         }
         
         private Word(Guid id, string word, ContentStatus status, long? userId, DateTime lastEditedDate, DateTime operationDate)
         {
+
             Id = id;
+
             WordContent = word;
+
             Status = status;
+
             UserId = userId;
+
             LastEditedDate = lastEditedDate;
+
             OperationDate = operationDate;
+
         }
 
         private Word(Guid id, string word, ContentStatus status, long userId, DateTime lastEditedDate, DateTime operationDate)
         {
+            
             Id = id;
+
             WordContent = word;
+
             Status = status;
+
             UserId = userId;
+
             LastEditedDate = lastEditedDate;
+
             OperationDate = operationDate;
+
         }
+
         private Word(string word, ContentStatus status, long userId)
         {
+
             Id = Guid.NewGuid();
+
             WordContent = word;
+
             Status = status;
-            UserId = userId;          
+
+            UserId = userId;      
+
         }
 
         private Word(string word, ContentStatus status)
         {
+
             Id = Guid.NewGuid();
+
             WordContent = word;
+
             Status = status;         
+
         }
 
         public Word(string word)
         {
+
             Id = Guid.NewGuid();
+
             WordContent = word;
             
         }
 
         public static Word Create(long? userId, string word)
         {
+
             if (String.IsNullOrEmpty(word))
             {
                 throw new DomainException("WordNullOrEmptyException", "Kelime null veya boşluktan oluşamaz.");
@@ -83,8 +111,11 @@ namespace KSozluk.WebAPI.Entities
 
         public static Word Create(string word, long? userId) // admin için 
         {
+
             DateTime lastEditedDate = DateTime.Now;
+
             DateTime operationDate = DateTime.Now;
+
             Guid id = Guid.NewGuid();
 
             if (String.IsNullOrEmpty(word))
@@ -136,32 +167,39 @@ namespace KSozluk.WebAPI.Entities
 
         public void AddDescription(Description description)
         {
+
             _descriptions.Add(description);
+
             Descriptions = _descriptions;
            
         }
         
         public static void ClearResponse(Word word)
         {
+
             word.User = null;
            
         }
 
         public void ChangeContent(string Content)
         {
+
             WordContent = Content;
 
         }
 
         public void UpdateStatus(ContentStatus status)
         {
+
             Status = status;
           
         }
 
         public void RemoveDescription(Description description)
         {
+
             _descriptions.Remove(description);
+            
             Descriptions = _descriptions;
         
         }  

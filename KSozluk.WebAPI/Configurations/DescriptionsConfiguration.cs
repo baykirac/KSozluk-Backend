@@ -18,8 +18,8 @@ namespace KSozluk.WebAPI.Configurations
                 .IsRequired();
                 
             builder.Property(w => w.WordId)
-             .HasColumnName("word_id")
-             .IsRequired();
+                .HasColumnName("word_id")
+                .IsRequired();
 
             builder.Property(d => d.DescriptionContent)
                 .IsRequired()
@@ -56,7 +56,7 @@ namespace KSozluk.WebAPI.Configurations
                 .HasColumnName("customrejectionreason");   
 
             builder.Property(d => d.IsActive)
-            .HasColumnName("isactive"); 
+                .HasColumnName("isactive"); 
           
             builder.Property(d => d.LastEditedDate)
                 .HasColumnName("lastediteddate");

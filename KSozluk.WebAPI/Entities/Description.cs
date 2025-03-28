@@ -17,7 +17,6 @@ namespace KSozluk.WebAPI.Entities
         public long? AcceptorId { get; set; }
         public DateTime LastEditedDate { get; private set; }
         public Word Word { get; private set; }
-        public Description PreviousDescription { get; private set; }
         public int? RejectionReasons { get; private set; }
         public string CustomRejectionReason { get; private set; }
         public bool IsActive { get; private set; }
@@ -25,43 +24,66 @@ namespace KSozluk.WebAPI.Entities
         public Description() { }
         private Description(Guid id, string description, int order, ContentStatus status, DateTime lastEditedDate, long? userId)
         {
+
             Id = id;
+
             DescriptionContent = description;
+
             Order = order;
+
             Status = status;
+
             LastEditedDate = lastEditedDate;
+
             AcceptorId = userId;
+
         }
 
         private Description(Guid id, string description, int order, ContentStatus status, DateTime lastEditedDate,long? userId, Guid? previousDescId)
         {
+
             Id = id;
+
             DescriptionContent = description;
+
             Order = order;
+
             Status = status;
+
             LastEditedDate = lastEditedDate;
+
             UserId = userId;
+
             PreviousDescriptionId = previousDescId;
+
         }
 
         public static Description Create(string description, int order, long? userId) // admin için
         {
+
             var id = Guid.NewGuid();
+
             var lastEditedDate = DateTime.Now;
 
             if (String.IsNullOrEmpty(description))
             {
+
                 throw new DomainException("DescriptionNullOrEmptyException", "Açıklama null veya boş olamaz.");
+
             }
 
             if (String.IsNullOrWhiteSpace(description))
             {
+
                 throw new DomainException("DescriptionNullOrWhiteException", "Açıklama null veya boşluk karakterinden oluşamaz.");
+
             }
 
             if(description.Length > 2000)
             {
+
                 throw new DomainException("DescriptionNotInRange", "Açıklama 2000 karakterden fazla olamaz.");
+                
             }
 
             return new Description(id, description, order, ContentStatus.Onaylı, lastEditedDate, userId);
@@ -69,7 +91,9 @@ namespace KSozluk.WebAPI.Entities
 
         public static Description Create(string description, int order, long? userId, Guid? previousDescId) // öneri yapan kullanıcılar için
         {
+
             var id = Guid.NewGuid();
+            
             var lastEditedDate = DateTime.Now;
 
             if (String.IsNullOrEmpty(description))
@@ -92,38 +116,53 @@ namespace KSozluk.WebAPI.Entities
         }
         public void UpdateContent(string Content)
         {
+
             DescriptionContent = Content;
+
         }
 
         public void UpdateRecommender(long? id)
         {
+
             UserId = id;
+
         }
 
         public void UpdateAcceptor(long? userId)
         {
+
             AcceptorId = userId;
+
         }
 
         public void UpdateOrder(int order)
         {   
+
             Order = order;
+
         }
 
         public void UpdateStatus(ContentStatus status)
         {
+
             Status = status;
+
         }
 
         public void UpdateRejectionReasons(int? rejectionReasons, string customRejectionReason)
         {
+
             RejectionReasons = rejectionReasons;
+
             CustomRejectionReason = customRejectionReason;
+
         }
 
         public void UpdateIsActive( bool isActive)
         {
+
             IsActive = isActive;
+
         }
     }
 }

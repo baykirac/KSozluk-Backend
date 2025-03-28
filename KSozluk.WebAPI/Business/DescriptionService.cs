@@ -6,8 +6,6 @@ using Ozcorps.Generic.Dal;
 using Ozcorps.Generic.Bll;
 using Microsoft.EntityFrameworkCore;
 
-
-
 namespace KSozluk.WebAPI.Business
 {
     public class DescriptionService : DbServiceBase, IDescriptionService
@@ -30,10 +28,12 @@ namespace KSozluk.WebAPI.Business
             _DescriptionLikeRepository = _unitOfWork.GetRepository<DescriptionLike>();
 
             _FavoriteWordRepository = _unitOfWork.GetRepository<FavoriteWord>();
+
         }
 
         public async Task<DescriptionWithDetailsDto> GetDescriptionsAsync(Guid wordId, long? userId, List<string> roles)
         {
+
             var descriptions = await _DescriptionRepository.GetQueryable()
                 .Where(d => d.WordId == wordId && d.Status == ContentStatus.Onaylı)
                 .OrderBy(d => d.Order)
@@ -54,8 +54,10 @@ namespace KSozluk.WebAPI.Business
 
                 foreach (var desc in descriptions)
                 {
+
                     desc.isLike = likedDescriptions.Contains(desc.Id);
-                }
+
+                }            
             }
 
             var isFavourited = userId.HasValue && await _FavoriteWordRepository
@@ -68,16 +70,21 @@ namespace KSozluk.WebAPI.Business
 
             return new DescriptionWithDetailsDto
             {
+
                 Body = descriptions,
+
                 IsFavourited = isFavourited,
+
                 IsLikedWord = isLikedWord
+
             };
         }
         public async Task<Description> DeleteDescriptionAsync(Guid descriptionId, long? userId, List<string> roles)
         {
+
             var description = await _DescriptionRepository.GetQueryable()
                 .Include(d => d.Word)
-                    .ThenInclude(w => w.Descriptions)
+                .ThenInclude(w => w.Descriptions)
                 .FirstOrDefaultAsync(d => d.Id == descriptionId);
 
             if (description == null)
@@ -87,11 +94,15 @@ namespace KSozluk.WebAPI.Business
 
             if (word.Descriptions.Count == 1)
             {
+
                 _WordRepository.Remove(word);
+
             }
             else
             {
+
                 _DescriptionRepository.Remove(description);
+
             }
 
             _UnitOfWork.Save();
@@ -106,25 +117,38 @@ namespace KSozluk.WebAPI.Business
                 .OrderByDescending(d => d.LastEditedDate)
                 .Select(d => new DescriptionTimelineDto
                 {
+
                     Id = d.Id,
+
                     Status = d.Status,
+
                     WordId = d.WordId,
+
                     DescriptionContent = d.DescriptionContent,
+
                     RejectionReasons = d.RejectionReasons,
+
                     CustomRejectionReason = d.CustomRejectionReason,
+
                     IsActive = d.IsActive
+
                 })
                 .ToListAsync();
 
             if (!descriptions.Any())
             {
+
                 return null;
+
             }
 
             foreach (var item in descriptions)
             {
+
                 var word = _WordRepository.GetFirst(w => w.Id == item.WordId);
+
                 item.WordContent = word?.WordContent;
+
             }
 
             return descriptions;
@@ -132,7 +156,7 @@ namespace KSozluk.WebAPI.Business
 
         public async Task<List<DescriptionHeaderNameDto>> HeaderDescriptionAsync(string wordContent, long? userId, List<string> roles)
         {
-            // Önce word'ü bul
+
             var word = _WordRepository.GetFirst(w => w.WordContent == wordContent);
 
             if (word == null)
@@ -146,10 +170,12 @@ namespace KSozluk.WebAPI.Business
                 .OrderBy(d => d.Order)
                 .Select(d => new DescriptionHeaderNameDto
                 {
+
                     Id = d.Id,
+
                     DescriptionContent = d.DescriptionContent
-                })
-                .ToListAsync();
+
+                }).ToListAsync();
 
             return descriptions;
         }
@@ -162,16 +188,23 @@ namespace KSozluk.WebAPI.Business
 
             if (existingLike != null)
             {
+
                 _DescriptionLikeRepository.Remove(existingLike);
+
             }
             else
             {
                 await _DescriptionLikeRepository.AddAsync(new DescriptionLike
                 {
+
                     Id = Guid.NewGuid(),
+
                     DescriptionId = descriptionId,
+
                     UserId = userId,
+
                     Timestamp = DateTime.UtcNow
+
                 });
             }
 
@@ -179,8 +212,11 @@ namespace KSozluk.WebAPI.Business
 
             return new LikeDescriptionDto
             {
+
                 Id = descriptionId,
+
                 UserId = userId
+
             };
         }
 
@@ -207,9 +243,13 @@ namespace KSozluk.WebAPI.Business
 
             return new ReccomendDescriptionDto
             {
+
                 Id = description.Id,
+
                 DescriptionContent = description.DescriptionContent,
+
                 LastEditedDate = description.LastEditedDate
+
             };
         }
 
@@ -220,54 +260,72 @@ namespace KSozluk.WebAPI.Business
 
             if (description == null)
             {
+
                 return null;
+
             }
 
             description.UpdateOrder(order);
+
             _UnitOfWork.Save();
 
             return new UpdateOrderDto
             {
+
                 DescriptionId = description.Id,
+
                 Order = description.Order
+
             };
         }
 
         public async Task<UpdateIsActiveDto> UpdateIsActiveAsync(Guid descriptionId, bool isActive, long? userId, List<string> roles)
         {
+
             var description = await _DescriptionRepository.GetQueryable()
                 .FirstOrDefaultAsync(d => d.Id == descriptionId);
 
             if (description == null)
             {
+
                 return null;
+
             }
 
             description.UpdateIsActive(isActive);
+
             _UnitOfWork.Save();
 
             return new UpdateIsActiveDto
             {
+
                 DescriptionId = description.Id,
+
                 IsActive = description.IsActive
+
             };
         }
 
         public async Task<FavouriteWordDto> FavouriteWordAsync(Guid wordId, long? userId, List<string> roles)
         {
-            // Mevcut favori kontrolü
+
             var existingFavorite = _FavoriteWordRepository.GetFirst(x =>
                 x.WordId == wordId && x.UserId == userId);
 
             if (existingFavorite != null)
             {
+
                 _FavoriteWordRepository.Remove(existingFavorite);
+
                 _UnitOfWork.Save();
 
                 return new FavouriteWordDto
                 {
+
                     WordId = Guid.Empty,
+
                     UserId = userId
+
                 };
             }
             else
@@ -275,18 +333,26 @@ namespace KSozluk.WebAPI.Business
                 // Yeni favori ekle
                 var newFavorite = new FavoriteWord
                 {
+
                     Id = Guid.NewGuid(),
+
                     WordId = wordId,
+
                     UserId = userId
+
                 };
 
                 await _FavoriteWordRepository.AddAsync(newFavorite);
+
                 _UnitOfWork.Save();
 
                 return new FavouriteWordDto
                 {
+
                     WordId = wordId,
+
                     UserId = userId
+
                 };
             }
         }
@@ -299,7 +365,6 @@ namespace KSozluk.WebAPI.Business
 
             if (description == null) return null;
 
-
             var word = await _WordRepository.GetQueryable()
                 .Include(w => w.Descriptions)
                 .FirstOrDefaultAsync(w => w.Id == description.WordId);
@@ -308,11 +373,15 @@ namespace KSozluk.WebAPI.Business
 
             if (description.PreviousDescriptionId.HasValue && Status == ContentStatus.Onaylı)
             {
+
                 var previousDescription = _DescriptionRepository.GetFirst(
                     d => d.Id == description.PreviousDescriptionId);
+
                 if (previousDescription != null)
                 {
+
                     previousDescription.UpdateStatus(ContentStatus.Reddedildi);
+
                 }
             }
 
@@ -321,7 +390,9 @@ namespace KSozluk.WebAPI.Business
 
             if (parentDescription != null && Status == ContentStatus.Onaylı)
             {
+
                 parentDescription.UpdateStatus(ContentStatus.Reddedildi);
+
             }
 
             if (Status == ContentStatus.Onaylı)
@@ -354,7 +425,9 @@ namespace KSozluk.WebAPI.Business
 
             var acceptorIdResponse = new AcceptorIdDto
             {
+
                 AcceptorId = description.AcceptorId
+
             };
 
             var updatedDescription = _DescriptionRepository.GetFirst(
@@ -362,13 +435,18 @@ namespace KSozluk.WebAPI.Business
 
             if (updatedDescription == null)
             {
+
                 return null;
+
             }
 
             var descriptionRecommendResponse = new DescriptionReccomendDto
             {
+
                 DescriptionContent = updatedDescription.DescriptionContent,
+
                 LastEditedDate = updatedDescription.LastEditedDate
+
             };
 
             if (Status == ContentStatus.Reddedildi)
@@ -378,27 +456,38 @@ namespace KSozluk.WebAPI.Business
                 // RejectionReasons 7 özel durumu
                 if (RejectionReasons == 7 && !string.IsNullOrEmpty(CustomRejectionReason))
                 {
+
                     description.UpdateRejectionReasons(RejectionReasons, CustomRejectionReason);
+
                 }
                 else
                 {
+
                     description.UpdateRejectionReasons(RejectionReasons, CustomRejectionReason);
+
                 }
             }
 
             if (Status == ContentStatus.Onaylı)
             {
+
                 IsActive = false;
+
             }
 
             _UnitOfWork.Save();
 
             var responseDto = new UpdateStatusDto
             {
+
                 DescriptionId = description.Id,
+
                 Status = description.Status,
+
                 RejectionReasons = description.RejectionReasons ?? 0,
+
                 CustomRejectionReason = description.CustomRejectionReason
+
             };
 
             return responseDto;
@@ -466,9 +555,13 @@ namespace KSozluk.WebAPI.Business
 
             return likedWords.Select(x => new TopWordListDto
             {
+
                 WordId = x.WordId,
+
                 Count = x.Count,
+
                 Word = words.FirstOrDefault(y => y.Id == x.WordId)?.WordContent
+                
             }).ToList();
         }
 

@@ -27,9 +27,8 @@ namespace KSozluk.WebAPI.Configurations
                 .IsRequired();
 
             builder.Property(w => w.WordId)
-             .HasColumnName("word_id")
-             .IsRequired();
-
+               .HasColumnName("word_id")
+               .IsRequired();
 
         }
     }
