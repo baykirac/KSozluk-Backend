@@ -181,7 +181,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> DeleteDescription(RequestDeleteDescriptionDto _dto)
         {
             try
@@ -231,7 +231,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> UpdateOrder(RequestUpdateDto _dto)
         {
             try
@@ -282,7 +282,7 @@ namespace KSozluk.WebAPI.Controllers
 
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> UpdateStatus(RequestUpdateStatusDto _dto)
         {
             try
@@ -484,7 +484,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> HeadersDescription(RequestHeadersDescriptionDto _dto)
         {
             try

@@ -51,6 +51,8 @@ builder.Services.AddScoped<IWordService, WordService>();
 
 builder.Services.AddScoped<IDescriptionService, DescriptionService>();
 
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddTransient<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

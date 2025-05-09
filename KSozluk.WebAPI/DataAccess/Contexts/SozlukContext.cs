@@ -1,6 +1,4 @@
-﻿
-using KSozluk.Persistence.Configurations;
-using KSozluk.WebAPI.Configurations;
+﻿using KSozluk.WebAPI.Configurations;
 using KSozluk.WebAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +14,9 @@ namespace KSozluk.WebAPI.DataAccess.Contexts
         public DbSet<FavoriteWord> FavoriteWords { get; set; }
         public DbSet<User> User { get; set; }
 
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
+
         public SozlukContext(DbContextOptions<SozlukContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +31,10 @@ namespace KSozluk.WebAPI.DataAccess.Contexts
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(FavouriteWordConfiguration).Assembly);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersConfiguration).Assembly);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserRoleConfiguration).Assembly);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserPermissionConfiguration).Assembly);
 
             modelBuilder.Entity<Word>()
             .HasMany(w => w.Descriptions)

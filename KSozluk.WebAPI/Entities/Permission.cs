@@ -6,7 +6,11 @@ namespace KSozluk.WebAPI.Entities
     {
         [Description("Normal Kullanıcı")]
         NormalUser = 1,
+
         [Description("Admin")]
-        Admin = 2
+        Admin = 2,
+      
+        [Description("Süper Admin")]
+        SuperAdmin = 3,
     }
 }

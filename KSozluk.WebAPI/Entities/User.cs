@@ -2,7 +2,7 @@
 
 namespace KSozluk.WebAPI.Entities;
 
-public partial class User 
+public partial class User : EntityBase
 {
     public long Id { get; set; }
     public string Username { get; set; }

@@ -3,7 +3,7 @@ using Ozcorps.Generic.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KSozluk.Persistence.Configurations
+namespace KSozluk.WebAPI.Configurations
 {
     internal class UsersConfiguration : IEntityTypeConfiguration<User>
     {

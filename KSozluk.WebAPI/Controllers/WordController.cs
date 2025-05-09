@@ -76,7 +76,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpGet("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> GetAllWords()
         {
             try
@@ -273,7 +273,7 @@ namespace KSozluk.WebAPI.Controllers
 
 
         [HttpGet("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> GetApprovedWordsPaginated([FromQuery]  RequestApprovedDto _dto)
         {
             try
@@ -324,7 +324,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> AddWord(RequestAddWords _dto)
         {
             try
@@ -376,7 +376,7 @@ namespace KSozluk.WebAPI.Controllers
 
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> UpdateWord(RequestUpdateWordDto _dto)
         {
             try
@@ -427,7 +427,7 @@ namespace KSozluk.WebAPI.Controllers
 
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> DeleteWord(RequestDeletedDto _dto)
         {
             try
@@ -580,7 +580,7 @@ namespace KSozluk.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        [OztActionFilter(Permissions = "admin")]
+        [OztActionFilter(Permissions = "superadmin,admin")]
         public async Task<ServiceResponse> UpdateWordById(RequestUpdateWordById _dto)
         {
             try
