@@ -57,16 +57,18 @@ namespace KSozluk.WebAPI.Business
 
                     desc.isLike = likedDescriptions.Contains(desc.Id);
 
-                }            
+                }
             }
 
             var isFavourited = userId.HasValue && await _FavoriteWordRepository
                    .GetQueryable()
                    .AnyAsync(f => f.WordId == wordId && f.UserId == userId.Value);
 
+            var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
+
             var isLikedWord = userId.HasValue && await _WordLikeRepository
                 .GetQueryable()
-                .AnyAsync(w => w.WordId == wordId && w.UserId == userId.Value);
+                .AnyAsync(w => w.WordId == wordId && w.UserId == userId.Value && w.Timestamp >= oneWeekAgo);
 
             return new DescriptionWithDetailsDto
             {
@@ -561,7 +563,7 @@ namespace KSozluk.WebAPI.Business
                 Count = x.Count,
 
                 Word = words.FirstOrDefault(y => y.Id == x.WordId)?.WordContent
-                
+
             }).ToList();
         }
 
