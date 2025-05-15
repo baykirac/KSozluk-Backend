@@ -33,7 +33,7 @@ namespace KSozluk.WebAPI.Controllers
         {
             try
             {
-                var _response = await _userService.GetUsersPagedAsync(_dto.PageNumber, _dto.PageSize);
+                var _response = await _userService.GetUsersPagedAsync(_dto);
 
                 return new ServiceResponse
                 {

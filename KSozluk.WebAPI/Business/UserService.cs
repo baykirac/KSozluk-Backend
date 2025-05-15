@@ -5,6 +5,7 @@ using Ozcorps.Generic.Bll;
 using Ozcorps.Generic.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using KSozluk.WebAPI.DTOs.Request;
 
 
 namespace KSozluk.WebAPI.Business
@@ -23,17 +24,29 @@ namespace KSozluk.WebAPI.Business
 
                         _PermissionRepository = _unitOfWork.GetRepository<UserPermission>();
                 }
-                public async Task<PagedResult<UserDto>> GetUsersPagedAsync(int pageNumber, int pageSize)
+                public async Task<PagedResult<UserDto>> GetUsersPagedAsync(RequestPagenationDto dto)
                 {
                         var query = _UserRepository.GetQueryable()
                             .Where(x => !x.IsDeleted);
 
+                        if (!string.IsNullOrEmpty(dto.Username))
+                                query = query.Where(x => x.Username.Contains(dto.Username));
+
+                        if (!string.IsNullOrEmpty(dto.Name))
+                                query = query.Where(x => x.Name.Contains(dto.Name));
+
+                        if (!string.IsNullOrEmpty(dto.Surname))
+                                query = query.Where(x => x.Surname.Contains(dto.Surname));
+
+                        if (!string.IsNullOrEmpty(dto.Email))
+                                query = query.Where(x => x.Email.Contains(dto.Email));
+
                         var totalCount = await query.CountAsync();
 
                         var users = await query
-                            .OrderBy(x => x.Id) 
-                            .Skip((pageNumber - 1) * pageSize)
-                            .Take(pageSize)
+                            .OrderBy(x => x.Id)
+                            .Skip((dto.PageNumber - 1) * dto.PageSize)
+                            .Take(dto.PageSize)
                             .Select(x => new UserDto
                             {
                                     Id = x.Id,
@@ -58,7 +71,6 @@ namespace KSozluk.WebAPI.Business
                                 Items = users
                         };
                 }
-
 
                 public async Task<UserDto> UpdateRoleUserAsync(long? userId, long newRoleAndPermissionId)
                 {
